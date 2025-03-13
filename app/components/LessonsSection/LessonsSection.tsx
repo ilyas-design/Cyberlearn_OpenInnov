@@ -11,6 +11,7 @@ interface Lesson {
     description: string;
     icon: JSX.Element;
     color: string;
+    content?: string;
 }
 
 const lessons: Lesson[] = [
@@ -19,28 +20,32 @@ const lessons: Lesson[] = [
         title: 'Sécurité de Base',
         description: 'Apprenez les fondamentaux de la cybersécurité',
         icon: <Shield size={24} />,
-        color: '#0AFFD4'
+        color: '#0AFFD4',
+        content: 'securite-base'
     },
     {
         id: 'protection-donnees',
         title: 'Protection des Données',
         description: 'Protégez vos données personnelles et professionnelles',
         icon: <Lock size={24} />,
-        color: '#0024FF'
+        color: '#0024FF',
+        content: 'protection-donnees'
     },
     {
         id: 'apprentissage',
         title: 'Apprentissage',
         description: 'Découvrez les meilleures pratiques de sécurité',
         icon: <BookOpen size={24} />,
-        color: '#FF6B6B'
+        color: '#FF6B6B',
+        content: 'apprentissage'
     },
     {
         id: 'communaute',
         title: 'Communauté',
         description: 'Rejoignez une communauté de passionnés',
         icon: <Users size={24} />,
-        color: '#4CAF50'
+        color: '#4CAF50',
+        content: 'communaute'
     }
 ];
 
@@ -70,7 +75,7 @@ const LessonsSection = () => {
                         </p>
                         <div className={styles.cardFooter}>
                             <Link
-                                href={`/lessons/`}
+                                href={`/lessons/${lesson.content}`}
                                 className={styles.cardLink}
                             >
                                 <span>Commencer</span>

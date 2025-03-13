@@ -1,0 +1,232 @@
+.container {
+    padding: 2rem;
+    background: rgba(3, 2, 25, 0.7);
+    border-radius: 16px;
+    border: 1px solid rgba(10, 255, 212, 0.1);
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.header h1 {
+    color: var(--couleur-cinquieme);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2rem;
+    letter-spacing: 1px;
+}
+
+.searchContainer {
+    position: relative;
+    max-width: 300px;
+    width: 100%;
+}
+
+.searchInput {
+    width: 100%;
+    padding: 10px 12px;
+    background: rgba(10, 255, 212, 0.1);
+    border: 1px solid rgba(10, 255, 212, 0.2);
+    border-radius: 8px;
+    color: var(--couleur-cinquieme);
+    font-family: 'Abel', sans-serif;
+    transition: all 0.3s ease;
+}
+
+.searchInput:focus {
+    outline: none;
+    border-color: var(--couleur-secondaire);
+    background: rgba(10, 255, 212, 0.15);
+}
+
+.content {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: 2rem;
+}
+
+.usersList {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.userCard {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background: rgba(3, 2, 25, 0.5);
+    border: 1px solid rgba(10, 255, 212, 0.1);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.userCard:hover {
+    background: rgba(10, 255, 212, 0.1);
+    border-color: var(--couleur-secondaire);
+}
+
+.userCard.selected {
+    background: rgba(10, 255, 212, 0.15);
+    border-color: var(--couleur-secondaire);
+}
+
+.userInfo {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.userInfo h3 {
+    color: var(--couleur-cinquieme);
+    margin: 0;
+    font-family: 'Abel', sans-serif;
+}
+
+.userInfo p {
+    color: var(--couleur-tertiaire);
+    margin: 0;
+    font-size: 0.9rem;
+}
+
+.settingsPanel {
+    background: rgba(3, 2, 25, 0.5);
+    border: 1px solid rgba(10, 255, 212, 0.1);
+    border-radius: 8px;
+    padding: 2rem;
+}
+
+.settingsHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.settingsHeader h2 {
+    color: var(--couleur-cinquieme);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.5rem;
+    margin: 0;
+}
+
+.refreshButton {
+    background: none;
+    border: none;
+    color: var(--couleur-secondaire);
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+.refreshButton:hover {
+    background: rgba(10, 255, 212, 0.1);
+}
+
+.settingsGrid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+}
+
+.settingGroup {
+    background: rgba(3, 2, 25, 0.3);
+    border-radius: 8px;
+    padding: 1.5rem;
+}
+
+.settingGroup h3 {
+    color: var(--couleur-cinquieme);
+    font-family: 'Abel', sans-serif;
+    margin: 0 0 1rem 0;
+    font-size: 1.1rem;
+}
+
+.settingItem {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.settingItem label {
+    color: var(--couleur-tertiaire);
+    font-family: 'Abel', sans-serif;
+    flex: 1;
+}
+
+.settingItem select,
+.settingItem input[type="checkbox"] {
+    background: rgba(10, 255, 212, 0.1);
+    border: 1px solid rgba(10, 255, 212, 0.2);
+    border-radius: 4px;
+    color: var(--couleur-cinquieme);
+    padding: 0.5rem;
+    font-family: 'Abel', sans-serif;
+}
+
+.settingItem select:focus {
+    outline: none;
+    border-color: var(--couleur-secondaire);
+}
+
+.settingItem input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}
+
+.loading {
+    text-align: center;
+    padding: 2rem;
+    color: var(--couleur-cinquieme);
+    font-family: 'Abel', sans-serif;
+}
+
+.error {
+    text-align: center;
+    padding: 2rem;
+    color: #ff6b6b;
+    font-family: 'Abel', sans-serif;
+}
+
+/* Tablet */
+@media (max-width: 1024px) {
+    .content {
+        grid-template-columns: 250px 1fr;
+    }
+
+    .settingsGrid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+    .container {
+        padding: 1rem;
+    }
+
+    .content {
+        grid-template-columns: 1fr;
+    }
+
+    .header {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .searchContainer {
+        max-width: 100%;
+    }
+
+    .settingsPanel {
+        padding: 1rem;
+    }
+}

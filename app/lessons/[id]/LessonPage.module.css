@@ -1,0 +1,286 @@
+.lessonPage {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.lessonHeader {
+    margin-bottom: 2rem;
+}
+
+.backButton {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background-color: var(--couleur-quaternaire);
+    color: var(--couleur-cinquieme);
+    border: 1px solid var(--couleur-principale);
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: 'Abel', sans-serif;
+    margin-bottom: 1.5rem;
+    transition: all 0.3s ease;
+}
+
+.backButton:hover {
+    background-color: var(--couleur-principale);
+    transform: translateY(-3px);
+}
+
+.lessonInfo {
+    background-color: rgba(3, 2, 25, 0.7);
+    border-radius: 10px;
+    padding: 2rem;
+    border: 1px solid var(--couleur-principale);
+    box-shadow: 0 4px 15px rgba(0, 36, 255, 0.3);
+}
+
+.categoryTag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    color: var(--couleur-secondaire);
+    font-family: 'Abel', sans-serif;
+    background-color: rgba(0, 36, 255, 0.2);
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    margin-bottom: 1rem;
+}
+
+.lessonInfo h1 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    color: var(--couleur-cinquieme);
+    font-family: 'Bebas Neue', sans-serif;
+    letter-spacing: 1px;
+}
+
+.description {
+    color: var(--couleur-tertiaire);
+    margin-bottom: 1.5rem;
+    font-size: 1.1rem;
+    line-height: 1.5;
+    font-family: 'Abel', sans-serif;
+}
+
+.tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.tag {
+    background-color: rgba(0, 36, 255, 0.3);
+    color: var(--couleur-cinquieme);
+    font-size: 0.8rem;
+    padding: 0.2rem 0.6rem;
+    border-radius: 12px;
+    border: 1px solid var(--couleur-principale);
+    transition: all 0.3s ease;
+}
+
+.tag:hover {
+    background-color: var(--couleur-principale);
+    transform: translateY(-2px);
+}
+
+.lessonContent {
+    display: grid;
+    grid-template-columns: 250px 1fr;
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.sectionNav {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    position: sticky;
+    top: 2rem;
+}
+
+.sectionButton {
+    text-align: left;
+    padding: 0.8rem 1rem;
+    background-color: var(--couleur-quaternaire);
+    color: var(--couleur-cinquieme);
+    border: 1px solid var(--couleur-principale);
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: 'Abel', sans-serif;
+    transition: all 0.3s ease;
+}
+
+.sectionButton:hover {
+    background-color: var(--couleur-principale);
+    transform: translateX(5px);
+}
+
+.sectionButton.active {
+    background-color: var(--couleur-secondaire);
+    color: var(--couleur-quaternaire);
+    border-color: var(--couleur-secondaire);
+}
+
+.sectionContent {
+    background-color: rgba(3, 2, 25, 0.7);
+    border-radius: 10px;
+    padding: 2rem;
+    border: 1px solid var(--couleur-principale);
+    box-shadow: 0 4px 15px rgba(0, 36, 255, 0.3);
+}
+
+.sectionTitle {
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+    color: var(--couleur-secondaire);
+    font-family: 'Bebas Neue', sans-serif;
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid var(--couleur-principale);
+    padding-bottom: 0.5rem;
+}
+
+.markdownContainer {
+    color: var(--couleur-cinquieme);
+    font-family: 'Abel', sans-serif;
+    line-height: 1.6;
+}
+
+.markdownContainer h1,
+.markdownContainer h2,
+.markdownContainer h3 {
+    color: var(--couleur-cinquieme);
+    font-family: 'Bebas Neue', sans-serif;
+    margin: 1.5rem 0 1rem;
+}
+
+.markdownContainer h1 {
+    font-size: 2rem;
+}
+
+.markdownContainer h2 {
+    font-size: 1.75rem;
+}
+
+.markdownContainer h3 {
+    font-size: 1.5rem;
+}
+
+.markdownContainer p {
+    margin: 1rem 0;
+}
+
+.markdownContainer ul,
+.markdownContainer ol {
+    margin: 1rem 0;
+    padding-left: 2rem;
+}
+
+.markdownContainer li {
+    margin: 0.5rem 0;
+}
+
+.markdownContainer code {
+    background-color: rgba(0, 36, 255, 0.1);
+    padding: 0.2rem 0.4rem;
+    border-radius: 4px;
+    font-family: monospace;
+    font-size: 0.9em;
+}
+
+.markdownContainer pre {
+    background-color: rgba(0, 36, 255, 0.1);
+    padding: 1rem;
+    border-radius: 8px;
+    overflow-x: auto;
+    margin: 1rem 0;
+    border-left: 3px solid var(--couleur-secondaire);
+}
+
+.navigationButtons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 2rem;
+    gap: 1rem;
+}
+
+.navButton {
+    background-color: var(--couleur-principale);
+    color: var(--couleur-cinquieme);
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: 'Abel', sans-serif;
+    transition: all 0.3s ease;
+    flex: 1;
+}
+
+.navButton:hover:not(:disabled) {
+    background-color: var(--couleur-secondaire);
+    color: var(--couleur-quaternaire);
+    transform: translateY(-3px);
+}
+
+.navButton:disabled {
+    background-color: rgba(0, 36, 255, 0.2);
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+/* États de chargement et d'erreur */
+.loading,
+.error {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 50vh;
+    text-align: center;
+    padding: 2rem;
+}
+
+.loadingSpinner {
+    width: 50px;
+    height: 50px;
+    border: 4px solid rgba(10, 255, 212, 0.3);
+    border-radius: 50%;
+    border-top-color: var(--couleur-secondaire);
+    animation: spin 1s ease-in-out infinite;
+    margin-bottom: 1rem;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.error {
+    background-color: rgba(231, 76, 60, 0.1);
+    border-radius: 10px;
+    border: 1px solid #e74c3c;
+    color: #e74c3c;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .lessonContent {
+        grid-template-columns: 1fr;
+    }
+
+    .sectionNav {
+        position: static;
+        margin-bottom: 2rem;
+    }
+
+    .navigationButtons {
+        flex-direction: column;
+    }
+
+    .lessonInfo h1 {
+        font-size: 2rem;
+    }
+}

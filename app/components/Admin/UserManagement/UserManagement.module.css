@@ -1,0 +1,165 @@
+.container {
+    padding: 2rem;
+    background: rgba(3, 2, 25, 0.7);
+    border-radius: 16px;
+    border: 1px solid rgba(10, 255, 212, 0.1);
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.header h1 {
+    color: var(--couleur-cinquieme);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2rem;
+    letter-spacing: 1px;
+}
+
+.searchContainer {
+    position: relative;
+    max-width: 300px;
+    width: 100%;
+}
+
+.searchIcon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--couleur-tertiaire);
+    opacity: 0.7;
+}
+
+.searchInput {
+    width: 100%;
+    padding: 10px 12px 10px 40px;
+    background: rgba(10, 255, 212, 0.1);
+    border: 1px solid rgba(10, 255, 212, 0.2);
+    border-radius: 8px;
+    color: var(--couleur-cinquieme);
+    font-family: 'Abel', sans-serif;
+    transition: all 0.3s ease;
+}
+
+.searchInput:focus {
+    outline: none;
+    border-color: var(--couleur-secondaire);
+    background: rgba(10, 255, 212, 0.15);
+}
+
+.tableContainer {
+    overflow-x: auto;
+    border-radius: 8px;
+    background: rgba(3, 2, 25, 0.5);
+    border: 1px solid rgba(10, 255, 212, 0.1);
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table th,
+.table td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid rgba(10, 255, 212, 0.1);
+}
+
+.table th {
+    color: var(--couleur-cinquieme);
+    font-family: 'Abel', sans-serif;
+    font-weight: 600;
+    background: rgba(10, 255, 212, 0.05);
+}
+
+.table td {
+    color: var(--couleur-tertiaire);
+    font-family: 'Abel', sans-serif;
+}
+
+.userInfo {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+.userIcon {
+    color: var(--couleur-secondaire);
+}
+
+.authId {
+    font-family: monospace;
+    font-size: 0.9rem;
+    color: var(--couleur-tertiaire);
+    opacity: 0.8;
+}
+
+.deleteButton {
+    background: none;
+    border: none;
+    color: #ff6b6b;
+    cursor: pointer;
+    padding: 6px;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+.deleteButton:hover {
+    background: rgba(255, 107, 107, 0.1);
+}
+
+.loading {
+    text-align: center;
+    padding: 2rem;
+    color: var(--couleur-cinquieme);
+    font-family: 'Abel', sans-serif;
+}
+
+.error {
+    text-align: center;
+    padding: 2rem;
+    color: #ff6b6b;
+    font-family: 'Abel', sans-serif;
+}
+
+/* Tablet */
+@media (max-width: 1024px) {
+    .container {
+        padding: 1.5rem;
+    }
+
+    .header {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: flex-start;
+    }
+
+    .searchContainer {
+        max-width: 100%;
+    }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+    .container {
+        padding: 1rem;
+    }
+
+    .header h1 {
+        font-size: 1.8rem;
+    }
+
+    .table th,
+    .table td {
+        padding: 0.8rem;
+    }
+
+    .authId {
+        display: none;
+    }
+}

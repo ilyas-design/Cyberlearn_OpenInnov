@@ -1,18 +1,25 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { 
-  doc, 
-  setDoc, 
-  collection, 
-  getDocs, 
-  query, 
-  orderBy 
+import React, { useState, useEffect, useRef } from "react";
+import {
+  doc,
+  setDoc,
+  collection,
+  getDocs,
+  query,
+  orderBy,
+  getDoc,
+  updateDoc
 } from "firebase/firestore";
 import { db } from "../../firebase/config";
 import { Lesson, LessonContent } from "../../firebase/lessons";
 import { X, Plus, Save, ArrowLeft, Lock, Unlock } from "lucide-react";
 import styles from "./AdminComponents.module.css";
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+import remarkMath from 'remark-math';
+import rehypeKatex from 'rehype-katex';
+import 'katex/dist/katex.min.css';
 
 interface AdminLessonFormProps {
   lesson: Lesson | null;
@@ -21,9 +28,48 @@ interface AdminLessonFormProps {
   categories: string[];
 }
 
-const AdminLessonForm: React.FC<AdminLessonFormProps> = ({ 
-  lesson, 
-  onSave, 
+const defaultContent: LessonContent = {
+  sections: [{
+    title: "Introduction",
+    content: `# Introduction
+
+Commencez votre leçon ici...
+
+## Sous-titre
+
+Vous pouvez utiliser la syntaxe Markdown pour formater votre contenu :
+
+- Points clés
+- Exemples
+- Code
+
+\`\`\`python
+def exemple():
+    print("Hello, World!")
+\`\`\`
+
+### Formules mathématiques
+
+Vous pouvez aussi inclure des formules mathématiques :
+
+$E = mc^2$
+
+Et des diagrammes avec Mermaid :
+
+\`\`\`mermaid
+graph TD
+    A[Start] --> B{Decision}
+    B -->|Yes| C[OK]
+    B -->|No| D[Cancel]
+\`\`\`
+`
+  }],
+  questions: []
+};
+
+const AdminLessonForm: React.FC<AdminLessonFormProps> = ({
+  lesson,
+  onSave,
   onCancel,
   categories
 }) => {
@@ -37,29 +83,42 @@ const AdminLessonForm: React.FC<AdminLessonFormProps> = ({
     tags: [],
     order: 0
   });
-  
+
   const [newTag, setNewTag] = useState<string>("");
   const [newCategory, setNewCategory] = useState<string>("");
   const [showCategoryInput, setShowCategoryInput] = useState<boolean>(false);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const [contentData, setContentData] = useState<LessonContent>({
-    sections: [{ title: "Introduction", content: "<p>Contenu de la section...</p>" }],
-    questions: []
-  });
+  const [contentData, setContentData] = useState<LessonContent>(defaultContent);
   const [activeSection, setActiveSection] = useState<number>(0);
   const [showContentEditor, setShowContentEditor] = useState<boolean>(false);
+  const isMounted = useRef(false);
 
   // Icônes disponibles
   const availableIcons = [
-    "BookOpen", "Code", "Network", "Users", "Lock", 
-    "Shield", "Database", "Globe", "Server", "Cpu", 
+    "BookOpen", "Code", "Network", "Users", "Lock",
+    "Shield", "Database", "Globe", "Server", "Cpu",
     "Terminal", "FileCode", "AlertTriangle", "Key"
   ];
 
   // Initialiser le formulaire avec les données de la leçon si en mode édition
   useEffect(() => {
+    isMounted.current = true;
     if (lesson) {
+      loadLesson();
+    } else {
+      setLoading(false);
+    }
+    return () => {
+      isMounted.current = false;
+    };
+  }, [lesson]);
+
+  const loadLesson = async () => {
+    try {
+      if (!lesson) return;
+
+      // Charger les données de base de la leçon
       setFormData({
         id: lesson.id,
         title: lesson.title,
@@ -68,49 +127,24 @@ const AdminLessonForm: React.FC<AdminLessonFormProps> = ({
         iconName: lesson.iconName,
         locked: lesson.locked,
         tags: [...lesson.tags],
-        order: lesson.order || 0
+        order: lesson.order
       });
-      
+
       // Charger le contenu de la leçon
-      const fetchLessonContent = async () => {
-        try {
-          const contentDoc = await getDocs(query(collection(db, "lessonContents")));
-          const content = contentDoc.docs.find(doc => doc.id === lesson.id);
-          
-          if (content) {
-            const contentData = content.data() as LessonContent;
-            setContentData(contentData);
-          }
-        } catch (err) {
-          console.error("Erreur lors du chargement du contenu de la leçon:", err);
-          setError("Impossible de charger le contenu de la leçon.");
-        }
-      };
-      
-      fetchLessonContent();
-    } else {
-      // Générer un nouvel ID pour une nouvelle leçon
-      const newId = `lesson-${Date.now()}`;
-      setFormData(prev => ({ ...prev, id: newId }));
-      
-      // Déterminer l'ordre pour la nouvelle leçon
-      const fetchLastOrder = async () => {
-        try {
-          const lessonsQuery = query(collection(db, "lessons"), orderBy("order", "desc"));
-          const querySnapshot = await getDocs(lessonsQuery);
-          
-          if (!querySnapshot.empty) {
-            const lastLesson = querySnapshot.docs[0].data() as Lesson;
-            setFormData(prev => ({ ...prev, order: (lastLesson.order || 0) + 1 }));
-          }
-        } catch (err) {
-          console.error("Erreur lors de la récupération de l'ordre:", err);
-        }
-      };
-      
-      fetchLastOrder();
+      const contentDoc = await getDoc(doc(db, "lessonContents", lesson.id));
+      if (contentDoc.exists() && isMounted.current) {
+        const content = contentDoc.data() as LessonContent;
+        setContentData(content);
+      }
+    } catch (err) {
+      console.error("Erreur lors du chargement de la leçon:", err);
+      setError("Impossible de charger la leçon");
+    } finally {
+      if (isMounted.current) {
+        setLoading(false);
+      }
     }
-  }, [lesson]);
+  };
 
   // Gérer les changements dans le formulaire
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -175,7 +209,7 @@ const AdminLessonForm: React.FC<AdminLessonFormProps> = ({
       ...contentData,
       sections: [
         ...contentData.sections,
-        { title: `Section ${contentData.sections.length + 1}`, content: "<p>Contenu de la section...</p>" }
+        { title: `Section ${contentData.sections.length + 1}`, content: "# Nouvelle section\n\nContenu de la section..." }
       ]
     });
     setActiveSection(contentData.sections.length);
@@ -186,7 +220,7 @@ const AdminLessonForm: React.FC<AdminLessonFormProps> = ({
     if (contentData.sections.length > 1) {
       const updatedSections = contentData.sections.filter((_, i) => i !== index);
       setContentData({ ...contentData, sections: updatedSections });
-      
+
       if (activeSection >= updatedSections.length) {
         setActiveSection(updatedSections.length - 1);
       }
@@ -196,16 +230,16 @@ const AdminLessonForm: React.FC<AdminLessonFormProps> = ({
   // Sauvegarder la leçon
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!formData.title || !formData.description || !formData.category) {
       setError("Veuillez remplir tous les champs obligatoires.");
       return;
     }
-    
+
     try {
       setLoading(true);
       setError(null);
-      
+
       // Préparer les données de la leçon
       const lessonData: Lesson = {
         id: formData.id || `lesson-${Date.now()}`,
@@ -217,16 +251,29 @@ const AdminLessonForm: React.FC<AdminLessonFormProps> = ({
         tags: formData.tags || [],
         order: formData.order || 0
       };
-      
-      // Sauvegarder la leçon
-      await setDoc(doc(db, "lessons", lessonData.id), lessonData);
-      
-      // Sauvegarder le contenu de la leçon
-      await setDoc(doc(db, "lessonContents", lessonData.id), contentData);
-      
+
+      const lessonRef = doc(db, "lessons", lessonData.id);
+      const contentRef = doc(db, "lessonContents", lessonData.id);
+
+      // Sauvegarder la leçon et son contenu
+      await setDoc(lessonRef, {
+        title: lessonData.title,
+        description: lessonData.description,
+        category: lessonData.category,
+        iconName: lessonData.iconName,
+        locked: lessonData.locked,
+        tags: lessonData.tags,
+        order: lessonData.order
+      });
+
+      await setDoc(contentRef, {
+        sections: contentData.sections,
+        questions: contentData.questions
+      });
+
       // Notifier le parent
       onSave(lessonData);
-      
+
       setLoading(false);
     } catch (err) {
       console.error("Erreur lors de la sauvegarde de la leçon:", err);
@@ -235,13 +282,17 @@ const AdminLessonForm: React.FC<AdminLessonFormProps> = ({
     }
   };
 
+  if (loading) {
+    return <div className={styles.loading}>Chargement...</div>;
+  }
+
   return (
     <div className={styles.adminLessonForm}>
       <div className={styles.formHeader}>
         <h2 className={styles.formTitle}>
           {lesson ? "Modifier la leçon" : "Ajouter une nouvelle leçon"}
         </h2>
-        <button 
+        <button
           className={styles.cancelButton}
           onClick={onCancel}
           disabled={loading}
@@ -250,13 +301,13 @@ const AdminLessonForm: React.FC<AdminLessonFormProps> = ({
           <span>Annuler</span>
         </button>
       </div>
-      
+
       {error && (
         <div className={styles.formError}>
           {error}
         </div>
       )}
-      
+
       {!showContentEditor ? (
         <form onSubmit={handleSubmit} className={styles.form}>
           <div className={styles.formGrid}>
@@ -273,7 +324,7 @@ const AdminLessonForm: React.FC<AdminLessonFormProps> = ({
                   required
                 />
               </div>
-              
+
               <div className={styles.formGroup}>
                 <label htmlFor="description" className={styles.formLabel}>Description *</label>
                 <textarea
@@ -286,7 +337,7 @@ const AdminLessonForm: React.FC<AdminLessonFormProps> = ({
                   required
                 />
               </div>
-              
+
               <div className={styles.formGroup}>
                 <label className={styles.formLabel}>Catégorie *</label>
                 {showCategoryInput ? (
@@ -341,7 +392,7 @@ const AdminLessonForm: React.FC<AdminLessonFormProps> = ({
                 )}
               </div>
             </div>
-            
+
             <div className={styles.formColumn}>
               <div className={styles.formGroup}>
                 <label className={styles.formLabel}>Icône</label>
@@ -358,7 +409,7 @@ const AdminLessonForm: React.FC<AdminLessonFormProps> = ({
                   ))}
                 </div>
               </div>
-              
+
               <div className={styles.formGroup}>
                 <label className={styles.formLabel}>Tags</label>
                 <div className={styles.tagsInputContainer}>
@@ -377,7 +428,7 @@ const AdminLessonForm: React.FC<AdminLessonFormProps> = ({
                     <Plus size={16} />
                   </button>
                 </div>
-                
+
                 <div className={styles.tagsList}>
                   {formData.tags?.map((tag) => (
                     <div key={tag} className={styles.tag}>
@@ -393,7 +444,7 @@ const AdminLessonForm: React.FC<AdminLessonFormProps> = ({
                   ))}
                 </div>
               </div>
-              
+
               <div className={styles.formGroup}>
                 <label className={styles.formLabel}>Statut</label>
                 <button
@@ -416,7 +467,7 @@ const AdminLessonForm: React.FC<AdminLessonFormProps> = ({
               </div>
             </div>
           </div>
-          
+
           <div className={styles.formActions}>
             <button
               type="button"
@@ -426,7 +477,7 @@ const AdminLessonForm: React.FC<AdminLessonFormProps> = ({
               <ArrowLeft size={18} />
               <span>Éditer le contenu</span>
             </button>
-            
+
             <button
               type="submit"
               className={styles.saveButton}
@@ -449,11 +500,11 @@ const AdminLessonForm: React.FC<AdminLessonFormProps> = ({
               <span>Retour aux informations</span>
             </button>
           </div>
-          
+
           <div className={styles.contentContainer}>
             <div className={styles.sectionsList}>
               {contentData.sections.map((section, index) => (
-                <div 
+                <div
                   key={index}
                   className={`${styles.sectionItem} ${activeSection === index ? styles.activeSection : ""}`}
                 >
@@ -463,7 +514,7 @@ const AdminLessonForm: React.FC<AdminLessonFormProps> = ({
                   >
                     {section.title}
                   </button>
-                  
+
                   <button
                     className={styles.removeSectionButton}
                     onClick={() => handleRemoveSection(index)}
@@ -473,7 +524,7 @@ const AdminLessonForm: React.FC<AdminLessonFormProps> = ({
                   </button>
                 </div>
               ))}
-              
+
               <button
                 className={styles.addSectionButton}
                 onClick={handleAddSection}
@@ -482,40 +533,47 @@ const AdminLessonForm: React.FC<AdminLessonFormProps> = ({
                 <span>Ajouter une section</span>
               </button>
             </div>
-            
-            <div className={styles.sectionEditor}>
-              <div className={styles.sectionTitleInput}>
-                <label htmlFor="sectionTitle" className={styles.formLabel}>Titre de la section</label>
-                <input
-                  type="text"
-                  id="sectionTitle"
-                  value={contentData.sections[activeSection].title}
-                  onChange={(e) => handleSectionTitleChange(activeSection, e.target.value)}
-                  className={styles.formInput}
-                />
-              </div>
-              
-              <div className={styles.sectionContentInput}>
-                <label htmlFor="sectionContent" className={styles.formLabel}>Contenu de la section (HTML)</label>
-                <textarea
-                  id="sectionContent"
-                  value={contentData.sections[activeSection].content}
-                  onChange={(e) => handleSectionContentChange(activeSection, e.target.value)}
-                  className={styles.formTextarea}
-                  rows={15}
-                />
-              </div>
-              
-              <div className={styles.htmlPreview}>
-                <h4 className={styles.previewTitle}>Aperçu</h4>
-                <div 
-                  className={styles.previewContent}
-                  dangerouslySetInnerHTML={{ __html: contentData.sections[activeSection].content }}
-                />
+
+            <div className={styles.editorLayout}>
+              <div className={styles.editorContainer}>
+                <div className={styles.sectionTitleInput}>
+                  <label htmlFor="sectionTitle">Titre de la section</label>
+                  <input
+                    type="text"
+                    id="sectionTitle"
+                    value={contentData.sections[activeSection].title}
+                    onChange={(e) => handleSectionTitleChange(activeSection, e.target.value)}
+                    className={styles.formInput}
+                  />
+                </div>
+
+                <div className={styles.markdownEditor}>
+                  <div className={styles.editorPane}>
+                    <label>Contenu (Markdown)</label>
+                    <textarea
+                      value={contentData.sections[activeSection].content}
+                      onChange={(e) => handleSectionContentChange(activeSection, e.target.value)}
+                      className={styles.markdownInput}
+                      rows={20}
+                    />
+                  </div>
+
+                  <div className={styles.previewPane}>
+                    <label>Aperçu</label>
+                    <div className={styles.markdownPreview}>
+                      <ReactMarkdown
+                        remarkPlugins={[remarkGfm, remarkMath]}
+                        rehypePlugins={[rehypeKatex]}
+                      >
+                        {contentData.sections[activeSection].content}
+                      </ReactMarkdown>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
-          
+
           <div className={styles.contentActions}>
             <button
               type="button"
@@ -525,7 +583,7 @@ const AdminLessonForm: React.FC<AdminLessonFormProps> = ({
               <ArrowLeft size={18} />
               <span>Retour aux informations</span>
             </button>
-            
+
             <button
               type="button"
               className={styles.saveButton}

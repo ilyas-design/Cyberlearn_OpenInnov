@@ -1,13 +1,13 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { 
-  collection, 
-  getDocs, 
-  doc, 
-  deleteDoc, 
-  query, 
-  orderBy 
+import {
+  collection,
+  getDocs,
+  doc,
+  deleteDoc,
+  query,
+  orderBy
 } from "firebase/firestore";
 import { db } from "../../firebase/config";
 import { Lesson } from "../../firebase/lessons";
@@ -35,7 +35,7 @@ const AdminLessonsList: React.FC = () => {
         setLoading(true);
         const lessonsQuery = query(collection(db, "lessons"), orderBy("order", "asc"));
         const querySnapshot = await getDocs(lessonsQuery);
-        
+
         const lessonsData: Lesson[] = [];
         querySnapshot.forEach((doc) => {
           const data = doc.data() as Lesson;
@@ -44,16 +44,16 @@ const AdminLessonsList: React.FC = () => {
             id: doc.id
           });
         });
-        
+
         setLessons(lessonsData);
         setFilteredLessons(lessonsData);
-        
+
         // Extraire les catégories uniques
         const uniqueCategories = Array.from(
           new Set(lessonsData.map(lesson => lesson.category))
         );
         setCategories(["Toutes", ...uniqueCategories]);
-        
+
         setLoading(false);
       } catch (err) {
         console.error("Erreur lors du chargement des leçons:", err);
@@ -68,23 +68,23 @@ const AdminLessonsList: React.FC = () => {
   // Filtrer les leçons
   useEffect(() => {
     let result = [...lessons];
-    
+
     // Filtrer par catégorie
     if (selectedCategory !== "Toutes") {
       result = result.filter(lesson => lesson.category === selectedCategory);
     }
-    
+
     // Filtrer par terme de recherche
     if (searchTerm) {
       const term = searchTerm.toLowerCase();
       result = result.filter(
-        lesson => 
-          lesson.title.toLowerCase().includes(term) || 
+        lesson =>
+          lesson.title.toLowerCase().includes(term) ||
           lesson.description.toLowerCase().includes(term) ||
           lesson.tags.some(tag => tag.toLowerCase().includes(term))
       );
     }
-    
+
     setFilteredLessons(result);
   }, [lessons, searchTerm, selectedCategory]);
 
@@ -93,10 +93,10 @@ const AdminLessonsList: React.FC = () => {
     try {
       // Supprimer la leçon
       await deleteDoc(doc(db, "lessons", lessonId));
-      
+
       // Supprimer également le contenu de la leçon
       await deleteDoc(doc(db, "lessonContents", lessonId));
-      
+
       // Mettre à jour la liste des leçons
       setLessons(prevLessons => prevLessons.filter(lesson => lesson.id !== lessonId));
       setConfirmDelete(null);
@@ -133,8 +133,8 @@ const AdminLessonsList: React.FC = () => {
   const handleLessonSaved = (savedLesson: Lesson) => {
     if (editingLesson) {
       // Mise à jour d'une leçon existante
-      setLessons(prevLessons => 
-        prevLessons.map(lesson => 
+      setLessons(prevLessons =>
+        prevLessons.map(lesson =>
           lesson.id === savedLesson.id ? savedLesson : lesson
         )
       );
@@ -142,7 +142,7 @@ const AdminLessonsList: React.FC = () => {
       // Ajout d'une nouvelle leçon
       setLessons(prevLessons => [...prevLessons, savedLesson]);
     }
-    
+
     setShowForm(false);
     setEditingLesson(null);
   };
@@ -160,7 +160,7 @@ const AdminLessonsList: React.FC = () => {
     return (
       <div className={styles.errorContainer}>
         <p className={styles.errorMessage}>{error}</p>
-        <button 
+        <button
           className={styles.retryButton}
           onClick={() => window.location.reload()}
         >
@@ -173,9 +173,9 @@ const AdminLessonsList: React.FC = () => {
   return (
     <div className={styles.adminLessonsContainer}>
       {showForm ? (
-        <AdminLessonForm 
-          lesson={editingLesson} 
-          onSave={handleLessonSaved} 
+        <AdminLessonForm
+          lesson={editingLesson}
+          onSave={handleLessonSaved}
           onCancel={handleCloseForm}
           categories={categories.filter(cat => cat !== "Toutes")}
         />
@@ -183,7 +183,7 @@ const AdminLessonsList: React.FC = () => {
         <>
           <div className={styles.adminLessonsHeader}>
             <h2 className={styles.adminLessonsTitle}>Gestion des Leçons</h2>
-            <button 
+            <button
               className={styles.addButton}
               onClick={handleAddLesson}
             >
@@ -191,22 +191,22 @@ const AdminLessonsList: React.FC = () => {
               <span>Ajouter une leçon</span>
             </button>
           </div>
-          
+
           <div className={styles.adminLessonsFilters}>
             <div className={styles.searchContainer}>
               <Search size={18} className={styles.searchIcon} />
-              <input 
-                type="text" 
-                placeholder="Rechercher une leçon..." 
+              <input
+                type="text"
+                placeholder="Rechercher une leçon..."
                 className={styles.searchInput}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
-            
+
             <div className={styles.categoryFilter}>
               <Filter size={18} className={styles.filterIcon} />
-              <select 
+              <select
                 className={styles.categorySelect}
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
@@ -219,11 +219,11 @@ const AdminLessonsList: React.FC = () => {
               </select>
             </div>
           </div>
-          
+
           {filteredLessons.length === 0 ? (
             <div className={styles.noLessonsContainer}>
               <p>Aucune leçon trouvée.</p>
-              <button 
+              <button
                 className={styles.addButton}
                 onClick={handleAddLesson}
               >
@@ -240,7 +240,7 @@ const AdminLessonsList: React.FC = () => {
                 <div className={styles.tableCell}>Statut</div>
                 <div className={styles.tableCell}>Actions</div>
               </div>
-              
+
               {filteredLessons.map((lesson) => (
                 <div key={lesson.id} className={styles.tableRow}>
                   <div className={styles.tableCell}>
@@ -249,11 +249,11 @@ const AdminLessonsList: React.FC = () => {
                       <span>{lesson.title}</span>
                     </div>
                   </div>
-                  
+
                   <div className={styles.tableCell}>
                     <span className={styles.categoryBadge}>{lesson.category}</span>
                   </div>
-                  
+
                   <div className={styles.tableCell}>
                     <div className={styles.tagsList}>
                       {lesson.tags.map((tag) => (
@@ -261,41 +261,41 @@ const AdminLessonsList: React.FC = () => {
                       ))}
                     </div>
                   </div>
-                  
+
                   <div className={styles.tableCell}>
                     <span className={`${styles.statusBadge} ${lesson.locked ? styles.locked : styles.published}`}>
                       {lesson.locked ? "Verrouillée" : "Publiée"}
                     </span>
                   </div>
-                  
+
                   <div className={styles.tableCell}>
                     <div className={styles.actionButtons}>
-                      <button 
+                      <button
                         className={styles.actionButton}
                         onClick={() => handleViewLesson(lesson.id)}
                         title="Voir la leçon"
                       >
                         <Eye size={18} />
                       </button>
-                      
-                      <button 
+
+                      <button
                         className={styles.actionButton}
                         onClick={() => handleEditLesson(lesson)}
                         title="Modifier la leçon"
                       >
                         <Edit size={18} />
                       </button>
-                      
+
                       {confirmDelete === lesson.id ? (
                         <div className={styles.confirmDelete}>
                           <span>Confirmer ?</span>
-                          <button 
+                          <button
                             className={styles.confirmYes}
                             onClick={() => handleDeleteLesson(lesson.id)}
                           >
                             Oui
                           </button>
-                          <button 
+                          <button
                             className={styles.confirmNo}
                             onClick={() => setConfirmDelete(null)}
                           >
@@ -303,7 +303,7 @@ const AdminLessonsList: React.FC = () => {
                           </button>
                         </div>
                       ) : (
-                        <button 
+                        <button
                           className={styles.actionButton}
                           onClick={() => setConfirmDelete(lesson.id)}
                           title="Supprimer la leçon"
