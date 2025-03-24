@@ -6,7 +6,7 @@ import { AuthProvider } from "./context/AuthContext";
 import { LanguageProvider } from "./context/LanguageContext";
 import Navbar from "./components/Navbar/Navbar";
 import Footer from "./components/Footer/Footer";
-import ChatBot from "./components/ChatBot/ChatBot";
+import Chatbot from "./components/Chatbot";
 
 const inter = Inter({ subsets: ["latin"] });
 const abel = Abel({
@@ -38,7 +38,7 @@ export default function RootLayout({
             <Navbar />
             <main>{children}</main>
             <Footer />
-            <ChatBot />
+            <Chatbot />
           </LanguageProvider>
         </AuthProvider>
       </body>
