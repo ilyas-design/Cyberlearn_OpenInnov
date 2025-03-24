@@ -1,0 +1,85 @@
+{
+  "general": {
+    "language": "English",
+    "languageCode": "en"
+  },
+  "navigation": {
+    "home": "Home",
+    "courses": "Courses",
+    "lessons": "Lessons",
+    "about": "About",
+    "contact": "Contact",
+    "partners": "Partners",
+    "login": "Login",
+    "register": "Register",
+    "profile": "Profile",
+    "settings": "Settings",
+    "logout": "Logout",
+    "admin": "Admin"
+  },
+  "hero": {
+    "tagline1": "CyberLearn: Your essential guide to mastering cybersecurity.",
+    "tagline2": "Cybersecurity professionals at your service.",
+    "subtitle": "Discover our cybersecurity learning platform, designed to support you in your training.",
+    "features": {
+      "security": "Security",
+      "protection": "Protection",
+      "learning": "Learning",
+      "community": "Community"
+    },
+    "discoverLessons": "Discover our lessons"
+  },
+  "lessons": {
+    "title": "Our Lessons",
+    "subtitle": "Explore our comprehensive collection of cybersecurity lessons",
+    "viewAll": "View all lessons",
+    "start": "Start",
+    "continue": "Continue"
+  },
+  "auth": {
+    "loginTitle": "Login to your account",
+    "registerTitle": "Create an account",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm password",
+    "name": "Full name",
+    "loginButton": "Login",
+    "registerButton": "Register",
+    "forgotPassword": "Forgot password?",
+    "noAccount": "Don't have an account?",
+    "hasAccount": "Already have an account?",
+    "createAccount": "Create one",
+    "loginInstead": "Login instead"
+  },
+  "profile": {
+    "title": "Your Profile",
+    "progress": "Progress",
+    "completedLessons": "Completed Lessons",
+    "badges": "Badges",
+    "editProfile": "Edit Profile",
+    "myProfile": "My Profile",
+    "defaultUsername": "User",
+    "notifications": "Notifications",
+    "security": "Security"
+  },
+  "contact": {
+    "title": "Contact Us",
+    "name": "Your Name",
+    "email": "Your Email",
+    "subject": "Subject",
+    "message": "Message",
+    "send": "Send Message"
+  },
+  "footer": {
+    "copyright": " 2025 CyberLearn. All rights reserved.",
+    "privacyPolicy": "Privacy Policy",
+    "termsOfService": "Terms of Service",
+    "description": "The online learning platform for cybersecurity education.",
+    "services": "Services",
+    "support": "Support",
+    "contactTitle": "Contact",
+    "newsletter": "Newsletter",
+    "emailPlaceholder": "Your email",
+    "subscribe": "Subscribe"
+  }
+}

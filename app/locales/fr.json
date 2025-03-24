@@ -1,0 +1,85 @@
+{
+  "general": {
+    "language": "Français",
+    "languageCode": "fr"
+  },
+  "navigation": {
+    "home": "Accueil",
+    "courses": "Cours",
+    "lessons": "Leçons",
+    "about": "À propos",
+    "contact": "Contact",
+    "partners": "Partenaires",
+    "login": "Connexion",
+    "register": "Inscription",
+    "profile": "Profil",
+    "settings": "Paramètres",
+    "logout": "Déconnexion",
+    "admin": "Administration"
+  },
+  "hero": {
+    "tagline1": "CyberLearn : Votre guide essentiel pour maîtriser la cybersécurité.",
+    "tagline2": "Des professionnels de la cybersécurité à votre service.",
+    "subtitle": "Découvrez notre plateforme d'apprentissage en cybersécurité, conçue pour vous accompagner dans votre formation.",
+    "features": {
+      "security": "Sécurité",
+      "protection": "Protection",
+      "learning": "Apprentissage",
+      "community": "Communauté"
+    },
+    "discoverLessons": "Découvrir nos leçons"
+  },
+  "lessons": {
+    "title": "Nos Leçons",
+    "subtitle": "Explorez notre collection complète de leçons en cybersécurité",
+    "viewAll": "Voir toutes les leçons",
+    "start": "Commencer",
+    "continue": "Continuer"
+  },
+  "auth": {
+    "loginTitle": "Connectez-vous à votre compte",
+    "registerTitle": "Créer un compte",
+    "email": "Email",
+    "password": "Mot de passe",
+    "confirmPassword": "Confirmer le mot de passe",
+    "name": "Nom complet",
+    "loginButton": "Se connecter",
+    "registerButton": "S'inscrire",
+    "forgotPassword": "Mot de passe oublié ?",
+    "noAccount": "Vous n'avez pas de compte ?",
+    "hasAccount": "Vous avez déjà un compte ?",
+    "createAccount": "Créer un compte",
+    "loginInstead": "Se connecter"
+  },
+  "profile": {
+    "title": "Votre Profil",
+    "progress": "Progression",
+    "completedLessons": "Leçons Complétées",
+    "badges": "Badges",
+    "editProfile": "Modifier le Profil",
+    "myProfile": "Mon Profil",
+    "defaultUsername": "Utilisateur",
+    "notifications": "Notifications",
+    "security": "Sécurité"
+  },
+  "contact": {
+    "title": "Contactez-nous",
+    "name": "Votre Nom",
+    "email": "Votre Email",
+    "subject": "Sujet",
+    "message": "Message",
+    "send": "Envoyer le Message"
+  },
+  "footer": {
+    "copyright": " 2025 CyberLearn. Tous droits réservés.",
+    "privacyPolicy": "Politique de Confidentialité",
+    "termsOfService": "Conditions d'Utilisation",
+    "description": "La plateforme de cours en ligne pour apprendre la cybersécurité.",
+    "services": "Services",
+    "support": "Support",
+    "contactTitle": "Contact",
+    "newsletter": "Newsletter",
+    "emailPlaceholder": "Votre email",
+    "subscribe": "S'abonner"
+  }
+}

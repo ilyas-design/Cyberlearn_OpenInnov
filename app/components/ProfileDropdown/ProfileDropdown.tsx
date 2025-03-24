@@ -8,6 +8,7 @@ import { doc, getDoc } from "firebase/firestore";
 import { useRouter } from "next/navigation";
 import styles from "./ProfileDropdown.module.css";
 import { User, Settings, LogOut, ChevronRight, Shield, Bell } from "lucide-react";
+import { useLanguage } from "@/app/context/LanguageContext";
 
 interface ProfileDropdownProps {
     isVisible: boolean;
@@ -18,6 +19,7 @@ const ProfileDropdown = ({ isVisible, onClose }: ProfileDropdownProps) => {
     const router = useRouter();
     const [username, setUsername] = useState<string | null>(null);
     const [email, setEmail] = useState<string | null>(null);
+    const { t } = useLanguage();
 
     useEffect(() => {
         const fetchUserData = async () => {
@@ -31,13 +33,13 @@ const ProfileDropdown = ({ isVisible, onClose }: ProfileDropdownProps) => {
 
                     if (userDoc.exists()) {
                         const userData = userDoc.data();
-                        setUsername(userData.username || currentUser.displayName || "Utilisateur");
+                        setUsername(userData.username || currentUser.displayName || t('profile.defaultUsername'));
                     } else {
-                        setUsername(currentUser.displayName || "Utilisateur");
+                        setUsername(currentUser.displayName || t('profile.defaultUsername'));
                     }
                 } catch (error) {
                     console.error("Erreur lors de la récupération des données utilisateur:", error);
-                    setUsername(currentUser.displayName || "Utilisateur");
+                    setUsername(currentUser.displayName || t('profile.defaultUsername'));
                 }
             }
         };
@@ -45,7 +47,7 @@ const ProfileDropdown = ({ isVisible, onClose }: ProfileDropdownProps) => {
         if (isVisible) {
             fetchUserData();
         }
-    }, [isVisible]);
+    }, [isVisible, t]);
 
     const handleSignOut = async () => {
         try {
@@ -81,13 +83,13 @@ const ProfileDropdown = ({ isVisible, onClose }: ProfileDropdownProps) => {
                 <div className={styles.dropdownContent}>
                     <Link href="/profile" className={styles.dropdownItem} onClick={onClose}>
                         <User className={styles.itemIcon} size={18} />
-                        <span>Mon Profil</span>
+                        <span>{t('profile.myProfile')}</span>
                         <ChevronRight className={styles.itemArrow} size={16} />
                     </Link>
 
                     <Link href="/settings" className={styles.dropdownItem} onClick={onClose}>
                         <Settings className={styles.itemIcon} size={18} />
-                        <span>Paramètres</span>
+                        <span>{t('navigation.settings')}</span>
                         <ChevronRight className={styles.itemArrow} size={16} />
                     </Link>
 
@@ -95,13 +97,13 @@ const ProfileDropdown = ({ isVisible, onClose }: ProfileDropdownProps) => {
 
                     <Link href="/settings/notifications" className={styles.dropdownItem} onClick={onClose}>
                         <Bell className={styles.itemIcon} size={18} />
-                        <span>Notifications</span>
+                        <span>{t('profile.notifications')}</span>
                         <ChevronRight className={styles.itemArrow} size={16} />
                     </Link>
 
                     <Link href="/settings/security" className={styles.dropdownItem} onClick={onClose}>
                         <Shield className={styles.itemIcon} size={18} />
-                        <span>Sécurité</span>
+                        <span>{t('profile.security')}</span>
                         <ChevronRight className={styles.itemArrow} size={16} />
                     </Link>
 
@@ -112,7 +114,7 @@ const ProfileDropdown = ({ isVisible, onClose }: ProfileDropdownProps) => {
                         className={`${styles.dropdownItem} ${styles.logoutItem}`}
                     >
                         <LogOut className={styles.itemIcon} size={18} />
-                        <span>Déconnexion</span>
+                        <span>{t('navigation.logout')}</span>
                     </button>
                 </div>
             </div>

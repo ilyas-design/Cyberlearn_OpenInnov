@@ -6,10 +6,12 @@ import { auth } from "@/app/firebase/config";
 import { User } from "lucide-react";
 import styles from "./Navbar.module.css";
 import ProfileDropdown from "@/app/components/ProfileDropdown/ProfileDropdown";
+import { useLanguage } from "@/app/context/LanguageContext";
 
 const AuthButton = () => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [showDropdown, setShowDropdown] = useState(false);
+    const { t } = useLanguage();
 
     useEffect(() => {
         const unsubscribe = auth.onAuthStateChanged((user) => {
@@ -38,7 +40,7 @@ const AuthButton = () => {
             ) : (
                 <Link href="/login">
                     <button className={styles.connexionButton}>
-                        Connexion
+                        {t('navigation.login')}
                     </button>
                 </Link>
             )}

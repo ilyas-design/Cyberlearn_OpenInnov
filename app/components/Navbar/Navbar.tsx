@@ -6,11 +6,14 @@ import { useState, useEffect } from "react";
 import styles from "./Navbar.module.css";
 import logo from "@/public/Images/White_log.png";
 import AuthButton from "@/app/components/Navbar/AuthButton";
+import LanguageSwitcher from "@/app/components/LanguageSwitcher/LanguageSwitcher";
 import { Menu, X } from "lucide-react";
+import { useLanguage } from "@/app/context/LanguageContext";
 
 const Navbar = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [scrolled, setScrolled] = useState(false);
+    const { t } = useLanguage();
 
     useEffect(() => {
         const handleScroll = () => {
@@ -55,17 +58,22 @@ const Navbar = () => {
             {/* Liens et Menu Utilisateur */}
             <div className={`${styles.navLinks} ${isMenuOpen ? styles.open : ""}`}>
                 <Link href="/lessons" className={styles.link}>
-                    Leçons
+                    {t('navigation.lessons')}
                 </Link>
                 <Link href="/Partners" className={styles.link}>
-                    Partenaires
+                    {t('navigation.partners')}
                 </Link>
                 <Link href="/contact" className={styles.link}>
-                    Contact
+                    {t('navigation.contact')}
                 </Link>
                 <Link href="/about" className={styles.link}>
-                    À propos
+                    {t('navigation.about')}
                 </Link>
+
+                {/* Language Switcher */}
+                <div className={styles.languageSwitcherContainer}>
+                    <LanguageSwitcher />
+                </div>
 
                 {/* Composant dynamique pour la connexion */}
                 <div className={styles.authContainer}>

@@ -3,8 +3,10 @@ import type { Metadata } from "next";
 import { Inter, Abel, Bebas_Neue } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "./context/AuthContext";
+import { LanguageProvider } from "./context/LanguageContext";
 import Navbar from "./components/Navbar/Navbar";
 import Footer from "./components/Footer/Footer";
+import ChatBot from "./components/ChatBot/ChatBot";
 
 const inter = Inter({ subsets: ["latin"] });
 const abel = Abel({
@@ -32,9 +34,12 @@ export default function RootLayout({
     <html lang="fr">
       <body className={`${inter.className} ${abel.variable} ${bebasNeue.variable}`}>
         <AuthProvider>
-          <Navbar />
-          <main>{children}</main>
-          <Footer />
+          <LanguageProvider>
+            <Navbar />
+            <main>{children}</main>
+            <Footer />
+            <ChatBot />
+          </LanguageProvider>
         </AuthProvider>
       </body>
     </html>

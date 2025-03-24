@@ -139,6 +139,12 @@
     margin-left: 1rem;
 }
 
+.languageSwitcherContainer {
+    display: flex;
+    align-items: center;
+    margin-left: 1rem;
+}
+
 /* Menu Burger (Mobile) */
 .burgerMenu {
     display: none;
@@ -190,6 +196,13 @@
 
     .authContainer {
         margin: 1rem 0;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+    }
+
+    .languageSwitcherContainer {
+        margin: 0.5rem 0;
         width: 100%;
         display: flex;
         justify-content: center;

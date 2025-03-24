@@ -1,16 +1,16 @@
 import React from 'react';
-import { 
-    Code, 
-    Network, 
-    Users, 
-    BookOpen, 
-    Lock, 
-    Shield, 
-    Database, 
-    Globe, 
-    Server, 
-    Cpu, 
-    Terminal, 
+import {
+    Code,
+    Network,
+    Users,
+    BookOpen,
+    Lock,
+    Shield,
+    Database,
+    Globe,
+    Server,
+    Cpu,
+    Terminal,
     FileCode,
     AlertTriangle,
     Key

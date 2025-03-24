@@ -1,4 +1,5 @@
 // components/Footer/Footer.tsx
+'use client';
 import Link from 'next/link';
 import Image from 'next/image';
 import styles from './Footer.module.css';
@@ -6,8 +7,11 @@ import logo from '../../../public/Images/White_log.png';
 import TwitterIcon from '../../../public/Images/x.svg';
 import LinkedinIcon from '../../../public/Images/linkedin.svg';
 import InstagramIcon from '../../../public/Images/instagram.svg';
+import { useLanguage } from '@/app/context/LanguageContext';
 
 const Footer = () => {
+    const { t } = useLanguage();
+
     return (
         <footer className={styles.footer}>
             <div className={styles.footerContent}>
@@ -23,24 +27,24 @@ const Footer = () => {
 
                     />
                     <p className={styles.footerText}>
-                        La plateforme de cours en ligne pour apprendre la cybersécurité.
+                        {t('footer.description')}
                     </p>
                 </div>
 
                 {/* Section Liens Utiles */}
                 <div className={styles.footerSection}>
-                    <h4 className={styles.sectionTitle}>Services</h4>
+                    <h4 className={styles.sectionTitle}>{t('footer.services')}</h4>
                     <ul className={styles.linkList}>
-                        <li><Link href="/LessonsSection" className={styles.footerLink}>Cours</Link></li>
-                        <li><Link href="/partenaires" className={styles.footerLink}>Partenariats</Link></li>
-                        <li><Link href="/about" className={styles.footerLink}>À propos</Link></li>
-                        <li><Link href="/contact" className={styles.footerLink}>Support</Link></li>
+                        <li><Link href="/lessons" className={styles.footerLink}>{t('navigation.lessons')}</Link></li>
+                        <li><Link href="/Partners" className={styles.footerLink}>{t('navigation.partners')}</Link></li>
+                        <li><Link href="/about" className={styles.footerLink}>{t('navigation.about')}</Link></li>
+                        <li><Link href="/contact" className={styles.footerLink}>{t('footer.support')}</Link></li>
                     </ul>
                 </div>
 
                 {/* Section Contact */}
                 <div className={styles.footerSection}>
-                    <h4 className={styles.sectionTitle}>Contact</h4>
+                    <h4 className={styles.sectionTitle}>{t('footer.contactTitle')}</h4>
                     <ul className={styles.contactList}>
                         <li>contact@cyberlearn.com</li>
                         <li>+33 1 23 45 67 89</li>
@@ -50,15 +54,15 @@ const Footer = () => {
 
                 {/* Newsletter */}
                 <div className={styles.footerSection}>
-                    <h4 className={styles.sectionTitle}>Newsletter</h4>
+                    <h4 className={styles.sectionTitle}>{t('footer.newsletter')}</h4>
                     <form className={styles.newsletterForm}>
                         <input
                             type="email"
-                            placeholder="Votre email"
+                            placeholder={t('footer.emailPlaceholder')}
                             className={styles.newsletterInput}
                         />
                         <button type="submit" className={styles.newsletterButton}>
-                            S&apos;abonner
+                            {t('footer.subscribe')}
                         </button>
                     </form>
                 </div>
@@ -66,7 +70,7 @@ const Footer = () => {
 
             {/* Barre de Copyright */}
             <div className={styles.copyrightBar}>
-                <p>© 2024 CyberLearn. Tous droits réservés.</p>
+                <p>{t('footer.copyright')}</p>
                 <div className={styles.socialLinks}>
                     <Link href="#" aria-label="Twitter">
                         <Image

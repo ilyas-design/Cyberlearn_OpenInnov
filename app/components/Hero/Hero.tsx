@@ -6,12 +6,15 @@ import styles from './Hero.module.css';
 import Image from 'next/image';
 import whiteLogo from '@/public/Images/White_log.png';
 import React from "react";
+import { useLanguage } from '@/app/context/LanguageContext';
 
 const Hero: React.FC = () => {
+    const { t, locale } = useLanguage();
+    
     const [text] = useTypewriter({
         words: [
-            'CyberLearn : Votre guide essentiel pour maîtriser la cybersécurité.',
-            'Des professionnels de la cybersécurité à votre service.'
+            t('hero.tagline1'),
+            t('hero.tagline2')
         ],
         loop: true,
         typeSpeed: 50,
@@ -32,25 +35,24 @@ const Hero: React.FC = () => {
                 <div className={styles.textEntete}>
                     <h1 className={styles.entete}>{text}</h1>
                     <p className={styles.subtitle}>
-                        Découvrez notre plateforme d'apprentissage en cybersécurité,
-                        conçue pour vous accompagner dans votre formation.
+                        {t('hero.subtitle')}
                     </p>
                     <div className={styles.features}>
                         <div className={styles.feature}>
                             <Shield size={24} />
-                            <span>Sécurité</span>
+                            <span>{t('hero.features.security')}</span>
                         </div>
                         <div className={styles.feature}>
                             <Lock size={24} />
-                            <span>Protection</span>
+                            <span>{t('hero.features.protection')}</span>
                         </div>
                         <div className={styles.feature}>
                             <BookOpen size={24} />
-                            <span>Apprentissage</span>
+                            <span>{t('hero.features.learning')}</span>
                         </div>
                         <div className={styles.feature}>
                             <Users size={24} />
-                            <span>Communauté</span>
+                            <span>{t('hero.features.community')}</span>
                         </div>
                     </div>
                     <a
@@ -59,7 +61,7 @@ const Hero: React.FC = () => {
                         onClick={scrollToSection}
                     >
                         <span>
-                            Découvrir nos leçons
+                            {t('hero.discoverLessons')}
                             <ChevronDown size={20} />
                         </span>
                     </a>
