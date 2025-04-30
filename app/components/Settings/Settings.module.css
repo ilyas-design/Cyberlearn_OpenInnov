@@ -248,3 +248,49 @@
         width: 100%;
     }
 }
+
+.twoFactorContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background-color: var(--background-secondary);
+    border-radius: 8px;
+    margin-top: 1rem;
+}
+
+.twoFactorInfo {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.twoFactorInfo span {
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.twoFactorActions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.setupButton {
+    padding: 0.5rem 1rem;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background-color 0.2s;
+}
+
+.setupButton:hover {
+    background-color: var(--primary-color-dark);
+}
+
+.enabledIcon {
+    color: var(--success-color);
+}

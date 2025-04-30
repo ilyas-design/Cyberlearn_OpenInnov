@@ -4,8 +4,9 @@ import { useState, useEffect, useRef } from 'react';
 import { doc, updateDoc, getDoc } from 'firebase/firestore';
 import { db } from '@/app/firebase/config';
 import { useAuth } from '@/app/context/AuthContext';
-import { Moon, Bell, Mail, Lock, Globe, Save } from 'lucide-react';
+import { Moon, Bell, Mail, Lock, Globe, Save, Shield, Check, X } from 'lucide-react';
 import styles from './Settings.module.css';
+import { useRouter } from 'next/navigation';
 
 interface UserSettings {
     theme: 'light' | 'dark';
@@ -13,6 +14,7 @@ interface UserSettings {
     language: string;
     emailNotifications: boolean;
     securityLevel: 'low' | 'medium' | 'high';
+    twoFactorEnabled: boolean;
 }
 
 const defaultSettings: UserSettings = {
@@ -20,7 +22,8 @@ const defaultSettings: UserSettings = {
     notifications: true,
     language: 'fr',
     emailNotifications: true,
-    securityLevel: 'medium'
+    securityLevel: 'medium',
+    twoFactorEnabled: false
 };
 
 const Settings = () => {
@@ -30,6 +33,7 @@ const Settings = () => {
     const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState<string | null>(null);
     const isMounted = useRef(false);
+    const router = useRouter();
 
     useEffect(() => {
         isMounted.current = true;
@@ -88,6 +92,21 @@ const Settings = () => {
                     }
                 }, 3000);
             }
+        }
+    };
+
+    const handleTwoFactorToggle = async () => {
+        try {
+            if (!settings.twoFactorEnabled) {
+                router.push('/settings/2fa-setup');
+                return;
+            }
+            // Ici, vous devrez implémenter la désactivation de la 2FA avec votre backend
+            const updatedSettings = { ...settings, twoFactorEnabled: false };
+            setSettings(updatedSettings);
+            // Sauvegarder les paramètres mis à jour
+        } catch (error) {
+            console.error('Erreur lors de la modification des paramètres:', error);
         }
     };
 
@@ -161,6 +180,23 @@ const Settings = () => {
                             <option value="medium">Moyen</option>
                             <option value="high">Haut</option>
                         </select>
+                    </div>
+                    <div className={styles.twoFactorContainer}>
+                        <div className={styles.twoFactorInfo}>
+                            <Shield size={20} />
+                            <span>Authentification à deux facteurs</span>
+                        </div>
+                        <div className={styles.twoFactorActions}>
+                            <button
+                                onClick={handleTwoFactorToggle}
+                                className={styles.setupButton}
+                            >
+                                {settings.twoFactorEnabled ? 'Désactiver' : 'Configurer'}
+                            </button>
+                            {settings.twoFactorEnabled && (
+                                <Check size={18} className={styles.enabledIcon} />
+                            )}
+                        </div>
                     </div>
                 </div>
 
