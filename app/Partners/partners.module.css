@@ -103,7 +103,7 @@
 
 .brandsTrack {
   display: flex;
-  animation: scrollBrands 30s linear infinite;
+  animation: scrollBrands 8s linear infinite;
   width: fit-content;
 }
 
@@ -145,12 +145,14 @@
   width: 80%;
   height: 80%;
   object-fit: contain;
-  filter: brightness(0) invert(1);
-  transition: filter 0.3s ease;
+  filter: grayscale(100%) brightness(0.8) contrast(1.2);
+  transition: all 0.3s ease;
+  opacity: 0.9;
 }
 
 .brandItem:hover .brandLogo {
-  filter: brightness(1) invert(0);
+  filter: none;
+  opacity: 1;
 }
 
 .brandPlaceholder {

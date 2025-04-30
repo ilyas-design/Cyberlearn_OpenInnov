@@ -921,3 +921,145 @@
     margin-bottom: 1.5rem;
   }
 }
+
+/* Éditeur de Quiz */
+.quizEditor {
+  background-color: rgba(3, 2, 25, 0.7);
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 36, 255, 0.3);
+  padding: 2rem;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  border: 1px solid var(--couleur-principale);
+}
+
+.quizHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.quizTitle {
+  font-size: 1.5rem;
+  color: var(--couleur-cinquieme);
+  font-family: 'Bebas Neue', sans-serif;
+  margin: 0;
+}
+
+.quizForm {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+}
+
+.questionForm {
+  background-color: rgba(3, 2, 25, 0.5);
+  padding: 1.5rem;
+  border-radius: 8px;
+  border: 1px solid var(--couleur-principale);
+}
+
+.optionInput {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.optionInput input[type="radio"] {
+  accent-color: var(--couleur-secondaire);
+}
+
+.questionsList {
+  background-color: rgba(3, 2, 25, 0.5);
+  padding: 1.5rem;
+  border-radius: 8px;
+  border: 1px solid var(--couleur-principale);
+  max-height: 600px;
+  overflow-y: auto;
+}
+
+.questionItem {
+  background-color: rgba(3, 2, 25, 0.7);
+  padding: 1rem;
+  border-radius: 6px;
+  margin-bottom: 1rem;
+  border: 1px solid var(--couleur-principale);
+  position: relative;
+}
+
+.questionContent {
+  margin-right: 2rem;
+}
+
+.questionText {
+  font-weight: 500;
+  color: var(--couleur-cinquieme);
+  margin-bottom: 1rem;
+}
+
+.optionsList {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1rem 0;
+}
+
+.option {
+  padding: 0.5rem;
+  margin-bottom: 0.5rem;
+  background-color: rgba(3, 2, 25, 0.5);
+  border-radius: 4px;
+  border: 1px solid var(--couleur-principale);
+}
+
+.option.correct {
+  background-color: rgba(46, 204, 113, 0.2);
+  border-color: #2ecc71;
+  color: #2ecc71;
+}
+
+.explanation {
+  font-size: 0.9rem;
+  color: var(--couleur-tertiaire);
+  font-style: italic;
+}
+
+.removeButton {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  color: var(--couleur-tertiaire);
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+}
+
+.removeButton:hover {
+  color: #e74c3c;
+  background-color: rgba(231, 76, 60, 0.1);
+}
+
+.quizButton {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: rgba(10, 255, 212, 0.2);
+  color: var(--couleur-cinquieme);
+  border: 1px solid var(--couleur-secondaire);
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  cursor: pointer;
+  font-family: 'Abel', sans-serif;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.quizButton:hover {
+  background-color: var(--couleur-secondaire);
+  color: var(--couleur-quaternaire);
+}

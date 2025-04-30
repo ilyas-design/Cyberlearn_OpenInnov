@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { getIconByName } from "../../utils/iconMapping";
 import styles from "./LessonPage.module.css";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Check, X } from "lucide-react";
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '@/app/firebase/config';
 import ReactMarkdown from 'react-markdown';
@@ -18,8 +18,17 @@ interface Section {
     content: string;
 }
 
+interface Question {
+    id: string;
+    text: string;
+    options: string[];
+    correctAnswer: number;
+    explanation: string;
+}
+
 interface LessonContent {
     sections: Section[];
+    questions: Question[];
 }
 
 interface Lesson {
@@ -41,6 +50,12 @@ export default function LessonDetailPage() {
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
     const [activeSection, setActiveSection] = useState<number>(0);
+    const [showQuiz, setShowQuiz] = useState<boolean>(false);
+    const [currentQuestionIndex, setCurrentQuestionIndex] = useState<number>(0);
+    const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
+    const [showExplanation, setShowExplanation] = useState<boolean>(false);
+    const [quizScore, setQuizScore] = useState<number>(0);
+    const [quizCompleted, setQuizCompleted] = useState<boolean>(false);
 
     useEffect(() => {
         const fetchLesson = async () => {
@@ -94,6 +109,36 @@ export default function LessonDetailPage() {
 
     const goBack = () => {
         router.push('/lessons');
+    };
+
+    const handleQuizStart = () => {
+        setShowQuiz(true);
+        setCurrentQuestionIndex(0);
+        setSelectedAnswer(null);
+        setShowExplanation(false);
+        setQuizScore(0);
+        setQuizCompleted(false);
+    };
+
+    const handleAnswerSelect = (index: number) => {
+        if (!showExplanation) {
+            setSelectedAnswer(index);
+            setShowExplanation(true);
+            
+            if (index === content?.questions[currentQuestionIndex].correctAnswer) {
+                setQuizScore(prev => prev + 1);
+            }
+        }
+    };
+
+    const handleNextQuestion = () => {
+        if (currentQuestionIndex < (content?.questions.length || 0) - 1) {
+            setCurrentQuestionIndex(prev => prev + 1);
+            setSelectedAnswer(null);
+            setShowExplanation(false);
+        } else {
+            setQuizCompleted(true);
+        }
     };
 
     if (loading) {
@@ -162,52 +207,135 @@ export default function LessonDetailPage() {
                             {section.title}
                         </button>
                     ))}
+                    {content.questions.length > 0 && (
+                        <button
+                            className={`${styles.sectionButton} ${showQuiz ? styles.active : ''} ${styles.quizButton}`}
+                            onClick={handleQuizStart}
+                        >
+                            Quiz
+                        </button>
+                    )}
                 </nav>
 
-                <div className={styles.sectionContent}>
-                    <h2 className={styles.sectionTitle}>
-                        {content.sections[activeSection].title}
-                    </h2>
-                    <div className={styles.markdownContainer}>
-                        <ReactMarkdown
-                            children={content.sections[activeSection].content}
-                            remarkPlugins={[remarkGfm, remarkMath]}
-                            rehypePlugins={[rehypeKatex]}
-                            components={{
-                                code: ({ className, children }) => {
-                                    const match = /language-(\w+)/.exec(className || '');
-                                    return match ? (
-                                        <pre className={styles.codeBlock}>
+                {showQuiz ? (
+                    <div className={styles.quizContainer}>
+                        {!quizCompleted ? (
+                            <>
+                                <div className={styles.quizProgress}>
+                                    Question {currentQuestionIndex + 1} sur {content.questions.length}
+                                </div>
+                                <div className={styles.questionContainer}>
+                                    <h3 className={styles.questionText}>
+                                        {content.questions[currentQuestionIndex].text}
+                                    </h3>
+                                    <div className={styles.optionsContainer}>
+                                        {content.questions[currentQuestionIndex].options.map((option, index) => (
+                                            <button
+                                                key={index}
+                                                className={`${styles.optionButton} ${
+                                                    selectedAnswer === index
+                                                        ? index === content.questions[currentQuestionIndex].correctAnswer
+                                                            ? styles.correct
+                                                            : styles.incorrect
+                                                        : ''
+                                                }`}
+                                                onClick={() => handleAnswerSelect(index)}
+                                                disabled={showExplanation}
+                                            >
+                                                {option}
+                                                {showExplanation && selectedAnswer === index && (
+                                                    <span className={styles.answerIcon}>
+                                                        {index === content.questions[currentQuestionIndex].correctAnswer ? (
+                                                            <Check size={16} />
+                                                        ) : (
+                                                            <X size={16} />
+                                                        )}
+                                                    </span>
+                                                )}
+                                            </button>
+                                        ))}
+                                    </div>
+                                    {showExplanation && (
+                                        <div className={styles.explanationContainer}>
+                                            <p className={styles.explanation}>
+                                                {content.questions[currentQuestionIndex].explanation}
+                                            </p>
+                                            <button
+                                                className={styles.nextButton}
+                                                onClick={handleNextQuestion}
+                                            >
+                                                {currentQuestionIndex < (content.questions.length || 0) - 1
+                                                    ? "Question suivante"
+                                                    : "Terminer le quiz"}
+                                            </button>
+                                        </div>
+                                    )}
+                                </div>
+                            </>
+                        ) : (
+                            <div className={styles.quizResults}>
+                                <h3>Quiz terminé !</h3>
+                                <p className={styles.score}>
+                                    Votre score : {quizScore} / {content.questions.length}
+                                </p>
+                                <p className={styles.percentage}>
+                                    {Math.round((quizScore / (content.questions.length || 1)) * 100)}%
+                                </p>
+                                <button
+                                    className={styles.retryButton}
+                                    onClick={handleQuizStart}
+                                >
+                                    Recommencer le quiz
+                                </button>
+                            </div>
+                        )}
+                    </div>
+                ) : (
+                    <div className={styles.sectionContent}>
+                        <h2 className={styles.sectionTitle}>
+                            {content.sections[activeSection].title}
+                        </h2>
+                        <div className={styles.markdownContainer}>
+                            <ReactMarkdown
+                                children={content.sections[activeSection].content}
+                                remarkPlugins={[remarkGfm, remarkMath]}
+                                rehypePlugins={[rehypeKatex]}
+                                components={{
+                                    code: ({ className, children }) => {
+                                        const match = /language-(\w+)/.exec(className || '');
+                                        return match ? (
+                                            <pre className={styles.codeBlock}>
+                                                <code className={className}>
+                                                    {String(children).replace(/\n$/, '')}
+                                                </code>
+                                            </pre>
+                                        ) : (
                                             <code className={className}>
-                                                {String(children).replace(/\n$/, '')}
+                                                {String(children)}
                                             </code>
-                                        </pre>
-                                    ) : (
-                                        <code className={className}>
-                                            {String(children)}
-                                        </code>
-                                    );
-                                }
-                            }}
-                        />
+                                        );
+                                    }
+                                }}
+                            />
+                        </div>
+                        <div className={styles.navigationButtons}>
+                            <button
+                                className={styles.navButton}
+                                disabled={activeSection === 0}
+                                onClick={() => handleSectionChange(activeSection - 1)}
+                            >
+                                Section précédente
+                            </button>
+                            <button
+                                className={styles.navButton}
+                                disabled={activeSection === (content.sections.length || 0) - 1}
+                                onClick={() => handleSectionChange(activeSection + 1)}
+                            >
+                                Section suivante
+                            </button>
+                        </div>
                     </div>
-                    <div className={styles.navigationButtons}>
-                        <button
-                            className={styles.navButton}
-                            disabled={activeSection === 0}
-                            onClick={() => handleSectionChange(activeSection - 1)}
-                        >
-                            Section précédente
-                        </button>
-                        <button
-                            className={styles.navButton}
-                            disabled={activeSection === content.sections.length - 1}
-                            onClick={() => handleSectionChange(activeSection + 1)}
-                        >
-                            Section suivante
-                        </button>
-                    </div>
-                </div>
+                )}
             </div>
         </div>
     );

@@ -12,7 +12,7 @@ import {
   updateDoc
 } from "firebase/firestore";
 import { db } from "../../firebase/config";
-import { Lesson, LessonContent } from "../../firebase/lessons";
+import { Lesson, LessonContent, Question } from "../../firebase/lessons";
 import { X, Plus, Save, ArrowLeft, Lock, Unlock } from "lucide-react";
 import styles from "./AdminComponents.module.css";
 import ReactMarkdown from 'react-markdown';
@@ -71,7 +71,7 @@ const AdminLessonForm: React.FC<AdminLessonFormProps> = ({
   lesson,
   onSave,
   onCancel,
-  categories
+  categories: initialCategories
 }) => {
   const [formData, setFormData] = useState<Partial<Lesson>>({
     id: "",
@@ -84,6 +84,7 @@ const AdminLessonForm: React.FC<AdminLessonFormProps> = ({
     order: 0
   });
 
+  const [categories, setCategories] = useState<string[]>(initialCategories);
   const [newTag, setNewTag] = useState<string>("");
   const [newCategory, setNewCategory] = useState<string>("");
   const [showCategoryInput, setShowCategoryInput] = useState<boolean>(false);
@@ -92,6 +93,13 @@ const AdminLessonForm: React.FC<AdminLessonFormProps> = ({
   const [contentData, setContentData] = useState<LessonContent>(defaultContent);
   const [activeSection, setActiveSection] = useState<number>(0);
   const [showContentEditor, setShowContentEditor] = useState<boolean>(false);
+  const [showQuizEditor, setShowQuizEditor] = useState<boolean>(false);
+  const [newQuestion, setNewQuestion] = useState<Partial<Question>>({
+    text: "",
+    options: ["", "", "", ""],
+    correctAnswer: 0,
+    explanation: ""
+  });
   const isMounted = useRef(false);
 
   // Icônes disponibles
@@ -185,6 +193,7 @@ const AdminLessonForm: React.FC<AdminLessonFormProps> = ({
   const handleAddCategory = () => {
     if (newCategory.trim() && !categories.includes(newCategory.trim())) {
       setFormData(prev => ({ ...prev, category: newCategory.trim() }));
+      setCategories(prev => [...prev, newCategory.trim()]);
       setNewCategory("");
       setShowCategoryInput(false);
     }
@@ -225,6 +234,49 @@ const AdminLessonForm: React.FC<AdminLessonFormProps> = ({
         setActiveSection(updatedSections.length - 1);
       }
     }
+  };
+
+  // Gérer les questions du quiz
+  const handleAddQuestion = () => {
+    if (newQuestion.text && newQuestion.options?.every(opt => opt.trim()) && newQuestion.explanation) {
+      const question: Question = {
+        id: `question-${Date.now()}`,
+        text: newQuestion.text,
+        options: newQuestion.options as string[],
+        correctAnswer: newQuestion.correctAnswer || 0,
+        explanation: newQuestion.explanation
+      };
+
+      setContentData(prev => ({
+        ...prev,
+        questions: [...prev.questions, question]
+      }));
+
+      setNewQuestion({
+        text: "",
+        options: ["", "", "", ""],
+        correctAnswer: 0,
+        explanation: ""
+      });
+    }
+  };
+
+  const handleRemoveQuestion = (questionId: string) => {
+    setContentData(prev => ({
+      ...prev,
+      questions: prev.questions.filter(q => q.id !== questionId)
+    }));
+  };
+
+  const handleQuestionChange = (field: keyof Question, value: any) => {
+    setNewQuestion(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handleOptionChange = (index: number, value: string) => {
+    setNewQuestion(prev => ({
+      ...prev,
+      options: prev.options?.map((opt, i) => i === index ? value : opt)
+    }));
   };
 
   // Sauvegarder la leçon
@@ -308,7 +360,7 @@ const AdminLessonForm: React.FC<AdminLessonFormProps> = ({
         </div>
       )}
 
-      {!showContentEditor ? (
+      {!showContentEditor && !showQuizEditor ? (
         <form onSubmit={handleSubmit} className={styles.form}>
           <div className={styles.formGrid}>
             <div className={styles.formColumn}>
@@ -477,7 +529,14 @@ const AdminLessonForm: React.FC<AdminLessonFormProps> = ({
               <ArrowLeft size={18} />
               <span>Éditer le contenu</span>
             </button>
-
+            <button
+              type="button"
+              className={styles.quizButton}
+              onClick={() => setShowQuizEditor(true)}
+            >
+              <Plus size={18} />
+              <span>Gérer le quiz</span>
+            </button>
             <button
               type="submit"
               className={styles.saveButton}
@@ -488,6 +547,104 @@ const AdminLessonForm: React.FC<AdminLessonFormProps> = ({
             </button>
           </div>
         </form>
+      ) : showQuizEditor ? (
+        <div className={styles.quizEditor}>
+          <div className={styles.quizHeader}>
+            <h3 className={styles.quizTitle}>Gestion du Quiz</h3>
+            <button
+              className={styles.backButton}
+              onClick={() => setShowQuizEditor(false)}
+            >
+              <ArrowLeft size={18} />
+              <span>Retour aux informations</span>
+            </button>
+          </div>
+
+          <div className={styles.quizForm}>
+            <div className={styles.questionForm}>
+              <h4>Ajouter une nouvelle question</h4>
+              <div className={styles.formGroup}>
+                <label className={styles.formLabel}>Question</label>
+                <textarea
+                  value={newQuestion.text}
+                  onChange={(e) => handleQuestionChange('text', e.target.value)}
+                  className={styles.formTextarea}
+                  rows={3}
+                  placeholder="Entrez votre question..."
+                />
+              </div>
+
+              <div className={styles.formGroup}>
+                <label className={styles.formLabel}>Options de réponse</label>
+                {newQuestion.options?.map((option, index) => (
+                  <div key={index} className={styles.optionInput}>
+                    <input
+                      type="radio"
+                      name="correctAnswer"
+                      checked={newQuestion.correctAnswer === index}
+                      onChange={() => handleQuestionChange('correctAnswer', index)}
+                    />
+                    <input
+                      type="text"
+                      value={option}
+                      onChange={(e) => handleOptionChange(index, e.target.value)}
+                      className={styles.formInput}
+                      placeholder={`Option ${index + 1}`}
+                    />
+                  </div>
+                ))}
+              </div>
+
+              <div className={styles.formGroup}>
+                <label className={styles.formLabel}>Explication</label>
+                <textarea
+                  value={newQuestion.explanation}
+                  onChange={(e) => handleQuestionChange('explanation', e.target.value)}
+                  className={styles.formTextarea}
+                  rows={3}
+                  placeholder="Expliquez la réponse correcte..."
+                />
+              </div>
+
+              <button
+                type="button"
+                className={styles.addButton}
+                onClick={handleAddQuestion}
+              >
+                <Plus size={16} />
+                <span>Ajouter la question</span>
+              </button>
+            </div>
+
+            <div className={styles.questionsList}>
+              <h4>Questions du quiz</h4>
+              {contentData.questions.map((question) => (
+                <div key={question.id} className={styles.questionItem}>
+                  <div className={styles.questionContent}>
+                    <p className={styles.questionText}>{question.text}</p>
+                    <ul className={styles.optionsList}>
+                      {question.options.map((option, index) => (
+                        <li
+                          key={index}
+                          className={`${styles.option} ${index === question.correctAnswer ? styles.correct : ''}`}
+                        >
+                          {option}
+                        </li>
+                      ))}
+                    </ul>
+                    <p className={styles.explanation}>{question.explanation}</p>
+                  </div>
+                  <button
+                    className={styles.removeButton}
+                    onClick={() => handleRemoveQuestion(question.id)}
+                  >
+                    <X size={14} />
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
       ) : (
         <div className={styles.contentEditor}>
           <div className={styles.contentHeader}>
