@@ -26,7 +26,8 @@ const AdminLessonsList: React.FC = () => {
   const [categories, setCategories] = useState<string[]>([]);
   const [showForm, setShowForm] = useState<boolean>(false);
   const [editingLesson, setEditingLesson] = useState<Lesson | null>(null);
-  const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [lessonToDelete, setLessonToDelete] = useState<Lesson | null>(null);
 
   // Charger les leçons
   useEffect(() => {
@@ -91,15 +92,11 @@ const AdminLessonsList: React.FC = () => {
   // Supprimer une leçon
   const handleDeleteLesson = async (lessonId: string) => {
     try {
-      // Supprimer la leçon
       await deleteDoc(doc(db, "lessons", lessonId));
-
-      // Supprimer également le contenu de la leçon
       await deleteDoc(doc(db, "lessonContents", lessonId));
-
-      // Mettre à jour la liste des leçons
       setLessons(prevLessons => prevLessons.filter(lesson => lesson.id !== lessonId));
-      setConfirmDelete(null);
+      setShowDeleteModal(false);
+      setLessonToDelete(null);
     } catch (err) {
       console.error("Erreur lors de la suppression de la leçon:", err);
       setError("Impossible de supprimer la leçon. Veuillez réessayer plus tard.");
@@ -172,6 +169,19 @@ const AdminLessonsList: React.FC = () => {
 
   return (
     <div className={styles.adminLessonsContainer}>
+      {/* Modale de confirmation de suppression */}
+      {showDeleteModal && lessonToDelete && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.modalContent}>
+            <h3>Supprimer la leçon</h3>
+            <p>Voulez-vous vraiment supprimer la leçon « {lessonToDelete.title} » ? Cette action est irréversible.</p>
+            <div className={styles.modalActions}>
+              <button className={styles.confirmYes} onClick={() => handleDeleteLesson(lessonToDelete.id)}>Supprimer</button>
+              <button className={styles.confirmNo} onClick={() => { setShowDeleteModal(false); setLessonToDelete(null); }}>Annuler</button>
+            </div>
+          </div>
+        </div>
+      )}
       {showForm ? (
         <AdminLessonForm
           lesson={editingLesson}
@@ -237,6 +247,7 @@ const AdminLessonsList: React.FC = () => {
                 <div className={styles.tableCell}>Titre</div>
                 <div className={styles.tableCell}>Catégorie</div>
                 <div className={styles.tableCell}>Tags</div>
+                <div className={styles.tableCell}>Niveau requis</div>
                 <div className={styles.tableCell}>Statut</div>
                 <div className={styles.tableCell}>Actions</div>
               </div>
@@ -263,6 +274,10 @@ const AdminLessonsList: React.FC = () => {
                   </div>
 
                   <div className={styles.tableCell}>
+                    {lesson.levelRequired ?? 1}
+                  </div>
+
+                  <div className={styles.tableCell}>
                     <span className={`${styles.statusBadge} ${lesson.locked ? styles.locked : styles.published}`}>
                       {lesson.locked ? "Verrouillée" : "Publiée"}
                     </span>
@@ -277,7 +292,6 @@ const AdminLessonsList: React.FC = () => {
                       >
                         <Eye size={18} />
                       </button>
-
                       <button
                         className={styles.actionButton}
                         onClick={() => handleEditLesson(lesson)}
@@ -285,32 +299,13 @@ const AdminLessonsList: React.FC = () => {
                       >
                         <Edit size={18} />
                       </button>
-
-                      {confirmDelete === lesson.id ? (
-                        <div className={styles.confirmDelete}>
-                          <span>Confirmer ?</span>
-                          <button
-                            className={styles.confirmYes}
-                            onClick={() => handleDeleteLesson(lesson.id)}
-                          >
-                            Oui
-                          </button>
-                          <button
-                            className={styles.confirmNo}
-                            onClick={() => setConfirmDelete(null)}
-                          >
-                            Non
-                          </button>
-                        </div>
-                      ) : (
-                        <button
-                          className={styles.actionButton}
-                          onClick={() => setConfirmDelete(lesson.id)}
-                          title="Supprimer la leçon"
-                        >
-                          <Trash2 size={18} />
-                        </button>
-                      )}
+                      <button
+                        className={styles.actionButton}
+                        onClick={() => { setShowDeleteModal(true); setLessonToDelete(lesson); }}
+                        title="Supprimer la leçon"
+                      >
+                        <Trash2 size={18} />
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -323,4 +318,4 @@ const AdminLessonsList: React.FC = () => {
   );
 };
 
-export default AdminLessonsList; 
+export default AdminLessonsList;

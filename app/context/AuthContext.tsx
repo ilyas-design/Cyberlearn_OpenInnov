@@ -8,8 +8,17 @@ import { verifyTwoFactorCode } from '@/app/firebase/2fa';
 import { getDoc, doc } from 'firebase/firestore';
 import { useRouter } from 'next/navigation';
 
+interface AuthUser {
+    uid: string;
+    email: string;
+    displayName: string | null;
+    level: number;
+    completedLessons?: string[];
+    // ... autres champs si besoin
+}
+
 interface AuthContextType {
-    user: User | null;
+    user: AuthUser | null;
     loading: boolean;
     twoFactorRequired: boolean;
     twoFactorVerified: boolean;
@@ -25,10 +34,11 @@ const AuthContext = createContext<AuthContextType>({
 });
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-    const [user, setUser] = useState<User | null>(null);
+    const [user, setUser] = useState<AuthUser | null>(null);
     const [loading, setLoading] = useState(true);
     const [twoFactorRequired, setTwoFactorRequired] = useState(false);
     const [twoFactorVerified, setTwoFactorVerified] = useState(false);
+    const [twoFactorChecked, setTwoFactorChecked] = useState(false);
     const router = useRouter();
 
     const checkTwoFactor = async (user: User) => {
@@ -62,17 +72,30 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     };
 
     useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, async (user) => {
-            if (user) {
-                setUser(user);
-                // Ne vérifier la 2FA que si l'utilisateur vient de se connecter
-                // et non sur chaque changement d'état d'authentification
-                if (!twoFactorVerified) {
-                    const requires2FA = await checkTwoFactor(user);
+        const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+            if (firebaseUser) {
+                // Charger les infos Firestore (dont le level)
+                const userDoc = await getDoc(doc(db, 'users', firebaseUser.uid));
+                let level = 1;
+                let completedLessons: string[] = [];
+                if (userDoc.exists()) {
+                    const userData = userDoc.data();
+                    level = userData.level ?? 1;
+                    completedLessons = Array.isArray(userData.completedLessons) ? userData.completedLessons : [];
+                }
+                setUser({
+                    uid: firebaseUser.uid,
+                    email: firebaseUser.email || '',
+                    displayName: firebaseUser.displayName,
+                    level,
+                    completedLessons
+                });
+                // Ne vérifier la 2FA que si l'utilisateur vient de se connecter et pas déjà vérifié dans la session
+                const alreadyChecked = sessionStorage.getItem('2fa-checked') === 'true';
+                if (!twoFactorVerified && !alreadyChecked) {
+                    const requires2FA = await checkTwoFactor(firebaseUser);
                     if (requires2FA) {
                         setTwoFactorRequired(true);
-                        // Vérifier si l'utilisateur est sur la page admin
-                        // Si c'est le cas, ne pas rediriger vers la vérification 2FA
                         const currentPath = window.location.pathname;
                         if (!currentPath.startsWith('/admin')) {
                             router.push('/auth/2fa-verify');
@@ -80,17 +103,20 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                     } else {
                         setTwoFactorRequired(false);
                     }
+                    sessionStorage.setItem('2fa-checked', 'true');
                 }
             } else {
                 setUser(null);
                 setTwoFactorRequired(false);
                 setTwoFactorVerified(false);
+                setTwoFactorChecked(false);
+                sessionStorage.removeItem('2fa-checked');
             }
             setLoading(false);
         });
 
         return () => unsubscribe();
-    }, [router, twoFactorVerified]);
+    }, [router, twoFactorVerified, twoFactorChecked]);
 
     const value = {
         user,

@@ -266,3 +266,31 @@
         max-width: 100%;
     }
 }
+
+.levelBadge {
+    display: inline-block;
+    background: #1a4fff;
+    color: #fff;
+    border-radius: 12px;
+    font-size: 0.9rem;
+    font-family: 'Abel', sans-serif;
+    padding: 0.15rem 0.6rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    vertical-align: middle;
+    border: 1px solid #3b82f6;
+    box-shadow: 0 1px 4px rgba(26,79,255,0.08);
+    margin-top: 0.5rem;
+}
+
+.levelInput {
+    width: 80px;
+    padding: 0.5rem 0.7rem;
+    border-radius: 6px;
+    border: 1px solid var(--couleur-principale);
+    background: rgba(10, 255, 212, 0.08);
+    color: var(--couleur-cinquieme);
+    font-family: 'Abel', sans-serif;
+    font-size: 1rem;
+    margin-left: 1rem;
+}

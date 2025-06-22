@@ -19,6 +19,7 @@ const ProfileDropdown = ({ isVisible, onClose }: ProfileDropdownProps) => {
     const router = useRouter();
     const [username, setUsername] = useState<string | null>(null);
     const [email, setEmail] = useState<string | null>(null);
+    const [level, setLevel] = useState<number>(1);
     const { t } = useLanguage();
 
     useEffect(() => {
@@ -34,12 +35,15 @@ const ProfileDropdown = ({ isVisible, onClose }: ProfileDropdownProps) => {
                     if (userDoc.exists()) {
                         const userData = userDoc.data();
                         setUsername(userData.username || currentUser.displayName || t('profile.defaultUsername'));
+                        setLevel(userData.level ?? 1);
                     } else {
                         setUsername(currentUser.displayName || t('profile.defaultUsername'));
+                        setLevel(1);
                     }
                 } catch (error) {
                     console.error("Erreur lors de la récupération des données utilisateur:", error);
                     setUsername(currentUser.displayName || t('profile.defaultUsername'));
+                    setLevel(1);
                 }
             }
         };
@@ -77,6 +81,7 @@ const ProfileDropdown = ({ isVisible, onClose }: ProfileDropdownProps) => {
                     <div className={styles.headerInfo}>
                         <h3 className={styles.headerName}>{username}</h3>
                         <p className={styles.headerEmail}>{email}</p>
+                        <span className={styles.levelBadge}>Niveau {level}</span>
                     </div>
                 </div>
 

@@ -6,6 +6,9 @@ import { Lock } from 'lucide-react';
 import Link from 'next/link';
 import { getAllLessons, getLessonsByCategory, Lesson } from "../firebase/lessons";
 import { getIconByName } from "../utils/iconMapping";
+import { useAuth } from '../context/AuthContext';
+import { doc, getDoc } from 'firebase/firestore';
+import { db } from '../firebase/config';
 
 export default function LessonsPage() {
     const [lessons, setLessons] = useState<Lesson[]>([]);
@@ -14,6 +17,27 @@ export default function LessonsPage() {
     const [error, setError] = useState<string | null>(null);
     const [activeCategory, setActiveCategory] = useState<string>("Tous");
     const [categories, setCategories] = useState<string[]>([]);
+    const { user } = useAuth();
+    const [completedLessons, setCompletedLessons] = useState<string[]>([]);
+
+    // Recharger les completedLessons utilisateur à chaque affichage
+    useEffect(() => {
+        const fetchCompletedLessons = async () => {
+            if (user && user.uid) {
+                const userRef = doc(db, 'users', user.uid);
+                const userSnap = await getDoc(userRef);
+                if (userSnap.exists()) {
+                    const data = userSnap.data();
+                    setCompletedLessons(Array.isArray(data.completedLessons) ? data.completedLessons : []);
+                } else {
+                    setCompletedLessons([]);
+                }
+            } else {
+                setCompletedLessons([]);
+            }
+        };
+        fetchCompletedLessons();
+    }, [user]);
 
     // Charger les leçons depuis Firebase
     useEffect(() => {
@@ -136,40 +160,50 @@ export default function LessonsPage() {
                 </div>
             ) : filteredLessons.length > 0 ? (
                 <div className={styles.lessonsGrid}>
-                    {filteredLessons.map((lesson) => (
-                        <div key={lesson.id} className={`${styles.lessonCard} ${lesson.locked ? styles.locked : ''}`}>
-                            <div className={styles.cardHeader}>
-                                <div className={styles.categoryTag}>
-                                    {lesson.iconName && getIconByName(lesson.iconName)}
-                                    <span>{lesson.category}</span>
-                                </div>
-                                {lesson.locked && (
-                                    <div className={styles.lockedBadge}>
-                                        <Lock size={16} />
+                    {filteredLessons.map((lesson) => {
+                        const isLocked = lesson.locked || (user && user.level < lesson.levelRequired);
+                        const isCompleted = completedLessons.includes(lesson.id);
+                        return (
+                            <div key={lesson.id} className={`${styles.lessonCard} ${isLocked ? styles.locked : ''} ${isCompleted ? styles.completed : ''}`}>
+                                <div className={styles.cardHeader}>
+                                    <div className={styles.categoryTag}>
+                                        {lesson.iconName && getIconByName(lesson.iconName)}
+                                        <span>{lesson.category}</span>
                                     </div>
-                                )}
+                                    {isCompleted && (
+                                        <div className={styles.completedBadge}>
+                                            <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="10" fill="#10b981"/><path d="M6 10.5L9 13.5L14 8.5" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                                            <span>Complétée</span>
+                                        </div>
+                                    )}
+                                    {lesson.locked && (
+                                        <div className={styles.lockedBadge}>
+                                            <Lock size={16} />
+                                        </div>
+                                    )}
+                                </div>
+                                <h3 className={styles.lessonTitle}>{lesson.title}</h3>
+                                <p className={styles.lessonDescription}>{lesson.description}</p>
+                                <div className={styles.tagsContainer}>
+                                    {lesson.tags && lesson.tags.map((tag) => (
+                                        <span key={tag} className={styles.tag}>{tag}</span>
+                                    ))}
+                                </div>
+                                <div className={styles.cardFooter}>
+                                    {isLocked ? (
+                                        <button className={styles.lockedButton} disabled>
+                                            <Lock size={16} />
+                                            Niveau requis : {lesson.levelRequired}
+                                        </button>
+                                    ) : (
+                                        <Link href={`/lessons/${lesson.id}`} className={styles.startButton}>
+                                            Commencer
+                                        </Link>
+                                    )}
+                                </div>
                             </div>
-                            <h3 className={styles.lessonTitle}>{lesson.title}</h3>
-                            <p className={styles.lessonDescription}>{lesson.description}</p>
-                            <div className={styles.tagsContainer}>
-                                {lesson.tags && lesson.tags.map((tag) => (
-                                    <span key={tag} className={styles.tag}>{tag}</span>
-                                ))}
-                            </div>
-                            <div className={styles.cardFooter}>
-                                {lesson.locked ? (
-                                    <button className={styles.lockedButton}>
-                                        <Lock size={16} />
-                                        Débloquer
-                                    </button>
-                                ) : (
-                                    <Link href={`/lessons/${lesson.id}`} className={styles.startButton}>
-                                        Commencer
-                                    </Link>
-                                )}
-                            </div>
-                        </div>
-                    ))}
+                        );
+                    })}
                 </div>
             ) : (
                 <div className={styles.noLessonsContainer}>
@@ -178,4 +212,5 @@ export default function LessonsPage() {
             )}
         </div>
     );
-} 
+}
+

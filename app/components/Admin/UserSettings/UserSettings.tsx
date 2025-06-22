@@ -10,6 +10,7 @@ interface UserSettings {
     id: string;
     email: string;
     username: string;
+    level: number;
     settings: {
         theme: 'light' | 'dark';
         notifications: boolean;
@@ -49,6 +50,7 @@ const UserSettings = () => {
                     id: doc.id,
                     email: data.email || '',
                     username: data.username || '',
+                    level: data.level ?? 1,
                     settings: data.settings || defaultSettings
                 };
             }) as UserSettings[];
@@ -61,12 +63,12 @@ const UserSettings = () => {
         }
     };
 
-    const handleUpdateSettings = async (userId: string, newSettings: UserSettings['settings']) => {
+    const handleUpdateSettings = async (userId: string, newSettings: UserSettings['settings'], newLevel?: number) => {
         try {
             const userRef = doc(db, 'users', userId);
-            await updateDoc(userRef, {
-                settings: newSettings
-            });
+            const updateData: any = { settings: newSettings };
+            if (typeof newLevel === 'number') updateData.level = newLevel;
+            await updateDoc(userRef, updateData);
             setSuccess('Paramètres mis à jour avec succès');
             fetchUsers();
         } catch (err) {
@@ -111,6 +113,7 @@ const UserSettings = () => {
                                 <div>
                                     <h3>{user.username}</h3>
                                     <p>{user.email}</p>
+                                    <span className={styles.levelBadge}>Niveau {user.level ?? 1}</span>
                                 </div>
                             </div>
                             <Settings size={20} />
@@ -213,6 +216,22 @@ const UserSettings = () => {
                                         <option value="es">Español</option>
                                         <option value="de">Deutsch</option>
                                     </select>
+                                </div>
+                            </div>
+
+                            <div className={styles.settingGroup}>
+                                <h3>Niveau</h3>
+                                <div className={styles.settingItem}>
+                                    <label>Niveau utilisateur</label>
+                                    <input
+                                        type="number"
+                                        min={1}
+                                        value={selectedUser.level ?? 1}
+                                        onChange={e => handleUpdateSettings(selectedUser.id, {
+                                            ...selectedUser.settings
+                                        }, Number(e.target.value))}
+                                        className={styles.levelInput}
+                                    />
                                 </div>
                             </div>
                         </div>

@@ -3,14 +3,19 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { auth, db } from "@/app/firebase/config";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 import styles from "./profile.module.css";
 import { User, BookOpen, Award, Settings, Clock, ArrowLeft } from "lucide-react";
+import { getAllLessons, Lesson } from "@/app/firebase/lessons";
 
 interface UserData {
     username?: string;
     email?: string;
     createdAt?: string;
+    level?: number;
+    exp?: number;
+    completedLessons?: string[];
+    startedLessons?: string[];
     // Ajoutez d'autres champs selon votre schéma Firestore
 }
 
@@ -20,22 +25,44 @@ export default function ProfilePage() {
     const [loading, setLoading] = useState(true);
     const [activeTab, setActiveTab] = useState("info");
     const router = useRouter();
+    const [startedLessonsList, setStartedLessonsList] = useState<Lesson[]>([]);
+    const [completedLessonsList, setCompletedLessonsList] = useState<Lesson[]>([]);
 
     useEffect(() => {
         const unsubscribe = auth.onAuthStateChanged(async (currentUser) => {
             if (currentUser) {
                 setUser(currentUser);
-
                 // Récupérer les données utilisateur depuis Firestore
                 try {
                     const userDocRef = doc(db, "users", currentUser.uid);
                     const userDoc = await getDoc(userDocRef);
-
+                    let userData: UserData = {};
                     if (userDoc.exists()) {
-                        setUserData(userDoc.data() as UserData);
-                    } else {
-                        console.log("Aucun document utilisateur trouvé dans Firestore");
+                        userData = userDoc.data() as UserData;
                     }
+                    // Création automatique des champs si absents
+                    let updateNeeded = false;
+                    const updatePayload: any = {};
+                    if (typeof userData.level !== 'number') {
+                        updatePayload.level = 1;
+                        updateNeeded = true;
+                    }
+                    if (typeof userData.exp !== 'number') {
+                        updatePayload.exp = 0;
+                        updateNeeded = true;
+                    }
+                    if (!Array.isArray(userData.completedLessons)) {
+                        updatePayload.completedLessons = [];
+                        updateNeeded = true;
+                    }
+                    if (!Array.isArray(userData.startedLessons)) {
+                        updatePayload.startedLessons = [];
+                        updateNeeded = true;
+                    }
+                    if (updateNeeded) {
+                        await setDoc(userDocRef, updatePayload, { merge: true });
+                    }
+                    setUserData({ ...userData, ...updatePayload });
                 } catch (error) {
                     console.error("Erreur lors de la récupération des données utilisateur:", error);
                 }
@@ -47,6 +74,37 @@ export default function ProfilePage() {
 
         return () => unsubscribe();
     }, [router]);
+
+    useEffect(() => {
+        // Charger les leçons commencées mais pas finies
+        const fetchStartedLessons = async () => {
+            if (userData?.startedLessons && Array.isArray(userData.startedLessons)) {
+                const allLessons = await getAllLessons();
+                const completed = userData.completedLessons || [];
+                const started = userData.startedLessons.filter((id: string) => !completed.includes(id));
+                const startedLessons = allLessons.filter(lesson => started.includes(lesson.id));
+                setStartedLessonsList(startedLessons);
+            } else {
+                setStartedLessonsList([]);
+            }
+        };
+        fetchStartedLessons();
+    }, [userData]);
+
+    useEffect(() => {
+        // Charger les leçons terminées
+        const fetchCompletedLessons = async () => {
+            if (userData?.completedLessons && Array.isArray(userData.completedLessons)) {
+                const allLessons = await getAllLessons();
+                const completed = userData.completedLessons;
+                const completedLessons = allLessons.filter(lesson => completed.includes(lesson.id));
+                setCompletedLessonsList(completedLessons);
+            } else {
+                setCompletedLessonsList([]);
+            }
+        };
+        fetchCompletedLessons();
+    }, [userData]);
 
     if (loading) {
         return (
@@ -64,6 +122,9 @@ export default function ProfilePage() {
     const goBack = () => {
         router.back();
     };
+
+    // Fonction pour calculer l'XP requise pour le prochain niveau
+    const xpForLevel = (lvl: number) => 100 + (lvl - 1) * 20;
 
     return (
         <div className={styles.profileContainer}>
@@ -84,6 +145,16 @@ export default function ProfilePage() {
                         <div className={styles.userDetails}>
                             <h2 className={styles.userName}>{userData?.username || user?.displayName || "Utilisateur"}</h2>
                             <p className={styles.userEmail}>{user?.email}</p>
+                            <span className={styles.levelBadge}>Niveau {userData?.level ?? 1}</span>
+                            <div className={styles.expBarContainer}>
+                                <div className={styles.expBarBg}>
+                                    <div
+                                        className={styles.expBarFill}
+                                        style={{ width: `${Math.min(100, Math.round(((userData?.exp ?? 0) / xpForLevel(userData?.level ?? 1)) * 100))}%` }}
+                                    ></div>
+                                </div>
+                                <span className={styles.expText}>{userData?.exp ?? 0} / {xpForLevel(userData?.level ?? 1)} XP</span>
+                            </div>
                         </div>
                     </div>
 
@@ -158,13 +229,28 @@ export default function ProfilePage() {
                         <div className={styles.tabContent}>
                             <h2 className={styles.sectionTitle}>Mes cours</h2>
                             <div className={styles.coursesList}>
-                                <div className={styles.emptyState}>
-                                    <BookOpen size={48} />
-                                    <p>Vous n'avez pas encore commencé de cours</p>
-                                    <button className={styles.actionButton} onClick={() => router.push('/courses')}>
-                                        Découvrir les cours
-                                    </button>
-                                </div>
+                                {startedLessonsList.length === 0 ? (
+                                    <div className={styles.emptyState}>
+                                        <BookOpen size={48} />
+                                        <p>Vous n'avez pas encore commencé de cours</p>
+                                        <button className={styles.actionButton} onClick={() => router.push('/courses')}>
+                                            Découvrir les cours
+                                        </button>
+                                    </div>
+                                ) : (
+                                    startedLessonsList.map((lesson) => (
+                                        <div key={lesson.id} className={styles.startedLessonCard}>
+                                            <div className={styles.lessonIcon}>{lesson.iconName && <span>{lesson.iconName}</span>}</div>
+                                            <div className={styles.lessonInfo}>
+                                                <h3>{lesson.title}</h3>
+                                                <p>{lesson.description}</p>
+                                            </div>
+                                            <button className={styles.continueButton} onClick={() => router.push(`/lessons/${lesson.id}`)}>
+                                                Continuer
+                                            </button>
+                                        </div>
+                                    ))
+                                )}
                             </div>
                         </div>
                     )}
@@ -173,11 +259,21 @@ export default function ProfilePage() {
                         <div className={styles.tabContent}>
                             <h2 className={styles.sectionTitle}>Mes réalisations</h2>
                             <div className={styles.achievementsList}>
-                                <div className={styles.emptyState}>
-                                    <Award size={48} />
-                                    <p>Vous n'avez pas encore de réalisations</p>
-                                    <p className={styles.subText}>Complétez des cours pour gagner des badges</p>
-                                </div>
+                                {completedLessonsList.length === 0 ? (
+                                    <div className={styles.emptyState}>
+                                        <Award size={48} />
+                                        <p>Vous n'avez pas encore de réalisations</p>
+                                        <p className={styles.subText}>Complétez des cours pour gagner des badges</p>
+                                    </div>
+                                ) : (
+                                    completedLessonsList.map((lesson) => (
+                                        <div key={lesson.id} className={styles.completedLessonCard}>
+                                            <div className={styles.medalBadge}>🏅</div>
+                                            <h3 className={styles.completedTitle}>{lesson.title}</h3>
+                                            <span className={styles.completedText}>Terminé !</span>
+                                        </div>
+                                    ))
+                                )}
                             </div>
                         </div>
                     )}

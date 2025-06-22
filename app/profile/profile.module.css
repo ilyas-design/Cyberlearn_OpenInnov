@@ -365,3 +365,134 @@ input:checked+.slider:before {
         padding: 1.5rem;
     }
 }
+
+.levelBadge {
+    display: inline-block;
+    background: #1a4fff;
+    color: #fff;
+    border-radius: 12px;
+    font-size: 0.9rem;
+    font-family: 'Abel', sans-serif;
+    padding: 0.15rem 0.6rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    vertical-align: middle;
+    border: 1px solid #3b82f6;
+    box-shadow: 0 1px 4px rgba(26,79,255,0.08);
+    margin-top: 0.5rem;
+}
+
+.expBarContainer {
+    margin-top: 0.5rem;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.expBarBg {
+    width: 100%;
+    height: 12px;
+    background: rgba(3, 2, 25, 0.5);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 0.2rem;
+}
+
+.expBarFill {
+    height: 100%;
+    background: var(--couleur-principale);
+    border-radius: 8px 0 0 8px;
+    transition: width 0.4s cubic-bezier(.4,1.3,.5,1);
+}
+
+.expText {
+    font-size: 0.95rem;
+    color: var(--couleur-principale);
+    font-family: 'Abel', sans-serif;
+    font-weight: 600;
+    margin-left: 0.1rem;
+}
+
+.achievementsList {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    justify-content: flex-start;
+    margin-top: 2rem;
+}
+
+.completedLessonCard {
+    background: rgba(16, 185, 129, 0.08);
+    border: 2px solid #10b981;
+    border-radius: 18px;
+    box-shadow: 0 4px 18px rgba(16,185,129,0.10);
+    padding: 2rem 1.5rem 1.5rem 1.5rem;
+    min-width: 260px;
+    max-width: 340px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    transition: box-shadow 0.2s, border 0.2s;
+}
+
+.completedLessonCard:hover {
+    box-shadow: 0 8px 32px rgba(16,185,129,0.18);
+    border-color: #059669;
+}
+
+.medalBadge {
+    font-size: 2.5rem;
+    margin-bottom: 0.7rem;
+    color: #FFD700;
+    filter: drop-shadow(0 2px 8px #FFD70033);
+}
+
+.lessonIcon {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+    color: var(--couleur-principale);
+}
+
+.lessonInfo {
+    text-align: center;
+    margin-bottom: 0.7rem;
+}
+
+.lessonInfo h3 {
+    font-size: 1.2rem;
+    color: var(--couleur-cinquieme);
+    font-family: 'Bebas Neue', sans-serif;
+    margin-bottom: 0.3rem;
+}
+
+.lessonInfo p {
+    font-size: 1rem;
+    color: var(--couleur-tertiaire);
+    font-family: 'Abel', sans-serif;
+    margin: 0;
+}
+
+.completedText {
+    display: inline-block;
+    background: #10b981;
+    color: #fff;
+    font-size: 0.98rem;
+    font-family: 'Abel', sans-serif;
+    border-radius: 12px;
+    padding: 0.18rem 0.9rem;
+    font-weight: 600;
+    margin-top: 0.7rem;
+    letter-spacing: 0.5px;
+    box-shadow: 0 2px 8px rgba(16,185,129,0.10);
+}
+
+.completedTitle {
+    font-size: 1.3rem;
+    color: var(--couleur-principale);
+    font-family: 'Bebas Neue', sans-serif;
+    text-align: center;
+    margin: 0.5rem 0 0.2rem 0;
+    letter-spacing: 0.5px;
+}

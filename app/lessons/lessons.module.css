@@ -71,6 +71,10 @@
   background-color: rgba(3, 2, 25, 0.7);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   border: 1px solid var(--couleur-principale);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  height: 100%;
 }
 
 .lessonCard:hover {
@@ -153,6 +157,7 @@
 .cardFooter {
   display: flex;
   justify-content: flex-end;
+  margin-top: auto;
 }
 
 .startButton {
@@ -278,4 +283,24 @@
     width: 100%;
     max-width: 300px;
   }
+}
+
+.completedBadge {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  background: #10b981;
+  color: #fff;
+  font-size: 0.95rem;
+  font-family: 'Abel', sans-serif;
+  border-radius: 16px;
+  padding: 0.15rem 0.7rem 0.15rem 0.3rem;
+  font-weight: 600;
+  margin-left: 0.5rem;
+  box-shadow: 0 2px 8px rgba(16,185,129,0.10);
+}
+
+.lessonCard.completed {
+  border: 2px solid #10b981;
+  position: relative;
 } 

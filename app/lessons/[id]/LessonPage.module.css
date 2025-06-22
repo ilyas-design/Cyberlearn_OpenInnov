@@ -396,45 +396,60 @@
 }
 
 .quizResults {
+    background: rgba(3, 2, 25, 0.8);
+    border-radius: 12px;
+    padding: 2.5rem 2rem;
+    box-shadow: 0 4px 18px rgba(0,36,255,0.10);
     text-align: center;
-    padding: 2rem;
+    margin: 2rem auto 0 auto;
+    max-width: 420px;
 }
 
 .quizResults h3 {
-    font-size: 1.5rem;
-    color: var(--couleur-cinquieme);
-    margin-bottom: 1.5rem;
-    font-family: 'Bebas Neue', sans-serif;
-}
-
-.score {
-    font-size: 1.2rem;
-    color: var(--couleur-tertiaire);
-    margin-bottom: 0.5rem;
-}
-
-.percentage {
-    font-size: 2rem;
     color: var(--couleur-secondaire);
-    margin-bottom: 2rem;
+    font-size: 2rem;
+    margin-bottom: 1rem;
     font-family: 'Bebas Neue', sans-serif;
 }
 
-.retryButton {
-    background-color: rgba(10, 255, 212, 0.2);
-    color: var(--couleur-cinquieme);
-    border: 1px solid var(--couleur-secondaire);
-    padding: 0.75rem 1.5rem;
-    border-radius: 5px;
-    cursor: pointer;
+.score, .percentage, .xpMessage {
     font-family: 'Abel', sans-serif;
-    font-weight: 500;
-    transition: all 0.3s ease;
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+    color: var(--couleur-cinquieme);
 }
 
-.retryButton:hover {
-    background-color: var(--couleur-secondaire);
+.quizResults .buttonRow {
+    display: flex;
+    flex-direction: row;
+    gap: 1.2rem;
+    justify-content: center;
+    margin-top: 2rem;
+    flex-wrap: wrap;
+}
+
+.retryButton, .backButton {
+    flex: 1 1 200px;
+    min-width: 180px;
+    max-width: 240px;
+    padding: 0.8rem 1.2rem;
+    border-radius: 7px;
+    font-family: 'Abel', sans-serif;
+    font-size: 1.08rem;
+    border: 1.5px solid var(--couleur-principale);
+    background: var(--couleur-quaternaire);
+    color: var(--couleur-cinquieme);
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s, border 0.2s;
+    box-sizing: border-box;
+    text-align: center;
+    margin: 0;
+}
+
+.retryButton:hover, .backButton:hover {
+    background: var(--couleur-principale);
     color: var(--couleur-quaternaire);
+    border-color: var(--couleur-secondaire);
 }
 
 .quizButton {
@@ -445,4 +460,24 @@
 .quizButton:hover {
     background-color: var(--couleur-secondaire);
     color: var(--couleur-quaternaire);
+}
+
+.quizTitle {
+    color: var(--couleur-secondaire);
+    font-size: 2.2rem;
+    margin-bottom: 1.2rem;
+    font-family: 'Bebas Neue', sans-serif;
+    text-align: center;
+    letter-spacing: 1px;
+}
+
+@media (max-width: 700px) {
+    .quizResults .buttonRow {
+        flex-direction: column;
+        gap: 0.8rem;
+    }
+    .retryButton, .backButton {
+        min-width: 100%;
+        max-width: 100%;
+    }
 }

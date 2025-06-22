@@ -224,3 +224,19 @@
         right: 5%;
     }
 }
+
+.levelBadge {
+    display: inline-block;
+    background: #1a4fff;
+    color: #fff;
+    border-radius: 12px;
+    font-size: 0.9rem;
+    font-family: 'Abel', sans-serif;
+    padding: 0.15rem 0.6rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    vertical-align: middle;
+    border: 1px solid #3b82f6;
+    box-shadow: 0 1px 4px rgba(26,79,255,0.08);
+    margin-top: 0.3rem;
+}

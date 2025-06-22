@@ -5,13 +5,16 @@ import { useParams, useRouter } from "next/navigation";
 import { getIconByName } from "../../utils/iconMapping";
 import styles from "./LessonPage.module.css";
 import { ArrowLeft, Check, X } from "lucide-react";
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, getDoc, updateDoc, setDoc } from 'firebase/firestore';
 import { db } from '@/app/firebase/config';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 import 'katex/dist/katex.min.css';
+import { useAuth } from '../../context/AuthContext';
+import toast from 'react-hot-toast';
+import { Toaster } from 'react-hot-toast';
 
 interface Section {
     title: string;
@@ -40,6 +43,7 @@ interface Lesson {
     locked: boolean;
     tags: string[];
     content?: LessonContent;
+    xpReward: number;
 }
 
 export default function LessonDetailPage() {
@@ -56,6 +60,8 @@ export default function LessonDetailPage() {
     const [showExplanation, setShowExplanation] = useState<boolean>(false);
     const [quizScore, setQuizScore] = useState<number>(0);
     const [quizCompleted, setQuizCompleted] = useState<boolean>(false);
+    const [xpGiven, setXpGiven] = useState<boolean>(false);
+    const { user } = useAuth();
 
     useEffect(() => {
         const fetchLesson = async () => {
@@ -103,6 +109,14 @@ export default function LessonDetailPage() {
         fetchLesson();
     }, [params.id]);
 
+    useEffect(() => {
+        if (quizCompleted && !xpGiven) {
+            handleQuizSuccess(quizScore, content?.questions.length || 1);
+            setXpGiven(true);
+        }
+        // eslint-disable-next-line
+    }, [quizCompleted]);
+
     const handleSectionChange = (index: number) => {
         setActiveSection(index);
     };
@@ -111,13 +125,34 @@ export default function LessonDetailPage() {
         router.push('/lessons');
     };
 
-    const handleQuizStart = () => {
+    const handleQuizStart = async () => {
         setShowQuiz(true);
         setCurrentQuestionIndex(0);
         setSelectedAnswer(null);
         setShowExplanation(false);
         setQuizScore(0);
         setQuizCompleted(false);
+        setXpGiven(false);
+        if (user && lesson) {
+            const userRef = doc(db, 'users', user.uid);
+            const userDoc = await getDoc(userRef);
+            let startedLessons: string[] = [];
+            let completedLessons: string[] = [];
+            if (userDoc.exists()) {
+                const data = userDoc.data();
+                startedLessons = Array.isArray(data.startedLessons) ? data.startedLessons : [];
+                completedLessons = Array.isArray(data.completedLessons) ? data.completedLessons : [];
+            }
+            const lessonId = lesson.id;
+            if (lessonId && !startedLessons.includes(lessonId) && !completedLessons.includes(lessonId)) {
+                startedLessons.push(lessonId);
+                try {
+                    await setDoc(userRef, { startedLessons }, { merge: true });
+                } catch (err) {
+                    console.error('Erreur Firestore lors de l’ajout à startedLessons :', err);
+                }
+            }
+        }
     };
 
     const handleAnswerSelect = (index: number) => {
@@ -138,6 +173,70 @@ export default function LessonDetailPage() {
             setShowExplanation(false);
         } else {
             setQuizCompleted(true);
+        }
+    };
+
+    const handleQuizSuccess = async (score: number, total: number) => {
+        if (user && lesson) {
+            const percent = (score / total) * 100;
+            const userRef = doc(db, 'users', user.uid);
+            if (percent >= 50) {
+                // Récupérer l'exp, le level et les leçons complétées
+                const userDoc = await getDoc(userRef);
+                let exp = 0;
+                let level = 1;
+                let completedLessons: string[] = [];
+                if (userDoc.exists()) {
+                    const data = userDoc.data();
+                    exp = typeof data.exp === 'number' ? data.exp : 0;
+                    level = typeof data.level === 'number' ? data.level : 1;
+                    completedLessons = Array.isArray(data.completedLessons) ? data.completedLessons : [];
+                }
+                const lessonId = params.id?.toString() ?? '';
+                // Si la leçon est déjà complétée, ne rien faire
+                if (lessonId && completedLessons.includes(lessonId)) {
+                    toast('Leçon déjà complétée, pas de gain d’expérience.', { icon: 'ℹ️', duration: 3500 });
+                    return;
+                }
+                // Utiliser la valeur xpReward de la leçon (jamais 50 en dur)
+                const xpToAdd = typeof lesson.xpReward === 'number' ? lesson.xpReward : 0;
+                exp += xpToAdd;
+                let leveledUp = false;
+                let levelsGained = 0;
+                // Nouvelle logique : XP requise augmente avec le niveau
+                const xpForLevel = (lvl: number) => 100 + (lvl - 1) * 20;
+                while (exp >= xpForLevel(level)) {
+                    exp -= xpForLevel(level);
+                    level += 1;
+                    leveledUp = true;
+                    levelsGained++;
+                }
+                if (lessonId) {
+                    completedLessons.push(lessonId);
+                }
+                console.log('XP gagné (quiz):', xpToAdd, 'XP total:', exp, 'Level:', level);
+                try {
+                    await setDoc(userRef, {
+                      exp: Number(exp),
+                      level: Number(level),
+                      completedLessons: Array.isArray(completedLessons) ? completedLessons : [],
+                    }, { merge: true });
+                    console.log('Mise à jour Firestore (setDoc) :', { exp, level, completedLessons });
+                    toast.success(leveledUp ? (levelsGained > 1 ? `+${levelsGained} niveaux ! 🚀` : 'Niveau supérieur ! Bravo 🎉') : `+${xpToAdd} XP gagnés !`, {
+                      style: {
+                        background: leveledUp ? 'linear-gradient(90deg, #0fffc1 0%, #3b82f6 100%)' : '#10b981',
+                        color: '#1a1a1a',
+                        fontWeight: 'bold',
+                        fontSize: '1.1rem',
+                      },
+                      icon: leveledUp ? '🚀' : '⭐',
+                      duration: 4000
+                    });
+                } catch (err) {
+                    console.error('Erreur Firestore lors du setDoc (completedLessons):', err);
+                    toast.error('Erreur lors de la sauvegarde de vos leçons complétées.');
+                }
+            }
         }
     };
 
@@ -176,6 +275,7 @@ export default function LessonDetailPage() {
 
     return (
         <div className={styles.lessonPage}>
+            <Toaster position="top-center" />
             <div className={styles.lessonHeader}>
                 <button className={styles.backButton} onClick={goBack}>
                     <ArrowLeft size={16} />
@@ -274,19 +374,38 @@ export default function LessonDetailPage() {
                             </>
                         ) : (
                             <div className={styles.quizResults}>
-                                <h3>Quiz terminé !</h3>
+                                <h3 className={styles.quizTitle}>QUIZ TERMINÉ !</h3>
                                 <p className={styles.score}>
                                     Votre score : {quizScore} / {content.questions.length}
                                 </p>
                                 <p className={styles.percentage}>
                                     {Math.round((quizScore / (content.questions.length || 1)) * 100)}%
                                 </p>
-                                <button
-                                    className={styles.retryButton}
-                                    onClick={handleQuizStart}
-                                >
-                                    Recommencer le quiz
-                                </button>
+                                {Math.round((quizScore / (content.questions.length || 1)) * 100) >= 50 ? (
+                                    <p className={styles.xpMessage}>Bravo ! Vous gagnez {lesson.xpReward} XP 🎉</p>
+                                ) : (
+                                    <p className={styles.xpMessage}>Score insuffisant pour gagner de l'expérience.</p>
+                                )}
+                                <div className={styles.buttonRow}>
+                                    <button
+                                        className={styles.retryButton}
+                                        onClick={handleQuizStart}
+                                    >
+                                        Recommencer le quiz
+                                    </button>
+                                    <button
+                                        className={styles.backButton}
+                                        onClick={goBack}
+                                    >
+                                        Retour aux leçons
+                                    </button>
+                                    <button
+                                        className={styles.retryButton}
+                                        onClick={() => window.location.href = '/profile'}
+                                    >
+                                        Rafraîchir mon profil
+                                    </button>
+                                </div>
                             </div>
                         )}
                     </div>

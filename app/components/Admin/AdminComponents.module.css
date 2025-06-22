@@ -268,37 +268,64 @@
 }
 
 .lessonsTable {
-  border-radius: 10px;
-  overflow: hidden;
-  border: 1px solid var(--couleur-principale);
+  border-radius: 12px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  border: 1.5px solid var(--couleur-principale);
+  min-width: 900px;
+  background: rgba(3, 2, 25, 0.85);
+  box-shadow: 0 4px 20px rgba(0,36,255,0.10);
+}
+
+.tableHeader, .tableRow {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1.5fr 1fr 1fr 1.2fr;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .tableHeader {
-  display: grid;
-  grid-template-columns: 2fr 1fr 1.5fr 1fr 1fr;
-  background-color: rgba(0, 36, 255, 0.2);
-  padding: 1rem;
+  background: linear-gradient(90deg, #0a0a60 60%, #0a1a80 100%);
   font-weight: bold;
   color: var(--couleur-secondaire);
   font-family: 'Abel', sans-serif;
+  padding: 1.1rem 0.5rem;
+  border-bottom: 2px solid var(--couleur-principale);
+  border-radius: 12px 12px 0 0;
 }
 
 .tableRow {
-  display: grid;
-  grid-template-columns: 2fr 1fr 1.5fr 1fr 1fr;
-  padding: 1rem;
-  border-top: 1px solid rgba(0, 36, 255, 0.2);
-  transition: background-color 0.3s ease;
+  background: rgba(3, 2, 25, 0.92);
+  padding: 1rem 0.5rem;
+  min-height: 56px;
+  border-bottom: 1px solid rgba(0,36,255,0.10);
+  transition: background 0.2s;
 }
 
-.tableRow:hover {
-  background-color: rgba(0, 36, 255, 0.1);
+.tableRow:nth-child(even) {
+  background: rgba(10, 255, 212, 0.03);
+}
+
+.tableRow:last-child {
+  border-radius: 0 0 12px 12px;
 }
 
 .tableCell {
-  padding: 0 0.5rem;
+  padding: 0.7rem 0.7rem;
   display: flex;
   align-items: center;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  border-right: 1px solid rgba(0,36,255,0.08);
+  color: var(--couleur-cinquieme);
+  font-family: 'Abel', sans-serif;
+  font-size: 1rem;
+}
+
+.tableCell:last-child {
+  border-right: none;
 }
 
 .lessonTitle {
@@ -307,6 +334,9 @@
   gap: 0.5rem;
   color: var(--couleur-cinquieme);
   font-weight: 500;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .categoryBadge {
@@ -316,12 +346,20 @@
   border-radius: 20px;
   font-size: 0.8rem;
   font-family: 'Abel', sans-serif;
+  white-space: normal;
+  word-break: break-word;
+  line-height: 1.2;
+  max-width: 100%;
+  display: inline-block;
 }
 
 .tagsList {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
+  max-width: 100%;
+  overflow-x: visible;
+  white-space: normal;
 }
 
 .tagBadge {
@@ -543,12 +581,6 @@
   display: flex;
   gap: 0.8rem;
   margin-bottom: 0.8rem;
-}
-
-.tagsList {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.8rem;
 }
 
 .tag {
@@ -1321,4 +1353,81 @@
   color: var(--couleur-quaternaire);
   border-color: var(--couleur-secondaire);
   transform: translateY(-2px) scale(1.03);
+}
+
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(10, 20, 40, 0.75);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modalContent {
+  background: #10142a;
+  border-radius: 14px;
+  box-shadow: 0 8px 32px rgba(0,36,255,0.18);
+  padding: 2.2rem 2.5rem 2rem 2.5rem;
+  min-width: 320px;
+  max-width: 95vw;
+  color: var(--couleur-cinquieme);
+  text-align: center;
+  border: 2px solid var(--couleur-principale);
+}
+
+.modalContent h3 {
+  font-size: 1.3rem;
+  color: var(--couleur-secondaire);
+  margin-bottom: 1.2rem;
+  font-family: 'Bebas Neue', sans-serif;
+}
+
+.modalContent p {
+  font-size: 1.05rem;
+  margin-bottom: 2rem;
+  color: var(--couleur-tertiaire);
+}
+
+.modalActions {
+  display: flex;
+  gap: 1.2rem;
+  justify-content: center;
+}
+
+.confirmYes {
+  background: #ff4757;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 0.6rem 1.3rem;
+  font-family: 'Abel', sans-serif;
+  font-size: 1rem;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.2s, color 0.2s;
+}
+.confirmYes:hover {
+  background: #e03347;
+}
+
+.confirmNo {
+  background: var(--couleur-principale);
+  color: var(--couleur-cinquieme);
+  border: none;
+  border-radius: 6px;
+  padding: 0.6rem 1.3rem;
+  font-family: 'Abel', sans-serif;
+  font-size: 1rem;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.2s, color 0.2s;
+}
+.confirmNo:hover {
+  background: var(--couleur-secondaire);
+  color: var(--couleur-quaternaire);
 }

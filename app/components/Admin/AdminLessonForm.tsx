@@ -83,7 +83,9 @@ const AdminLessonForm: React.FC<AdminLessonFormProps> = ({
     iconName: "BookOpen",
     locked: false,
     tags: [],
-    order: 0
+    order: 0,
+    levelRequired: 1,
+    xpReward: 50
   });
 
   const [categories, setCategories] = useState<string[]>(initialCategories);
@@ -139,7 +141,9 @@ const AdminLessonForm: React.FC<AdminLessonFormProps> = ({
         iconName: lesson.iconName,
         locked: lesson.locked,
         tags: [...lesson.tags],
-        order: lesson.order
+        order: lesson.order,
+        levelRequired: lesson.levelRequired,
+        xpReward: lesson.xpReward
       });
 
       // Charger le contenu de la leçon
@@ -374,7 +378,9 @@ const AdminLessonForm: React.FC<AdminLessonFormProps> = ({
         iconName: formData.iconName || "BookOpen",
         locked: formData.locked || false,
         tags: formData.tags || [],
-        order: formData.order || 0
+        order: formData.order || 0,
+        levelRequired: formData.levelRequired || 1,
+        xpReward: Number(formData.xpReward) || 0
       };
 
       const lessonRef = doc(db, "lessons", lessonData.id);
@@ -388,7 +394,9 @@ const AdminLessonForm: React.FC<AdminLessonFormProps> = ({
         iconName: lessonData.iconName,
         locked: lessonData.locked,
         tags: lessonData.tags,
-        order: lessonData.order
+        order: lessonData.order,
+        levelRequired: lessonData.levelRequired,
+        xpReward: lessonData.xpReward
       });
 
       await setDoc(contentRef, {
@@ -516,6 +524,32 @@ const AdminLessonForm: React.FC<AdminLessonFormProps> = ({
                     </button>
                   </div>
                 )}
+              </div>
+
+              <div className={styles.formGroup}>
+                <label className={styles.formLabel}>Niveau requis *</label>
+                <input
+                  type="number"
+                  name="levelRequired"
+                  min={1}
+                  value={formData.levelRequired ?? 1}
+                  onChange={handleChange}
+                  className={styles.formInput}
+                  required
+                />
+              </div>
+
+              <div className={styles.formGroup}>
+                <label className={styles.formLabel}>XP gagnée *</label>
+                <input
+                  type="number"
+                  name="xpReward"
+                  min={0}
+                  value={formData.xpReward ?? 50}
+                  onChange={handleChange}
+                  className={styles.formInput}
+                  required
+                />
               </div>
             </div>
 

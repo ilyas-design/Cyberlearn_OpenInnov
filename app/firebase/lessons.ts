@@ -39,6 +39,8 @@ export interface Lesson {
     locked: boolean;
     tags: string[];
     order: number;
+    levelRequired: number; // Niveau requis pour accéder à la leçon
+    xpReward: number; // XP gagnée à la réussite du quiz
     content?: LessonContent;
 }
 
@@ -53,7 +55,9 @@ const convertLesson = (doc: QueryDocumentSnapshot<DocumentData>): Lesson => {
         iconName: data.iconName || 'BookOpen',
         locked: data.locked || false,
         tags: data.tags || [],
-        order: data.order || 0
+        order: data.order || 0,
+        levelRequired: data.levelRequired ?? 1,
+        xpReward: data.xpReward ?? 50,
         // Le contenu détaillé n'est pas chargé ici pour des raisons de performance
     };
 };
@@ -137,6 +141,8 @@ export const getLessonById = async (lessonId: string): Promise<Lesson | null> =>
             locked: lessonData.locked || false,
             tags: lessonData.tags || [],
             order: lessonData.order || 0,
+            levelRequired: lessonData.levelRequired ?? 1,
+            xpReward: lessonData.xpReward ?? 50,
             content: content
         };
     } catch (error) {
