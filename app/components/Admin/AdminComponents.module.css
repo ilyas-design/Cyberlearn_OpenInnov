@@ -147,14 +147,18 @@
 .categoryFilter {
   position: relative;
   width: 200px;
+  height: auto;
 }
 
 .filterIcon {
   position: absolute;
-  left: 10px;
+  left: 16px;
   top: 50%;
   transform: translateY(-50%);
   color: var(--couleur-tertiaire);
+  z-index: 2;
+  pointer-events: none;
+  font-size: 1.2rem;
 }
 
 .categorySelect {
@@ -167,12 +171,87 @@
   font-family: 'Abel', sans-serif;
   appearance: none;
   cursor: pointer;
+  height: 48px;
+  line-height: 1.2;
+  display: block;
 }
 
 .categorySelect:focus {
   outline: none;
   border-color: var(--couleur-secondaire);
   box-shadow: 0 0 8px rgba(10, 255, 212, 0.4);
+}
+
+.adminLessonForm .categorySelectContainer {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.adminLessonForm .categoryInputContainer {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.adminLessonForm .categoryInputContainer .formInput {
+  min-width: 180px;
+  width: auto;
+  font-size: 1rem;
+  padding: 0.7rem 1rem;
+  background-color: rgba(3, 2, 25, 0.6);
+  border: 1px solid var(--couleur-principale);
+  border-radius: 8px;
+  color: var(--couleur-cinquieme);
+  font-family: 'Abel', sans-serif;
+}
+
+.adminLessonForm .categoryInputContainer .formInput::placeholder {
+  color: var(--couleur-tertiaire);
+  opacity: 1;
+}
+
+.adminLessonForm .categoryInputContainer .formInput:focus {
+  border-color: var(--couleur-secondaire);
+  background-color: rgba(3, 2, 25, 0.8);
+  box-shadow: 0 0 8px rgba(10, 255, 212, 0.2);
+}
+
+.adminLessonForm .categoryInputContainer .addButton,
+.adminLessonForm .categoryInputContainer .cancelButton {
+  min-width: unset;
+  width: 32px;
+  height: 32px;
+  padding: 0.4rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  background: rgba(0, 36, 255, 0.08);
+  border: 1px solid var(--couleur-principale);
+  color: var(--couleur-secondaire);
+  transition: background 0.2s, color 0.2s, border 0.2s;
+  box-shadow: none;
+}
+
+.adminLessonForm .categoryInputContainer .addButton:hover {
+  background: var(--couleur-secondaire);
+  color: var(--couleur-quaternaire);
+  border-color: var(--couleur-secondaire);
+}
+
+.adminLessonForm .categoryInputContainer .cancelButton {
+  color: var(--couleur-tertiaire);
+  background: transparent;
+  border: 1px solid var(--couleur-tertiaire);
+}
+
+.adminLessonForm .categoryInputContainer .cancelButton:hover {
+  background: rgba(231, 76, 60, 0.15);
+  color: #c0392b;
+  border-color: #c0392b;
 }
 
 .noLessonsContainer {
@@ -335,71 +414,77 @@
 
 /* Formulaire de leçon */
 .adminLessonForm {
-  background-color: rgba(3, 2, 25, 0.7);
-  border-radius: 8px;
-  box-shadow: 0 4px 15px rgba(0, 36, 255, 0.3);
-  padding: 2rem;
+  background-color: rgba(3, 2, 25, 0.8);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 36, 255, 0.2);
+  padding: 2.5rem;
   width: 100%;
   max-width: 1200px;
   margin: 0 auto;
-  border: 1px solid var(--couleur-principale);
+  border: 1px solid rgba(10, 255, 212, 0.2);
 }
 
 .formHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 2rem;
+  margin-bottom: 2.5rem;
 }
 
 .formTitle {
-  font-size: 1.5rem;
-  color: var(--couleur-cinquieme);
+  font-size: 2.5rem;
+  color: var(--couleur-secondaire);
   font-family: 'Bebas Neue', sans-serif;
   margin: 0;
+  letter-spacing: 2px;
+  text-shadow: 0 0 10px rgba(10, 255, 212, 0.3);
 }
 
 .form {
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: 2.5rem;
 }
 
 .formGrid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 2rem;
+  gap: 2.5rem;
 }
 
 .formColumn {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 2rem;
 }
 
 .formGroup {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.8rem;
 }
 
 .formLabel {
   font-weight: 500;
-  color: var(--couleur-cinquieme);
+  color: var(--couleur-secondaire);
   font-family: 'Abel', sans-serif;
+  letter-spacing: 0.5px;
+  font-size: 1.1rem;
 }
 
 .formInput,
 .formTextarea,
 .formSelect {
-  padding: 0.75rem;
-  background-color: rgba(3, 2, 25, 0.8);
-  border: 1px solid var(--couleur-principale);
-  border-radius: 6px;
+  padding: 1rem;
+  background-color: rgba(3, 2, 25, 0.6);
+  border: 1px solid rgba(10, 255, 212, 0.3);
+  border-radius: 8px;
   font-size: 1rem;
   width: 100%;
   color: var(--couleur-cinquieme);
   transition: all 0.3s ease;
+  font-family: 'Abel', sans-serif;
+  box-shadow: 0 0 10px rgba(0, 36, 255, 0.1);
 }
 
 .formInput:focus,
@@ -407,120 +492,131 @@
 .formSelect:focus {
   outline: none;
   border-color: var(--couleur-secondaire);
-  box-shadow: 0 0 8px rgba(10, 255, 212, 0.4);
+  background-color: rgba(3, 2, 25, 0.8);
+  box-shadow: 0 0 15px rgba(10, 255, 212, 0.2);
 }
 
 .formTextarea {
-  min-height: 100px;
+  min-height: 120px;
   resize: vertical;
 }
 
 .iconsGrid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-  gap: 0.75rem;
-  padding: 1rem;
-  background-color: rgba(3, 2, 25, 0.8);
-  border-radius: 6px;
-  border: 1px solid var(--couleur-principale);
+  gap: 1rem;
+  padding: 1.5rem;
+  background-color: rgba(3, 2, 25, 0.6);
+  border-radius: 12px;
+  border: 1px solid rgba(10, 255, 212, 0.2);
+  box-shadow: inset 0 0 20px rgba(0, 36, 255, 0.1);
 }
 
 .iconButton {
-  padding: 0.75rem;
-  border: 1px solid var(--couleur-principale);
-  border-radius: 6px;
+  padding: 1rem;
+  border: 1px solid rgba(0, 36, 255, 0.3);
+  border-radius: 8px;
   background-color: rgba(3, 2, 25, 0.7);
   color: var(--couleur-cinquieme);
   cursor: pointer;
   transition: all 0.3s ease;
-  font-size: 0.875rem;
+  font-size: 0.9rem;
   text-align: center;
   font-family: 'Abel', sans-serif;
 }
 
 .iconButton:hover {
-  background-color: var(--couleur-principale);
+  background-color: rgba(0, 36, 255, 0.3);
   border-color: var(--couleur-secondaire);
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(0, 36, 255, 0.2);
 }
 
 .activeIcon {
-  background-color: var(--couleur-principale);
+  background-color: rgba(10, 255, 212, 0.2);
   border-color: var(--couleur-secondaire);
-  color: var(--couleur-cinquieme);
+  color: var(--couleur-secondaire);
+  box-shadow: 0 0 15px rgba(10, 255, 212, 0.3);
 }
 
 .tagsInputContainer {
   display: flex;
-  gap: 0.5rem;
-  margin-bottom: 0.5rem;
+  gap: 0.8rem;
+  margin-bottom: 0.8rem;
 }
 
 .tagsList {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
+  gap: 0.8rem;
 }
 
 .tag {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 0.75rem;
-  background-color: rgba(0, 36, 255, 0.3);
-  border: 1px solid var(--couleur-principale);
-  border-radius: 4px;
-  font-size: 0.875rem;
-  color: var(--couleur-cinquieme);
+  gap: 0.8rem;
+  padding: 0.6rem 1rem;
+  background-color: rgba(0, 36, 255, 0.2);
+  border: 1px solid rgba(0, 36, 255, 0.3);
+  border-radius: 8px;
+  font-size: 0.9rem;
+  color: var(--couleur-secondaire);
   font-family: 'Abel', sans-serif;
+  box-shadow: 0 2px 8px rgba(0, 36, 255, 0.1);
 }
 
 .removeTagButton {
   background: none;
   border: none;
-  color: var(--couleur-cinquieme);
+  color: var(--couleur-secondaire);
   cursor: pointer;
   padding: 0;
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: all 0.3s ease;
 }
 
 .removeTagButton:hover {
-  color: var(--couleur-tertiaire);
+  color: var(--couleur-cinquieme);
+  transform: scale(1.2);
 }
 
 .statusToggle {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.75rem 1rem;
-  background-color: rgba(3, 2, 25, 0.7);
-  border: 1px solid var(--couleur-principale);
-  border-radius: 6px;
+  gap: 0.8rem;
+  padding: 0.8rem 1.2rem;
+  background-color: rgba(3, 2, 25, 0.6);
+  border: 1px solid rgba(10, 255, 212, 0.3);
+  border-radius: 8px;
   color: var(--couleur-cinquieme);
   cursor: pointer;
   transition: all 0.3s ease;
-  font-size: 0.875rem;
+  font-size: 0.9rem;
   font-family: 'Abel', sans-serif;
+  box-shadow: 0 2px 8px rgba(0, 36, 255, 0.1);
 }
 
 .statusToggle.locked {
   background-color: rgba(231, 76, 60, 0.2);
-  border-color: #e74c3c;
+  border-color: rgba(231, 76, 60, 0.4);
   color: #e74c3c;
+  box-shadow: 0 2px 8px rgba(231, 76, 60, 0.2);
 }
 
 .statusToggle.published {
   background-color: rgba(46, 204, 113, 0.2);
-  border-color: #2ecc71;
+  border-color: rgba(46, 204, 113, 0.4);
   color: #2ecc71;
+  box-shadow: 0 2px 8px rgba(46, 204, 113, 0.2);
 }
 
 .formActions {
   display: flex;
   justify-content: space-between;
-  gap: 1rem;
-  margin-top: 1rem;
+  gap: 1.5rem;
+  margin-top: 2rem;
 }
 
 .saveButton,
@@ -529,42 +625,74 @@
 .backButton {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.75rem 1.5rem;
-  border-radius: 6px;
+  gap: 0.8rem;
+  padding: 0.8rem 1.8rem;
+  border-radius: 8px;
   font-weight: 500;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.3s ease;
+  font-family: 'Abel', sans-serif;
+  letter-spacing: 0.5px;
 }
 
 .saveButton {
   background-color: var(--couleur-secondaire);
   color: var(--couleur-quaternaire);
   border: none;
+  box-shadow: 0 4px 15px rgba(10, 255, 212, 0.3);
 }
 
 .saveButton:hover {
   background-color: rgba(10, 255, 212, 0.8);
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(10, 255, 212, 0.4);
 }
 
 .saveButton:disabled {
-  background-color: var(--couleur-tertiaire);
-  opacity: 0.5;
+  background-color: rgba(10, 255, 212, 0.3);
   cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
 }
 
 .cancelButton,
 .contentButton,
 .backButton {
-  background-color: var(--couleur-principale);
-  color: var(--couleur-cinquieme);
-  border: none;
+  background-color: transparent;
+  color: var(--couleur-tertiaire);
+  border: 1px solid var(--couleur-tertiaire);
 }
 
-.cancelButton:hover,
-.contentButton:hover,
+.cancelButton:hover {
+  background-color: rgba(206, 206, 206, 0.1);
+  color: var(--couleur-cinquieme);
+  border-color: var(--couleur-cinquieme);
+  transform: translateY(-3px);
+}
+
+.contentButton {
+  background-color: rgba(0, 36, 255, 0.3);
+  color: var(--couleur-cinquieme);
+  border: 1px solid var(--couleur-principale);
+}
+
+.contentButton:hover {
+  background-color: rgba(0, 36, 255, 0.5);
+  transform: translateY(-3px);
+  box-shadow: 0 4px 15px rgba(0, 36, 255, 0.3);
+}
+
+.backButton {
+  background-color: transparent;
+  color: var(--couleur-tertiaire);
+  border: 1px solid var(--couleur-tertiaire);
+}
+
 .backButton:hover {
-  background-color: rgba(0, 36, 255, 0.8);
+  background-color: rgba(206, 206, 206, 0.1);
+  color: var(--couleur-cinquieme);
+  border-color: var(--couleur-cinquieme);
+  transform: translateY(-3px);
 }
 
 .contentEditor {
@@ -922,144 +1050,275 @@
   }
 }
 
-/* Éditeur de Quiz */
+/** --- STYLE HARMONISÉ AVEC LE RESTE DU SITE --- **/
+
 .quizEditor {
-  background-color: rgba(3, 2, 25, 0.7);
-  border-radius: 8px;
+  background: rgba(3, 2, 25, 0.7);
+  border-radius: 12px;
   box-shadow: 0 4px 15px rgba(0, 36, 255, 0.3);
   padding: 2rem;
   width: 100%;
-  max-width: 1200px;
-  margin: 0 auto;
+  max-width: 1000px;
+  margin: 2rem auto;
   border: 1px solid var(--couleur-principale);
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
 }
 
 .quizHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid var(--couleur-principale);
+  padding-bottom: 1rem;
 }
 
 .quizTitle {
-  font-size: 1.5rem;
-  color: var(--couleur-cinquieme);
+  font-size: 2rem;
+  color: var(--couleur-secondaire);
   font-family: 'Bebas Neue', sans-serif;
   margin: 0;
+  letter-spacing: 1px;
 }
 
 .quizForm {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 2rem;
+  width: 100%;
+}
+@media (max-width: 900px) {
+  .quizForm {
+    grid-template-columns: 1fr;
+  }
 }
 
 .questionForm {
-  background-color: rgba(3, 2, 25, 0.5);
-  padding: 1.5rem;
-  border-radius: 8px;
+  background: rgba(3, 2, 25, 0.5);
+  padding: 2rem 1.5rem;
+  border-radius: 10px;
   border: 1px solid var(--couleur-principale);
+  box-shadow: 0 2px 8px rgba(0, 36, 255, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.questionForm h4 {
+  color: var(--couleur-secondaire);
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.3rem;
+  margin: 0 0 1rem 0;
+  border-bottom: 1px solid var(--couleur-principale);
+  padding-bottom: 0.5rem;
+  letter-spacing: 0.5px;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.formLabel {
+  font-weight: 500;
+  color: var(--couleur-cinquieme);
+  font-size: 1rem;
+  font-family: 'Abel', sans-serif;
+}
+
+.formInput, .formTextarea {
+  border: 1px solid var(--couleur-principale);
+  border-radius: 6px;
+  padding: 0.7rem 1rem;
+  font-size: 1rem;
+  background: var(--couleur-quaternaire);
+  color: var(--couleur-cinquieme);
+  font-family: 'Abel', sans-serif;
+  transition: border 0.2s;
+}
+.formInput:focus, .formTextarea:focus {
+  border-color: var(--couleur-secondaire);
+  outline: none;
+  box-shadow: 0 0 8px rgba(10, 255, 212, 0.2);
 }
 
 .optionInput {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 0.7rem;
   margin-bottom: 0.5rem;
+  background: rgba(0, 36, 255, 0.08);
+  padding: 0.5rem 0.7rem;
+  border-radius: 6px;
+  border: 1px solid var(--couleur-principale);
 }
-
 .optionInput input[type="radio"] {
   accent-color: var(--couleur-secondaire);
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+
+.questionForm .addButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
+  background: var(--couleur-principale);
+  color: var(--couleur-cinquieme);
+  border: none;
+  padding: 0.9rem 1.7rem;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+  font-family: 'Abel', sans-serif;
+  margin-top: 1rem;
+  font-size: 1.05rem;
+  box-shadow: 0 2px 8px rgba(0,36,255,0.08);
+}
+.questionForm .addButton:hover {
+  background: var(--couleur-secondaire);
+  color: var(--couleur-quaternaire);
+  transform: translateY(-2px) scale(1.03);
 }
 
 .questionsList {
-  background-color: rgba(3, 2, 25, 0.5);
-  padding: 1.5rem;
-  border-radius: 8px;
+  background: rgba(3, 2, 25, 0.5);
+  padding: 2rem 1.5rem;
+  border-radius: 10px;
   border: 1px solid var(--couleur-principale);
-  max-height: 600px;
+  box-shadow: 0 2px 8px rgba(0, 36, 255, 0.08);
+
   overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+.questionsList h4 {
+  color: var(--couleur-secondaire);
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.2rem;
+  margin: 0 0 1rem 0;
+  border-bottom: 1px solid var(--couleur-principale);
+  padding-bottom: 0.5rem;
 }
 
 .questionItem {
-  background-color: rgba(3, 2, 25, 0.7);
-  padding: 1rem;
-  border-radius: 6px;
-  margin-bottom: 1rem;
+  background: var(--couleur-quaternaire);
+  padding: 1.2rem 1rem 1.2rem 1.2rem;
+  border-radius: 8px;
   border: 1px solid var(--couleur-principale);
-  position: relative;
+  box-shadow: 0 1px 4px rgba(0,36,255,0.08);
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1.2rem;
 }
-
 .questionContent {
-  margin-right: 2rem;
+  flex: 1;
 }
-
 .questionText {
-  font-weight: 500;
+  font-weight: 600;
   color: var(--couleur-cinquieme);
-  margin-bottom: 1rem;
+  margin-bottom: 0.7rem;
+  font-size: 1.08rem;
+  font-family: 'Abel', sans-serif;
 }
-
 .optionsList {
   list-style: none;
   padding: 0;
-  margin: 0 0 1rem 0;
+  margin: 0 0 0.7rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
 }
-
 .option {
-  padding: 0.5rem;
-  margin-bottom: 0.5rem;
-  background-color: rgba(3, 2, 25, 0.5);
-  border-radius: 4px;
+  padding: 0.5rem 0.9rem;
+  background: rgba(0, 36, 255, 0.08);
+  border-radius: 5px;
   border: 1px solid var(--couleur-principale);
+  color: var(--couleur-cinquieme);
+  font-size: 0.98rem;
+  font-family: 'Abel', sans-serif;
 }
-
 .option.correct {
-  background-color: rgba(46, 204, 113, 0.2);
-  border-color: #2ecc71;
-  color: #2ecc71;
+  background: rgba(10, 255, 212, 0.1);
+  border-color: var(--couleur-secondaire);
+  color: var(--couleur-secondaire);
+  font-weight: 600;
 }
-
 .explanation {
-  font-size: 0.9rem;
-  color: var(--couleur-tertiaire);
+  font-size: 0.97rem;
+  color: var(--couleur-secondaire);
   font-style: italic;
+  background: rgba(0, 36, 255, 0.08);
+  padding: 0.7rem 1rem;
+  border-radius: 5px;
+  border-left: 3px solid var(--couleur-secondaire);
 }
-
-.removeButton {
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
-  background: none;
-  border: none;
-  color: var(--couleur-tertiaire);
+.questionActions {
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem;
+  align-items: center;
+  position: static;
+}
+.editButton, .removeButton {
+  background: rgba(0, 36, 255, 0.08);
+  border: 1px solid var(--couleur-principale);
+  color: var(--couleur-secondaire);
   cursor: pointer;
-  padding: 0.25rem;
-  border-radius: 4px;
-  transition: all 0.3s ease;
+  padding: 0.45rem 0.55rem;
+  border-radius: 50%;
+  transition: background 0.18s, color 0.18s, box-shadow 0.18s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  box-shadow: 0 1px 4px rgba(0,36,255,0.03);
+}
+.editButton:hover {
+  background: var(--couleur-secondaire);
+  color: var(--couleur-quaternaire);
+}
+.removeButton {
+  color: #e74c3c;
+}
+.removeButton:hover {
+  background: rgba(231, 76, 60, 0.15);
+  color: #c0392b;
 }
 
-.removeButton:hover {
-  color: #e74c3c;
-  background-color: rgba(231, 76, 60, 0.1);
+/* Responsive padding */
+@media (max-width: 600px) {
+  .quizEditor, .questionForm, .questionsList {
+    padding: 1rem 0.5rem;
+  }
 }
 
 .quizButton {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  background-color: rgba(10, 255, 212, 0.2);
+  background-color: var(--couleur-principale);
   color: var(--couleur-cinquieme);
-  border: 1px solid var(--couleur-secondaire);
-  padding: 0.5rem 1rem;
-  border-radius: 5px;
+  border: 1px solid var(--couleur-principale);
+  padding: 0.7rem 1.3rem;
+  border-radius: 6px;
   cursor: pointer;
   font-family: 'Abel', sans-serif;
   font-weight: 500;
-  transition: all 0.3s ease;
+  font-size: 1rem;
+  transition: background 0.2s, color 0.2s, border 0.2s, transform 0.2s;
+  box-shadow: 0 2px 8px rgba(0,36,255,0.08);
 }
-
 .quizButton:hover {
   background-color: var(--couleur-secondaire);
   color: var(--couleur-quaternaire);
+  border-color: var(--couleur-secondaire);
+  transform: translateY(-2px) scale(1.03);
 }

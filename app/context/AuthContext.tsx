@@ -65,12 +65,21 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
             if (user) {
                 setUser(user);
-                const requires2FA = await checkTwoFactor(user);
-                if (requires2FA && !twoFactorVerified) {
-                    setTwoFactorRequired(true);
-                    router.push('/auth/2fa-verify');
-                } else {
-                    setTwoFactorRequired(false);
+                // Ne vérifier la 2FA que si l'utilisateur vient de se connecter
+                // et non sur chaque changement d'état d'authentification
+                if (!twoFactorVerified) {
+                    const requires2FA = await checkTwoFactor(user);
+                    if (requires2FA) {
+                        setTwoFactorRequired(true);
+                        // Vérifier si l'utilisateur est sur la page admin
+                        // Si c'est le cas, ne pas rediriger vers la vérification 2FA
+                        const currentPath = window.location.pathname;
+                        if (!currentPath.startsWith('/admin')) {
+                            router.push('/auth/2fa-verify');
+                        }
+                    } else {
+                        setTwoFactorRequired(false);
+                    }
                 }
             } else {
                 setUser(null);
@@ -96,4 +105,4 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
 export function useAuth() {
     return useContext(AuthContext);
-} 
+}

@@ -13,13 +13,15 @@ import {
 } from "firebase/firestore";
 import { db } from "../../firebase/config";
 import { Lesson, LessonContent, Question } from "../../firebase/lessons";
-import { X, Plus, Save, ArrowLeft, Lock, Unlock } from "lucide-react";
+import { X, Plus, Save, ArrowLeft, Lock, Unlock, Edit } from "lucide-react";
 import styles from "./AdminComponents.module.css";
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 import 'katex/dist/katex.min.css';
+import { toast } from 'react-hot-toast';
+import { v4 as uuidv4 } from 'uuid'; // Ajout de l'import pour uuidv4
 
 interface AdminLessonFormProps {
   lesson: Lesson | null;
@@ -94,12 +96,14 @@ const AdminLessonForm: React.FC<AdminLessonFormProps> = ({
   const [activeSection, setActiveSection] = useState<number>(0);
   const [showContentEditor, setShowContentEditor] = useState<boolean>(false);
   const [showQuizEditor, setShowQuizEditor] = useState<boolean>(false);
-  const [newQuestion, setNewQuestion] = useState<Partial<Question>>({
+  const [newQuestion, setNewQuestion] = useState<Question>({
+    id: uuidv4(),
     text: "",
     options: ["", "", "", ""],
     correctAnswer: 0,
     explanation: ""
   });
+  const [formErrors, setFormErrors] = useState<string[]>([]); // Add this line
   const isMounted = useRef(false);
 
   // Icônes disponibles
@@ -237,30 +241,99 @@ const AdminLessonForm: React.FC<AdminLessonFormProps> = ({
   };
 
   // Gérer les questions du quiz
+  const [editingQuestionId, setEditingQuestionId] = useState<string | null>(null);
+  const [isEditing, setIsEditing] = useState(false);
+
+  // Modifiez la fonction handleAddQuestion pour gérer aussi l'édition
   const handleAddQuestion = () => {
-    if (newQuestion.text && newQuestion.options?.every(opt => opt.trim()) && newQuestion.explanation) {
-      const question: Question = {
-        id: `question-${Date.now()}`,
-        text: newQuestion.text,
-        options: newQuestion.options as string[],
-        correctAnswer: newQuestion.correctAnswer || 0,
-        explanation: newQuestion.explanation
-      };
-
-      setContentData(prev => ({
-        ...prev,
-        questions: [...prev.questions, question]
-      }));
-
-      setNewQuestion({
-        text: "",
-        options: ["", "", "", ""],
-        correctAnswer: 0,
-        explanation: ""
+    // Validation
+    const errors = [];
+    if (!newQuestion.text.trim()) errors.push("Le texte de la question est requis");
+    if (newQuestion.options.some(opt => !opt.trim())) errors.push("Toutes les options doivent être remplies");
+    if (newQuestion.correctAnswer === null) errors.push("Vous devez sélectionner une réponse correcte");
+    
+    if (errors.length > 0) {
+      setFormErrors(errors);
+      return;
+    }
+    
+    if (isEditing && editingQuestionId) {
+      // Mise à jour d'une question existante
+      const updatedQuestions = contentData.questions.map(q => 
+        q.id === editingQuestionId ? { ...newQuestion, id: editingQuestionId } : q
+      );
+      
+      setContentData({
+        ...contentData,
+        questions: updatedQuestions
       });
+      
+      // Réinitialiser le formulaire et l'état d'édition
+      setNewQuestion({
+        id: uuidv4(),
+        text: '',
+        options: ['', '', '', ''],
+        correctAnswer: 0,
+        explanation: ''
+      });
+      setEditingQuestionId(null);
+      setIsEditing(false);
+      setFormErrors([]);
+      toast.success("Question modifiée avec succès");
+    } else {
+      // Ajout d'une nouvelle question
+      setContentData({
+        ...contentData,
+        questions: [...contentData.questions, {
+          ...newQuestion,
+          id: newQuestion.id || uuidv4() // Assurez-vous qu'il y a toujours un ID
+        } as Question]
+      });
+      
+      // Réinitialiser le formulaire
+      setNewQuestion({
+        id: uuidv4(),
+        text: '',
+        options: ['', '', '', ''],
+        correctAnswer: 0,
+        explanation: ''
+      });
+      setFormErrors([]);
+      toast.success("Question ajoutée avec succès");
     }
   };
-
+  
+  // Ajoutez cette nouvelle fonction pour éditer une question existante
+  const handleEditQuestion = (questionId: string) => {
+    const questionToEdit = contentData.questions.find(q => q.id === questionId);
+    if (questionToEdit) {
+      setNewQuestion({
+        ...questionToEdit
+      });
+      setEditingQuestionId(questionId);
+      setIsEditing(true);
+      
+      // Faire défiler jusqu'au formulaire d'édition
+      const formElement = document.querySelector(`.${styles.questionForm}`);
+      if (formElement) {
+        formElement.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  };
+  
+  // Ajoutez cette fonction pour annuler l'édition
+  const handleCancelEdit = () => {
+    setNewQuestion({
+      id: uuidv4(),
+      text: '',
+      options: ['', '', '', ''],
+      correctAnswer: 0,
+      explanation: ''
+    });
+    setEditingQuestionId(null);
+    setIsEditing(false);
+    setFormErrors([]);
+  };
   const handleRemoveQuestion = (questionId: string) => {
     setContentData(prev => ({
       ...prev,
@@ -392,7 +465,31 @@ const AdminLessonForm: React.FC<AdminLessonFormProps> = ({
 
               <div className={styles.formGroup}>
                 <label className={styles.formLabel}>Catégorie *</label>
-                {showCategoryInput ? (
+                <div className={styles.categorySelectContainer}>
+                  <select
+                    name="category"
+                    value={formData.category}
+                    onChange={handleChange}
+                    className={styles.formSelect}
+                    required
+                  >
+                    <option value="">Sélectionner une catégorie</option>
+                    {categories.map((category) => (
+                      <option key={category} value={category}>
+                        {category}
+                      </option>
+                    ))}
+                  </select>
+                  <button
+                    type="button"
+                    className={styles.addButton}
+                    onClick={() => setShowCategoryInput(true)}
+                    title="Ajouter une nouvelle catégorie"
+                  >
+                    <Plus size={16} />
+                  </button>
+                </div>
+                {showCategoryInput && (
                   <div className={styles.categoryInputContainer}>
                     <input
                       type="text"
@@ -405,40 +502,17 @@ const AdminLessonForm: React.FC<AdminLessonFormProps> = ({
                       type="button"
                       className={styles.addButton}
                       onClick={handleAddCategory}
+                      title="Valider la nouvelle catégorie"
                     >
-                      <Plus size={16} />
+                      <span style={{display: 'flex', alignItems: 'center'}}>&#10003;</span>
                     </button>
                     <button
                       type="button"
                       className={styles.cancelButton}
                       onClick={() => setShowCategoryInput(false)}
+                      title="Annuler"
                     >
                       <X size={16} />
-                    </button>
-                  </div>
-                ) : (
-                  <div className={styles.categorySelectContainer}>
-                    <select
-                      name="category"
-                      value={formData.category}
-                      onChange={handleChange}
-                      className={styles.formSelect}
-                      required
-                    >
-                      <option value="">Sélectionner une catégorie</option>
-                      {categories.map((category) => (
-                        <option key={category} value={category}>
-                          {category}
-                        </option>
-                      ))}
-                    </select>
-                    <button
-                      type="button"
-                      className={styles.addButton}
-                      onClick={() => setShowCategoryInput(true)}
-                      title="Ajouter une nouvelle catégorie"
-                    >
-                      <Plus size={16} />
                     </button>
                   </div>
                 )}
@@ -562,7 +636,14 @@ const AdminLessonForm: React.FC<AdminLessonFormProps> = ({
 
           <div className={styles.quizForm}>
             <div className={styles.questionForm}>
-              <h4>Ajouter une nouvelle question</h4>
+              <h4>{isEditing ? "Modifier la question" : "Ajouter une nouvelle question"}</h4>
+              {formErrors.length > 0 && (
+                <div className={styles.formError}>
+                  {formErrors.map((error, index) => (
+                    <p key={index}>{error}</p>
+                  ))}
+                </div>
+              )}
               <div className={styles.formGroup}>
                 <label className={styles.formLabel}>Question</label>
                 <textarea
@@ -634,12 +715,20 @@ const AdminLessonForm: React.FC<AdminLessonFormProps> = ({
                     </ul>
                     <p className={styles.explanation}>{question.explanation}</p>
                   </div>
-                  <button
-                    className={styles.removeButton}
-                    onClick={() => handleRemoveQuestion(question.id)}
-                  >
-                    <X size={14} />
-                  </button>
+                  <div className={styles.questionActions}>
+                    <button
+                      className={styles.editButton}
+                      onClick={() => handleEditQuestion(question.id)}
+                    >
+                      <Edit size={14} />
+                    </button>
+                    <button
+                      className={styles.removeButton}
+                      onClick={() => handleRemoveQuestion(question.id)}
+                    >
+                      <X size={14} />
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>
@@ -757,4 +846,4 @@ const AdminLessonForm: React.FC<AdminLessonFormProps> = ({
   );
 };
 
-export default AdminLessonForm; 
+export default AdminLessonForm;

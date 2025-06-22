@@ -7,7 +7,7 @@ import UserManagement from '@/app/components/Admin/UserManagement/UserManagement
 import styles from './page.module.css';
 
 export default function AdminUsersPage() {
-    const { user, loading } = useAuth();
+    const { user, loading } = useAuth(); // Pas besoin de modifier car twoFactorVerified n'est pas utilisé ici
     const router = useRouter();
 
     useEffect(() => {
@@ -29,4 +29,4 @@ export default function AdminUsersPage() {
             <UserManagement />
         </div>
     );
-} 
+}

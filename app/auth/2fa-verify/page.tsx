@@ -17,7 +17,9 @@ export default function TwoFactorVerifyPage() {
         }
 
         if (twoFactorVerified) {
-            router.push('/');
+            // Récupérer l'URL de retour si elle existe
+            const returnUrl = searchParams.get('returnUrl') || '/';
+            router.push(returnUrl);
             return;
         }
 
@@ -33,4 +35,4 @@ export default function TwoFactorVerifyPage() {
     }
 
     return <TwoFactorVerification />;
-} 
+}

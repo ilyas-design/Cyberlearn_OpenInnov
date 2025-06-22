@@ -2,24 +2,40 @@
 
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { auth } from "../firebase/config";
+import { auth, db } from "../firebase/config";
 import { onAuthStateChanged } from "firebase/auth";
+import { doc, getDoc } from "firebase/firestore";
 import AdminLessonsList from "../components/Admin/AdminLessonsList";
 import AdminHeader from "../components/Admin/AdminHeader";
 import UserManagement from "../components/Admin/UserManagement/UserManagement";
 import UserSettings from "../components/Admin/UserSettings/UserSettings";
 import styles from "./admin.module.css";
+import { useAuth } from "../context/AuthContext";
 
 export default function AdminPage() {
   const router = useRouter();
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
   const [activeTab, setActiveTab] = useState<string>("lessons");
+  const { user: authUser } = useAuth();
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      if (user && user.email === 'jordanturnaco@gmail.com') {
-        setIsAdmin(true);
+      if (user) {
+        // Vérifier si l'utilisateur a le rôle admin dans Firestore
+        try {
+          const userDoc = await getDoc(doc(db, "users", user.uid));
+          if (userDoc.exists() && userDoc.data().isAdmin) {
+            setIsAdmin(true);
+          } else {
+            setIsAdmin(false);
+            router.push("/login");
+          }
+        } catch (error) {
+          console.error("Erreur lors de la vérification du rôle admin:", error);
+          setIsAdmin(false);
+          router.push("/login");
+        }
       } else {
         setIsAdmin(false);
         router.push("/login");
@@ -71,4 +87,4 @@ export default function AdminPage() {
       </div>
     </div>
   );
-} 
+}

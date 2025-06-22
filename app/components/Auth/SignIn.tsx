@@ -6,20 +6,22 @@ import { useRouter } from 'next/navigation';
 import styles from './Auth.module.css';
 import { useSignInWithEmailAndPassword } from "react-firebase-hooks/auth";
 import { auth } from "@/app/firebase/config";
+import { useAuth } from '@/app/context/AuthContext';
 
 export default function SignIn() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const router = useRouter();
+    const { twoFactorRequired } = useAuth();
 
     const [signInWithEmailAndPassword, user, loading, authError] = useSignInWithEmailAndPassword(auth);
 
     useEffect(() => {
-        if (user) {
+        if (user && !twoFactorRequired) {
             router.push('/');
         }
-    }, [user, router]);
+    }, [user, router, twoFactorRequired]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();

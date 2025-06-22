@@ -44,36 +44,46 @@
 
 .content {
     display: grid;
-    grid-template-columns: 300px 1fr;
     gap: 2rem;
 }
 
 .usersList {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+    flex-wrap: wrap;
     gap: 1rem;
+    padding-bottom: 1rem;
+    width: 100%;
 }
 
 .userCard {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1rem;
-    background: rgba(3, 2, 25, 0.5);
-    border: 1px solid rgba(10, 255, 212, 0.1);
-    border-radius: 8px;
+    flex: 1 1 220px;
+    max-width: 300px;
+    padding: 1.2rem 1.2rem;
+    background: rgba(0, 36, 255, 0.13);
+    border: 1.5px solid var(--couleur-principale);
+    border-radius: 16px;
+    box-shadow: 0 2px 12px rgba(0,36,255,0.08);
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: background 0.2s, border 0.2s, box-shadow 0.2s, transform 0.2s;
+    margin-bottom: 0;
 }
 
 .userCard:hover {
-    background: rgba(10, 255, 212, 0.1);
+    background: rgba(10, 255, 212, 0.10);
     border-color: var(--couleur-secondaire);
+    box-shadow: 0 6px 24px rgba(10,255,212,0.10);
+    transform: translateY(-2px) scale(1.02);
 }
 
 .userCard.selected {
-    background: rgba(10, 255, 212, 0.15);
+    background: rgba(10, 255, 212, 0.13);
     border-color: var(--couleur-secondaire);
+    box-shadow: 0 8px 32px rgba(10,255,212,0.18);
+    transform: translateY(-3px) scale(1.03);
 }
 
 .userInfo {
@@ -85,13 +95,27 @@
 .userInfo h3 {
     color: var(--couleur-cinquieme);
     margin: 0;
-    font-family: 'Abel', sans-serif;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.25rem;
+    letter-spacing: 0.5px;
 }
 
 .userInfo p {
     color: var(--couleur-tertiaire);
     margin: 0;
-    font-size: 0.9rem;
+    font-size: 0.95rem;
+    font-family: 'Abel', sans-serif;
+    opacity: 0.8;
+}
+
+.userCard svg {
+    color: var(--couleur-secondaire);
+    transition: color 0.2s;
+}
+
+.userCard:hover svg,
+.userCard.selected svg {
+    color: var(--couleur-principale);
 }
 
 .settingsPanel {
@@ -228,5 +252,17 @@
 
     .settingsPanel {
         padding: 1rem;
+    }
+
+    .usersList {
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        padding-bottom: 0.5rem;
+        width: 100%;
+    }
+
+    .userCard {
+        max-width: 100%;
     }
 }
