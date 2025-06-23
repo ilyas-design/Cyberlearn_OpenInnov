@@ -120,10 +120,8 @@
 }
 
 .storyImagePlaceholder {
-  width: 300px;
-  height: 200px;
-  background-color: var(--couleur-principale);
-  border-radius: 10px;
+  width: 100%;
+  height: auto;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -131,15 +129,10 @@
   font-size: 1.5rem;
   font-weight: bold;
   font-family: 'Bebas Neue', sans-serif;
-  transition: background-color 0.3s ease, transform 0.3s ease;
-  box-shadow: 0 4px 15px rgba(0, 36, 255, 0.3);
+
 }
 
-.storyImagePlaceholder:hover {
-  background-color: var(--couleur-secondaire);
-  color: var(--couleur-quaternaire);
-  transform: translateY(-5px);
-}
+
 
 /* Section Équipe */
 .team {

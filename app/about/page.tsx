@@ -127,10 +127,14 @@ export default function AboutPage() {
             </p>
           </div>
           <div className={styles.storyImageContainer}>
-            <div className={styles.storyImagePlaceholder}>
-              {/* Remplacer par une vraie image quand disponible */}
-              <span>CyberLearn</span>
-            </div>
+            <Image
+              src="/Images/White_log.png"
+              alt="Logo CyberLearn"
+              width={200}
+              height={200}
+              className={styles.storyImagePlaceholder}
+              priority
+            />
           </div>
         </div>
       </section>

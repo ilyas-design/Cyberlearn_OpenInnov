@@ -92,11 +92,6 @@ const ProfileDropdown = ({ isVisible, onClose }: ProfileDropdownProps) => {
                         <ChevronRight className={styles.itemArrow} size={16} />
                     </Link>
 
-                    <Link href="/settings" className={styles.dropdownItem} onClick={onClose}>
-                        <Settings className={styles.itemIcon} size={18} />
-                        <span>{t('navigation.settings')}</span>
-                        <ChevronRight className={styles.itemArrow} size={16} />
-                    </Link>
 
                     <div className={styles.separator}></div>
 

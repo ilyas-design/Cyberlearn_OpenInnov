@@ -75,7 +75,7 @@ const LessonsSection = () => {
                         </p>
                         <div className={styles.cardFooter}>
                             <Link
-                                href={`/lessons/${lesson.content}`}
+                                href={`/lessons`}
                                 className={styles.cardLink}
                             >
                                 <span>Commencer</span>
