@@ -255,23 +255,23 @@ const AdminLessonForm: React.FC<AdminLessonFormProps> = ({
     if (!newQuestion.text.trim()) errors.push("Le texte de la question est requis");
     if (newQuestion.options.some(opt => !opt.trim())) errors.push("Toutes les options doivent être remplies");
     if (newQuestion.correctAnswer === null) errors.push("Vous devez sélectionner une réponse correcte");
-    
+
     if (errors.length > 0) {
       setFormErrors(errors);
       return;
     }
-    
+
     if (isEditing && editingQuestionId) {
       // Mise à jour d'une question existante
-      const updatedQuestions = contentData.questions.map(q => 
+      const updatedQuestions = contentData.questions.map(q =>
         q.id === editingQuestionId ? { ...newQuestion, id: editingQuestionId } : q
       );
-      
+
       setContentData({
         ...contentData,
         questions: updatedQuestions
       });
-      
+
       // Réinitialiser le formulaire et l'état d'édition
       setNewQuestion({
         id: uuidv4(),
@@ -293,7 +293,7 @@ const AdminLessonForm: React.FC<AdminLessonFormProps> = ({
           id: newQuestion.id || uuidv4() // Assurez-vous qu'il y a toujours un ID
         } as Question]
       });
-      
+
       // Réinitialiser le formulaire
       setNewQuestion({
         id: uuidv4(),
@@ -306,7 +306,7 @@ const AdminLessonForm: React.FC<AdminLessonFormProps> = ({
       toast.success("Question ajoutée avec succès");
     }
   };
-  
+
   // Ajoutez cette nouvelle fonction pour éditer une question existante
   const handleEditQuestion = (questionId: string) => {
     const questionToEdit = contentData.questions.find(q => q.id === questionId);
@@ -316,7 +316,7 @@ const AdminLessonForm: React.FC<AdminLessonFormProps> = ({
       });
       setEditingQuestionId(questionId);
       setIsEditing(true);
-      
+
       // Faire défiler jusqu'au formulaire d'édition
       const formElement = document.querySelector(`.${styles.questionForm}`);
       if (formElement) {
@@ -324,7 +324,7 @@ const AdminLessonForm: React.FC<AdminLessonFormProps> = ({
       }
     }
   };
-  
+
   // Ajoutez cette fonction pour annuler l'édition
   const handleCancelEdit = () => {
     setNewQuestion({
@@ -411,6 +411,28 @@ const AdminLessonForm: React.FC<AdminLessonFormProps> = ({
     } catch (err) {
       console.error("Erreur lors de la sauvegarde de la leçon:", err);
       setError("Impossible de sauvegarder la leçon. Veuillez réessayer plus tard.");
+      setLoading(false);
+    }
+  };
+
+  // Ajout de la fonction de sauvegarde du quiz
+  const handleSaveQuiz = async () => {
+    if (!formData.id) {
+      toast.error("Impossible de sauvegarder : l'ID de la leçon est manquant.");
+      return;
+    }
+    try {
+      setLoading(true);
+      const contentRef = doc(db, "lessonContents", formData.id);
+      await setDoc(contentRef, {
+        sections: contentData.sections,
+        questions: contentData.questions
+      }, { merge: true });
+      toast.success("Quiz sauvegardé avec succès !");
+    } catch (err) {
+      console.error("Erreur lors de la sauvegarde du quiz :", err);
+      toast.error("Erreur lors de la sauvegarde du quiz.");
+    } finally {
       setLoading(false);
     }
   };
@@ -512,7 +534,7 @@ const AdminLessonForm: React.FC<AdminLessonFormProps> = ({
                       onClick={handleAddCategory}
                       title="Valider la nouvelle catégorie"
                     >
-                      <span style={{display: 'flex', alignItems: 'center'}}>&#10003;</span>
+                      <span style={{ display: 'flex', alignItems: 'center' }}>&#10003;</span>
                     </button>
                     <button
                       type="button"
@@ -659,13 +681,23 @@ const AdminLessonForm: React.FC<AdminLessonFormProps> = ({
         <div className={styles.quizEditor}>
           <div className={styles.quizHeader}>
             <h3 className={styles.quizTitle}>Gestion du Quiz</h3>
-            <button
-              className={styles.backButton}
-              onClick={() => setShowQuizEditor(false)}
-            >
-              <ArrowLeft size={18} />
-              <span>Retour aux informations</span>
-            </button>
+            <div style={{ display: 'flex', gap: '0.5rem', marginLeft: 'auto' }}>
+              <button
+                className={styles.backButton}
+                onClick={() => setShowQuizEditor(false)}
+                title="Retour aux informations"
+              >
+                <ArrowLeft size={18} />
+              </button>
+              <button
+                className={styles.saveButton}
+                onClick={handleSaveQuiz}
+                disabled={loading}
+              >
+                <Save size={18} />
+                <span>{loading ? "Sauvegarde..." : "Sauvegarder le quiz"}</span>
+              </button>
+            </div>
           </div>
 
           <div className={styles.quizForm}>
@@ -775,9 +807,9 @@ const AdminLessonForm: React.FC<AdminLessonFormProps> = ({
             <button
               className={styles.backButton}
               onClick={() => setShowContentEditor(false)}
+              title="Retour aux informations"
             >
               <ArrowLeft size={18} />
-              <span>Retour aux informations</span>
             </button>
           </div>
 
@@ -859,9 +891,9 @@ const AdminLessonForm: React.FC<AdminLessonFormProps> = ({
               type="button"
               className={styles.backButton}
               onClick={() => setShowContentEditor(false)}
+              title="Retour aux informations"
             >
               <ArrowLeft size={18} />
-              <span>Retour aux informations</span>
             </button>
 
             <button
