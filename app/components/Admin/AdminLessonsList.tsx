@@ -15,6 +15,7 @@ import { getIconByName } from "../../utils/iconMapping";
 import { Edit, Trash2, Plus, Search, Filter, Eye } from "lucide-react";
 import AdminLessonForm from "./AdminLessonForm";
 import styles from "./AdminComponents.module.css";
+import { addAdminLog } from "../../firebase/lessons";
 
 const AdminLessonsList: React.FC = () => {
   const [lessons, setLessons] = useState<Lesson[]>([]);
@@ -97,9 +98,11 @@ const AdminLessonsList: React.FC = () => {
       setLessons(prevLessons => prevLessons.filter(lesson => lesson.id !== lessonId));
       setShowDeleteModal(false);
       setLessonToDelete(null);
+      await addAdminLog('success', `Leçon supprimée (ID: ${lessonId})`);
     } catch (err) {
       console.error("Erreur lors de la suppression de la leçon:", err);
       setError("Impossible de supprimer la leçon. Veuillez réessayer plus tard.");
+      await addAdminLog('error', `Erreur lors de la suppression de la leçon (ID: ${lessonId})`);
     }
   };
 
@@ -138,6 +141,7 @@ const AdminLessonsList: React.FC = () => {
     } else {
       // Ajout d'une nouvelle leçon
       setLessons(prevLessons => [...prevLessons, savedLesson]);
+      addAdminLog('success', `Nouvelle leçon ajoutée : ${savedLesson.title}`);
     }
 
     setShowForm(false);

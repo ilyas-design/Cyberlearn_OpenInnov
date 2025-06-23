@@ -5,7 +5,7 @@ import { collection, getDocs, deleteDoc, doc, updateDoc, getDoc, setDoc } from '
 import { db } from '@/app/firebase/config';
 import { User, Trash2, Search, Edit, Shield, Check, X, BookOpen } from 'lucide-react';
 import styles from './UserManagement.module.css';
-import { getAllLessons, Lesson } from '@/app/firebase/lessons';
+import { getAllLessons, Lesson, addAdminLog } from '@/app/firebase/lessons';
 
 interface UserData {
     authID: string;
@@ -25,7 +25,7 @@ const UserManagement = () => {
     const [lessons, setLessons] = useState<Lesson[]>([]);
     const [modalUser, setModalUser] = useState<UserData | null>(null);
     const [modalLessons, setModalLessons] = useState<string[]>([]);
-    const [levelInput, setLevelInput] = useState<{[userId: string]: number}>({});
+    const [levelInput, setLevelInput] = useState<{ [userId: string]: number }>({});
     const [levelLoading, setLevelLoading] = useState<string | null>(null);
     const [modalLoading, setModalLoading] = useState(false);
 
@@ -66,9 +66,11 @@ const UserManagement = () => {
             setUsers(users.filter(user => user.authID !== authID));
             setSuccess('Utilisateur supprimé avec succès');
             setTimeout(() => setSuccess(null), 3000);
+            await addAdminLog('success', `Suppression de l'utilisateur (ID: ${authID})`);
         } catch (err) {
             setError('Erreur lors de la suppression de l\'utilisateur');
             console.error('Erreur:', err);
+            await addAdminLog('error', `Erreur lors de la suppression de l'utilisateur (ID: ${authID})`);
         }
     };
 
@@ -79,9 +81,11 @@ const UserManagement = () => {
             setUsers(users.map(user => user.authID === authID ? { ...user, isAdmin: !currentAdminStatus } : user));
             setSuccess(`Rôle ${!currentAdminStatus ? 'admin accordé' : 'admin retiré'} avec succès`);
             setTimeout(() => setSuccess(null), 3000);
+            await addAdminLog('info', `Changement de rôle admin pour l'utilisateur (ID: ${authID}) : ${!currentAdminStatus ? 'admin accordé' : 'admin retiré'}`);
         } catch (err) {
             setError('Erreur lors de la modification du rôle');
             console.error('Erreur:', err);
+            await addAdminLog('error', `Erreur lors du changement de rôle admin (ID: ${authID})`);
         }
     };
 
@@ -97,9 +101,11 @@ const UserManagement = () => {
             setUsers(users.map(user => user.authID === authID ? { ...user, level: newLevel } : user));
             setSuccess('Niveau mis à jour !');
             setTimeout(() => setSuccess(null), 2000);
+            await addAdminLog('info', `Changement de niveau pour l'utilisateur (ID: ${authID}) : niveau ${newLevel}`);
         } catch (err) {
             setError('Erreur lors de la mise à jour du niveau');
             console.error('Erreur:', err);
+            await addAdminLog('error', `Erreur lors du changement de niveau (ID: ${authID})`);
         } finally {
             setLevelLoading(null);
         }
@@ -140,6 +146,7 @@ const UserManagement = () => {
             setModalLessons(completedLessons);
             setSuccess('Leçon marquée comme complétée !');
             setTimeout(() => setSuccess(null), 2000);
+            await addAdminLog('info', `Leçon marquée comme complétée pour l'utilisateur (ID: ${userId}), leçon: ${lessonId}`);
         }
         setModalLoading(false);
     };
@@ -159,6 +166,7 @@ const UserManagement = () => {
             setModalLessons(completedLessons);
             setSuccess('Leçon retirée des complétées.');
             setTimeout(() => setSuccess(null), 2000);
+            await addAdminLog('info', `Leçon retirée des complétées pour l'utilisateur (ID: ${userId}), leçon: ${lessonId}`);
         }
         setModalLoading(false);
     };

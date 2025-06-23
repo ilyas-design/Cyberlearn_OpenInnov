@@ -4,7 +4,7 @@ import React from "react";
 import { useRouter } from "next/navigation";
 import { signOut } from "firebase/auth";
 import { auth } from "../../firebase/config";
-import { BookOpen, Users, Settings, LogOut } from "lucide-react";
+import { BookOpen, Users, Settings, LogOut, AlertTriangle, BarChart } from "lucide-react";
 import styles from "./AdminComponents.module.css";
 
 interface AdminHeaderProps {
@@ -27,33 +27,42 @@ const AdminHeader: React.FC<AdminHeaderProps> = ({ activeTab, setActiveTab }) =>
   return (
     <div className={styles.adminHeader}>
       <h1 className={styles.adminTitle}>Interface d'Administration</h1>
-      
+
       <div className={styles.adminTabs}>
-        <button 
+        <button
           className={`${styles.tabButton} ${activeTab === "lessons" ? styles.active : ""}`}
           onClick={() => setActiveTab("lessons")}
         >
           <BookOpen size={18} />
           <span>Leçons</span>
         </button>
-        
-        <button 
+
+        <button
           className={`${styles.tabButton} ${activeTab === "users" ? styles.active : ""}`}
           onClick={() => setActiveTab("users")}
         >
           <Users size={18} />
           <span>Utilisateurs</span>
         </button>
-        
-        <button 
-          className={`${styles.tabButton} ${activeTab === "settings" ? styles.active : ""}`}
-          onClick={() => setActiveTab("settings")}
+
+        <button
+          className={`${styles.tabButton} ${activeTab === "stats" ? styles.active : ""}`}
+          onClick={() => setActiveTab("stats")}
         >
-          <Settings size={18} />
-          <span>Paramètres</span>
+          <BarChart size={18} />
+          <span>Statistiques</span>
+        </button>
+
+
+        <button
+          className={`${styles.tabButton} ${activeTab === "logs" ? styles.active : ""}`}
+          onClick={() => setActiveTab("logs")}
+        >
+          <AlertTriangle size={18} />
+          <span>Logs</span>
         </button>
       </div>
-      
+
       <button className={styles.logoutButton} onClick={handleLogout}>
         <LogOut size={18} />
         <span>Déconnexion</span>

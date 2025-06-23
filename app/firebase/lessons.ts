@@ -1,14 +1,16 @@
 import { db } from './config';
-import { 
-    collection, 
-    getDocs, 
-    getDoc, 
-    doc, 
-    query, 
+import {
+    collection,
+    getDocs,
+    getDoc,
+    doc,
+    query,
     where,
     orderBy,
     DocumentData,
-    QueryDocumentSnapshot
+    QueryDocumentSnapshot,
+    addDoc,
+    Timestamp
 } from 'firebase/firestore';
 
 // Interface pour les questions
@@ -113,17 +115,17 @@ export const getLessonsByTag = async (tag: string): Promise<Lesson[]> => {
 export const getLessonById = async (lessonId: string): Promise<Lesson | null> => {
     try {
         const lessonDoc = await getDoc(doc(db, 'lessons', lessonId));
-        
+
         if (!lessonDoc.exists()) {
             return null;
         }
-        
+
         const lessonData = lessonDoc.data();
-        
+
         // Récupérer le contenu détaillé de la leçon
         const contentDoc = await getDoc(doc(db, 'lessonContents', lessonId));
         let content: LessonContent | undefined = undefined;
-        
+
         if (contentDoc.exists()) {
             const contentData = contentDoc.data();
             content = {
@@ -131,7 +133,7 @@ export const getLessonById = async (lessonId: string): Promise<Lesson | null> =>
                 questions: contentData.questions || []
             };
         }
-        
+
         return {
             id: lessonDoc.id,
             category: lessonData.category || '',
@@ -148,5 +150,24 @@ export const getLessonById = async (lessonId: string): Promise<Lesson | null> =>
     } catch (error) {
         console.error(`Erreur lors de la récupération de la leçon ${lessonId}:`, error);
         return null;
+    }
+};
+
+// Fonction utilitaire pour ajouter un log admin
+export const addAdminLog = async (
+    type: 'info' | 'success' | 'warning' | 'error',
+    message: string,
+    userId?: string
+) => {
+    try {
+        await addDoc(collection(db, 'adminLogs'), {
+            type,
+            message,
+            userId: userId || null,
+            createdAt: Timestamp.now()
+        });
+    } catch (e) {
+        // On ne bloque pas l'action principale si le log échoue
+        console.error('Erreur lors de l\'ajout du log admin :', e);
     }
 }; 
