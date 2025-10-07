@@ -142,7 +142,8 @@
   border-color: var(--couleur-secondaire);
 }
 
-.quizLink:hover, .quizLink.active {
+.quizLink:hover,
+.quizLink.active {
   background-color: var(--couleur-secondaire);
   color: var(--couleur-quaternaire);
 }
@@ -188,7 +189,8 @@
   margin-bottom: 1rem;
 }
 
-.sectionText ul, .sectionText ol {
+.sectionText ul,
+.sectionText ol {
   margin-left: 1.5rem;
   margin-bottom: 1rem;
 }
@@ -340,7 +342,8 @@
   justify-content: center;
 }
 
-.checkButton, .nextButton {
+.checkButton,
+.nextButton {
   background-color: var(--couleur-principale);
   color: var(--couleur-cinquieme);
   border: none;
@@ -352,7 +355,8 @@
   font-size: 1rem;
 }
 
-.checkButton:hover:not(:disabled), .nextButton:hover {
+.checkButton:hover:not(:disabled),
+.nextButton:hover {
   background-color: var(--couleur-secondaire);
   color: var(--couleur-quaternaire);
   transform: translateY(-3px);
@@ -371,6 +375,7 @@
 /* Quiz Results */
 .quizResults {
   text-align: center;
+  z-index: 999999999999;
 }
 
 .resultsTitle {
@@ -428,7 +433,8 @@
   gap: 1rem;
 }
 
-.retryButton, .backToLessonButton {
+.retryButton,
+.backToLessonButton {
   background-color: var(--couleur-principale);
   color: var(--couleur-cinquieme);
   border: none;
@@ -439,7 +445,8 @@
   transition: all 0.3s ease;
 }
 
-.retryButton:hover, .backToLessonButton:hover {
+.retryButton:hover,
+.backToLessonButton:hover {
   background-color: var(--couleur-secondaire);
   color: var(--couleur-quaternaire);
   transform: translateY(-3px);
@@ -451,7 +458,8 @@
 }
 
 /* Loading and Error */
-.loadingContainer, .errorContainer {
+.loadingContainer,
+.errorContainer {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -487,20 +495,20 @@
   .contentContainer {
     grid-template-columns: 1fr;
   }
-  
+
   .sidebar {
     margin-bottom: 2rem;
   }
-  
+
   .navigationButtons {
     flex-direction: column;
   }
-  
+
   .resultActions {
     flex-direction: column;
   }
-  
+
   .title {
     font-size: 2rem;
   }
-} 
+}

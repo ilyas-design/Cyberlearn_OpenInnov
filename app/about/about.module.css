@@ -140,9 +140,10 @@
 }
 
 .teamGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 2rem;
+  display: flex;
+  justify-content: center;
+  gap: 3rem;
+  flex-wrap: wrap;
 }
 
 .teamCard {
@@ -153,6 +154,7 @@
   text-align: center;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   border: 1px solid var(--couleur-principale);
+  width: 280px;
 }
 
 .teamCard:hover {
@@ -163,6 +165,20 @@
 
 .memberImageContainer {
   margin-bottom: 1.5rem;
+}
+
+.memberImage {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--couleur-principale);
+  transition: border-color 0.3s ease, transform 0.3s ease;
+}
+
+.teamCard:hover .memberImage {
+  border-color: var(--couleur-secondaire);
+  transform: scale(1.05);
 }
 
 .memberImagePlaceholder {

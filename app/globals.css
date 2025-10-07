@@ -9,6 +9,48 @@
     --couleur-cinquieme: #FFFFFF;
 }
 
+/* Variables de thème - Mode Sombre (par défaut) */
+[data-theme="dark"] {
+    --bg-primary: #030219;
+    --bg-secondary: #0a0a1f;
+    --bg-tertiary: #151530;
+    --card-bg: rgba(10, 10, 31, 0.8);
+    --text-primary: #FFFFFF;
+    --text-secondary: #CECECE;
+    --text-muted: #8e8ea0;
+    --primary-color: #0024FF;
+    --secondary-color: #0AFFD4;
+    --border-color: rgba(10, 255, 212, 0.2);
+    --hover-bg: rgba(0, 36, 255, 0.1);
+    --success-color: #10b981;
+    --error-color: #ef4444;
+    --warning-color: #f59e0b;
+    --gradient-start: #030219;
+    --gradient-end: #0024FF;
+    --shadow-color: rgba(0, 0, 0, 0.3);
+}
+
+/* Variables de thème - Mode Clair */
+[data-theme="light"] {
+    --bg-primary: #f8f9fa;
+    --bg-secondary: #ffffff;
+    --bg-tertiary: #e9ecef;
+    --card-bg: rgba(255, 255, 255, 0.9);
+    --text-primary: #1a1a1a;
+    --text-secondary: #4a4a4a;
+    --text-muted: #6c757d;
+    --primary-color: #0024FF;
+    --secondary-color: #00d4aa;
+    --border-color: rgba(0, 36, 255, 0.15);
+    --hover-bg: rgba(0, 36, 255, 0.05);
+    --success-color: #10b981;
+    --error-color: #ef4444;
+    --warning-color: #f59e0b;
+    --gradient-start: #e0e7ff;
+    --gradient-end: #c7d2fe;
+    --shadow-color: rgba(0, 0, 0, 0.1);
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -17,11 +59,12 @@
 
 body {
     font-family: "Inter", sans-serif;
-    background: linear-gradient(135deg, #030219, #0024FF);
+    background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
     background-size: 200% 200%;
     animation: gradientAnimation 10s ease infinite;
-    color: var(--couleur-cinquieme);
+    color: var(--text-primary);
     overflow-x: hidden;
+    transition: background 0.3s ease, color 0.3s ease;
 }
 
 main {

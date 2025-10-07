@@ -1,0 +1,65 @@
+.favoriteButton {
+    background: transparent;
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    padding: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    color: var(--text-secondary);
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+}
+
+.favoriteButton:hover {
+    border-color: var(--secondary-color);
+    color: var(--secondary-color);
+    transform: translateY(-2px);
+}
+
+.favoriteButton.active {
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), rgba(255, 140, 0, 0.1));
+    border-color: #ffd700;
+    color: #ffd700;
+}
+
+.favoriteButton.active:hover {
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(255, 140, 0, 0.2));
+    border-color: #ffed4e;
+    color: #ffed4e;
+}
+
+.favoriteButton:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.favoriteButton svg {
+    transition: transform 0.3s ease;
+}
+
+.favoriteButton:hover svg {
+    transform: scale(1.1);
+}
+
+.favoriteButton.active svg {
+    animation: starPulse 0.5s ease;
+}
+
+.label {
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+@keyframes starPulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.2);
+    }
+}

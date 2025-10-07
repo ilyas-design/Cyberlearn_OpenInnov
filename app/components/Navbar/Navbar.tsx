@@ -7,6 +7,7 @@ import styles from "./Navbar.module.css";
 import logo from "@/public/Images/White_log.png";
 import AuthButton from "@/app/components/Navbar/AuthButton";
 import LanguageSwitcher from "@/app/components/LanguageSwitcher/LanguageSwitcher";
+import ThemeToggle from "@/app/components/ThemeToggle/ThemeToggle";
 import { Menu, X } from "lucide-react";
 import { useLanguage } from "@/app/context/LanguageContext";
 
@@ -73,6 +74,11 @@ const Navbar = () => {
                 {/* Language Switcher */}
                 <div className={styles.languageSwitcherContainer}>
                     <LanguageSwitcher />
+                </div>
+
+                {/* Theme Toggle */}
+                <div className={styles.themeToggleContainer}>
+                    <ThemeToggle />
                 </div>
 
                 {/* Composant dynamique pour la connexion */}

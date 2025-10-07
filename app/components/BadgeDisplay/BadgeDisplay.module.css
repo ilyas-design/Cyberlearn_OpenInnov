@@ -1,0 +1,217 @@
+.badgeContainer {
+    margin: 2rem 0;
+}
+
+.badgeProgressContainer {
+    margin: 2rem 0;
+}
+
+.sectionTitle {
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+    color: var(--text-primary);
+    font-family: 'Bebas Neue', sans-serif;
+    text-align: center;
+}
+
+.badgeGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.badgeProgressGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1.5rem;
+}
+
+.badgeItem {
+    position: relative;
+    background: var(--card-bg);
+    border: 2px solid var(--border-color);
+    border-radius: 12px;
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.badgeItem:hover {
+    transform: translateY(-5px);
+    border-color: var(--secondary-color);
+    box-shadow: 0 10px 20px var(--shadow-color);
+}
+
+.badgeItem:hover .badgeTooltip {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.badgeIcon {
+    font-size: 2.5rem;
+    filter: drop-shadow(0 0 10px rgba(10, 255, 212, 0.3));
+}
+
+.badgeMore {
+    background: var(--card-bg);
+    border: 2px solid var(--border-color);
+    border-radius: 12px;
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    color: var(--text-secondary);
+    font-weight: bold;
+}
+
+.badgeTooltip {
+    position: absolute;
+    bottom: 110%;
+    left: 50%;
+    transform: translateX(-50%) translateY(10px);
+    background: var(--bg-secondary);
+    border: 2px solid var(--secondary-color);
+    border-radius: 8px;
+    padding: 0.75rem;
+    min-width: 200px;
+    z-index: 10;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    pointer-events: none;
+    text-align: center;
+}
+
+.badgeTooltip strong {
+    display: block;
+    color: var(--secondary-color);
+    margin-bottom: 0.25rem;
+    font-size: 0.9rem;
+}
+
+.badgeTooltip p {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    margin: 0;
+}
+
+.badgeCard {
+    background: var(--card-bg);
+    border: 2px solid var(--border-color);
+    border-radius: 12px;
+    padding: 1.5rem;
+    display: flex;
+    gap: 1rem;
+    transition: all 0.3s ease;
+}
+
+.badgeCard.earned {
+    border-color: var(--secondary-color);
+    background: linear-gradient(135deg, rgba(10, 255, 212, 0.05), rgba(0, 36, 255, 0.05));
+}
+
+.badgeCard.locked {
+    opacity: 0.6;
+    filter: grayscale(0.5);
+}
+
+.badgeCard:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 16px var(--shadow-color);
+}
+
+.badgeIconLarge {
+    font-size: 3rem;
+    flex-shrink: 0;
+}
+
+.badgeInfo {
+    flex: 1;
+}
+
+.badgeName {
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+    color: var(--text-primary);
+    font-weight: bold;
+}
+
+.badgeDescription {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.5rem;
+}
+
+.progressBar {
+    margin-top: 0.5rem;
+}
+
+.progressText {
+    font-size: 0.85rem;
+    color: var(--secondary-color);
+    font-weight: bold;
+}
+
+.earnedLabel {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    background: linear-gradient(90deg, var(--success-color), #059669);
+    color: white;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    margin-top: 0.5rem;
+}
+
+.noBadges {
+    text-align: center;
+    color: var(--text-muted);
+    padding: 2rem;
+    font-size: 1.1rem;
+}
+
+.loading {
+    display: flex;
+    justify-content: center;
+    padding: 2rem;
+}
+
+.spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid var(--border-color);
+    border-top: 4px solid var(--secondary-color);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+@media (max-width: 768px) {
+    .badgeGrid {
+        grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+        gap: 0.75rem;
+    }
+
+    .badgeProgressGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .badgeIcon {
+        font-size: 2rem;
+    }
+}

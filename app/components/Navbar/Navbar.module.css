@@ -9,7 +9,7 @@
     top: 0;
     left: 0;
     right: 0;
-    z-index: 1000;
+    z-index: 9999;
     transition: all 0.3s ease;
 }
 
@@ -145,6 +145,12 @@
     margin-left: 1rem;
 }
 
+.themeToggleContainer {
+    display: flex;
+    align-items: center;
+    margin-left: 0.5rem;
+}
+
 /* Menu Burger (Mobile) */
 .burgerMenu {
     display: none;
@@ -202,6 +208,13 @@
     }
 
     .languageSwitcherContainer {
+        margin: 0.5rem 0;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+    }
+
+    .themeToggleContainer {
         margin: 0.5rem 0;
         width: 100%;
         display: flex;

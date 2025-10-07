@@ -36,6 +36,14 @@
     box-shadow: 0 4px 15px rgba(0, 36, 255, 0.3);
 }
 
+.headerTop {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    gap: 1rem;
+}
+
 .categoryTag {
     display: inline-flex;
     align-items: center;
@@ -46,7 +54,6 @@
     background-color: rgba(0, 36, 255, 0.2);
     padding: 0.3rem 0.8rem;
     border-radius: 20px;
-    margin-bottom: 1rem;
 }
 
 .lessonInfo h1 {
@@ -87,10 +94,18 @@
 }
 
 .lessonContent {
+    margin-top: 2rem;
+}
+
+.progressBarWrapper {
+    width: 100%;
+    margin-bottom: 2rem;
+}
+
+.contentGrid {
     display: grid;
     grid-template-columns: 250px 1fr;
     gap: 2rem;
-    margin-top: 2rem;
 }
 
 .sectionNav {
@@ -399,7 +414,7 @@
     background: rgba(3, 2, 25, 0.8);
     border-radius: 12px;
     padding: 2.5rem 2rem;
-    box-shadow: 0 4px 18px rgba(0,36,255,0.10);
+    box-shadow: 0 4px 18px rgba(0, 36, 255, 0.10);
     text-align: center;
     margin: 2rem auto 0 auto;
     max-width: 420px;
@@ -412,7 +427,9 @@
     font-family: 'Bebas Neue', sans-serif;
 }
 
-.score, .percentage, .xpMessage {
+.score,
+.percentage,
+.xpMessage {
     font-family: 'Abel', sans-serif;
     font-size: 1.1rem;
     margin-bottom: 0.5rem;
@@ -428,7 +445,7 @@
     flex-wrap: wrap;
 }
 
-.retryButton, .backButton {
+.retryButton {
     flex: 1 1 200px;
     min-width: 180px;
     max-width: 240px;
@@ -446,7 +463,8 @@
     margin: 0;
 }
 
-.retryButton:hover, .backButton:hover {
+.retryButton:hover,
+.backButton:hover {
     background: var(--couleur-principale);
     color: var(--couleur-quaternaire);
     border-color: var(--couleur-secondaire);
@@ -476,8 +494,43 @@
         flex-direction: column;
         gap: 0.8rem;
     }
-    .retryButton, .backButton {
+
+    .retryButton,
+    .backButton {
         min-width: 100%;
         max-width: 100%;
+    }
+}
+
+/* Responsive pour le layout des leçons */
+@media (max-width: 768px) {
+    .lessonPage {
+        padding: 1rem;
+    }
+
+    .contentGrid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .sectionNav {
+        position: static;
+        flex-direction: row;
+        overflow-x: auto;
+        gap: 0.3rem;
+    }
+
+    .sectionButton {
+        white-space: nowrap;
+        padding: 0.6rem 0.8rem;
+        font-size: 0.9rem;
+    }
+
+    .lessonInfo h1 {
+        font-size: 2rem;
+    }
+
+    .progressBarWrapper {
+        margin-bottom: 1rem;
     }
 }

@@ -19,42 +19,14 @@ const teamMembers: TeamMember[] = [
     name: "TURNACO Jordan",
     role: "Developper Full Stack web site et database",
     bio: "Deuxieme année a l'ecole EPSI Paris Courbevoie",
-    image: "/Images/team/team1.jpg",
+    image: "/Images/jordan.png",
   },
   {
     id: 2,
     name: "LACHGAR Ilyas",
     role: "Developper Full Stack mobile",
     bio: "Deuxieme année a l'ecole EPSI Paris Courbevoie",
-    image: "/Images/team/team2.jpg",
-  },
-  {
-    id: 3,
-    name: "STORCK Kyllian",
-    role: "Developper Full Stack et createur de contenu",
-    bio: "Master 2 en cybersécurité a l'ecole EPSI Paris Courbevoie",
-    image: "/Images/team/team3.jpg",
-  },
-  {
-    id: 4,
-    name: "MOULERGUES Rémi",
-    role: "Developper Full Stack et createur de contenu",
-    bio: "Master 2 en cybersécurité a l'ecole EPSI Paris Courbevoie",
-    image: "/Images/team/team4.jpg",
-  },
-  {
-    id: 5,
-    name: "BOUCHER Hugo",
-    role: "Developper Full Stack et createur de contenu",
-    bio: "Master 2 en cybersécurité a l'ecole EPSI Paris Courbevoie",
-    image: "/Images/team/team5.jpg",
-  },
-  {
-    id: 6,
-    name: "NAHA Pierre gris",
-    role: "UX/UI designer",
-    bio: "Master 2 en disign a l'ecole WIS Paris Courbevoie",
-    image: "/Images/team/team6.jpg",
+    image: "/Images/ilyas.png",
   },
 ];
 
@@ -145,10 +117,14 @@ export default function AboutPage() {
           {teamMembers.map((member) => (
             <div key={member.id} className={styles.teamCard}>
               <div className={styles.memberImageContainer}>
-                <div className={styles.memberImagePlaceholder}>
-                  {/* Remplacer par de vraies images quand disponibles */}
-                  {member.name.charAt(0)}
-                </div>
+                <Image
+                  src={member.image}
+                  alt={member.name}
+                  width={200}
+                  height={200}
+                  className={styles.memberImage}
+                  priority
+                />
               </div>
               <h3 className={styles.memberName}>{member.name}</h3>
               <p className={styles.memberRole}>{member.role}</p>

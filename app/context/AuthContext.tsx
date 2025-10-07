@@ -7,6 +7,7 @@ import { onAuthStateChanged } from 'firebase/auth';
 import { verifyTwoFactorCode } from '@/app/firebase/2fa';
 import { getDoc, doc } from 'firebase/firestore';
 import { useRouter } from 'next/navigation';
+import { initializeUserDocument } from '@/app/firebase/userProfile';
 
 interface AuthUser {
     uid: string;
@@ -74,6 +75,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
             if (firebaseUser) {
+                // 🔧 Initialiser le document utilisateur s'il n'existe pas
+                await initializeUserDocument(firebaseUser.uid, firebaseUser.email);
+
                 // Charger les infos Firestore (dont le level)
                 const userDoc = await getDoc(doc(db, 'users', firebaseUser.uid));
                 let level = 1;

@@ -1,0 +1,229 @@
+.toggleButton {
+    position: fixed;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 12px 0 0 12px;
+    padding: 1rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    z-index: 100;
+    box-shadow: -4px 4px 12px var(--shadow-color);
+    font-weight: 600;
+}
+
+.toggleButton:hover {
+    background: var(--secondary-color);
+    color: var(--bg-primary);
+    transform: translateY(-50%) translateX(-5px);
+}
+
+.toggleButton.hidden {
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-50%) translateX(100%);
+}
+
+.unsavedIndicator {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    color: #ff4757;
+    font-size: 1.5rem;
+    animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.3;
+    }
+}
+
+.notesPanel {
+    position: fixed;
+    right: 0;
+    top: 80px;
+    bottom: 0;
+    width: 400px;
+    background: var(--card-bg);
+    backdrop-filter: blur(10px);
+    border-left: 2px solid var(--border-color);
+    box-shadow: -5px 0 20px var(--shadow-color);
+    z-index: 1001;
+    display: flex;
+    flex-direction: column;
+    animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+    }
+
+    to {
+        transform: translateX(0);
+    }
+}
+
+.notesHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem;
+    border-bottom: 2px solid var(--border-color);
+    background: var(--bg-secondary);
+}
+
+.headerTitle {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text-primary);
+}
+
+.headerTitle h3 {
+    margin: 0;
+    font-size: 1.2rem;
+    font-family: 'Bebas Neue', sans-serif;
+}
+
+.closeButton {
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    padding: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+}
+
+.closeButton:hover {
+    background: var(--hover-bg);
+    color: var(--error-color);
+}
+
+.lessonInfo {
+    padding: 1rem 1.5rem;
+    background: var(--bg-tertiary);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.lessonLabel {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    display: block;
+    margin-bottom: 0.25rem;
+}
+
+.lessonName {
+    font-size: 1rem;
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+.warningMessage {
+    margin-top: 0.5rem;
+    padding: 0.5rem;
+    background: rgba(245, 158, 11, 0.1);
+    border: 1px solid var(--warning-color);
+    border-radius: 6px;
+    font-size: 0.85rem;
+    color: var(--warning-color);
+    text-align: center;
+}
+
+.notesTextarea {
+    flex: 1;
+    padding: 1.5rem;
+    background: var(--bg-primary);
+    border: none;
+    color: var(--text-primary);
+    font-family: 'Abel', sans-serif;
+    font-size: 1rem;
+    line-height: 1.6;
+    resize: none;
+    outline: none;
+}
+
+.notesTextarea::placeholder {
+    color: var(--text-muted);
+    line-height: 1.8;
+}
+
+.notesFooter {
+    padding: 1rem 1.5rem;
+    border-top: 2px solid var(--border-color);
+    background: var(--bg-secondary);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.unsavedText {
+    font-size: 0.85rem;
+    color: var(--warning-color);
+    font-weight: 500;
+}
+
+.saveButton {
+    background: var(--success-color);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 0.75rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+.saveButton:hover:not(:disabled) {
+    background: #059669;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(16, 185, 129, 0.3);
+}
+
+.saveButton:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.charCount {
+    padding: 0.5rem 1.5rem;
+    text-align: right;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    background: var(--bg-tertiary);
+}
+
+@media (max-width: 768px) {
+    .notesPanel {
+        width: 100%;
+        top: 0;
+    }
+
+    .toggleButton {
+        right: 1rem;
+        padding: 0.75rem 1rem;
+        font-size: 0.85rem;
+    }
+}

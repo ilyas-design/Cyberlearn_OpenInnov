@@ -4,6 +4,7 @@ import { Inter, Abel, Bebas_Neue } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "./context/AuthContext";
 import { LanguageProvider } from "./context/LanguageContext";
+import { ThemeProvider } from "./context/ThemeContext";
 import Navbar from "./components/Navbar/Navbar";
 import Footer from "./components/Footer/Footer";
 import Chatbot from "./components/Chatbot";
@@ -33,14 +34,16 @@ export default function RootLayout({
   return (
     <html lang="fr">
       <body className={`${inter.className} ${abel.variable} ${bebasNeue.variable}`}>
-        <AuthProvider>
-          <LanguageProvider>
-            <Navbar />
-            <main>{children}</main>
-            <Footer />
-            <Chatbot />
-          </LanguageProvider>
-        </AuthProvider>
+        <ThemeProvider>
+          <AuthProvider>
+            <LanguageProvider>
+              <Navbar />
+              <main>{children}</main>
+              <Footer />
+              <Chatbot />
+            </LanguageProvider>
+          </AuthProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

@@ -15,6 +15,10 @@ import 'katex/dist/katex.min.css';
 import { useAuth } from '../../context/AuthContext';
 import toast from 'react-hot-toast';
 import { Toaster } from 'react-hot-toast';
+import ProgressBar from '@/app/components/ProgressBar/ProgressBar';
+import FavoriteButton from '@/app/components/FavoriteButton/FavoriteButton';
+import { checkAndAwardBadges } from '@/app/firebase/badges';
+import NotesPanel from '@/app/components/NotesPanel/NotesPanel';
 
 interface Section {
     title: string;
@@ -159,7 +163,7 @@ export default function LessonDetailPage() {
         if (!showExplanation) {
             setSelectedAnswer(index);
             setShowExplanation(true);
-            
+
             if (index === content?.questions[currentQuestionIndex].correctAnswer) {
                 setQuizScore(prev => prev + 1);
             }
@@ -217,20 +221,36 @@ export default function LessonDetailPage() {
                 console.log('XP gagné (quiz):', xpToAdd, 'XP total:', exp, 'Level:', level);
                 try {
                     await setDoc(userRef, {
-                      exp: Number(exp),
-                      level: Number(level),
-                      completedLessons: Array.isArray(completedLessons) ? completedLessons : [],
+                        exp: Number(exp),
+                        level: Number(level),
+                        completedLessons: Array.isArray(completedLessons) ? completedLessons : [],
                     }, { merge: true });
                     console.log('Mise à jour Firestore (setDoc) :', { exp, level, completedLessons });
+
+                    // Vérifier les nouveaux badges
+                    const newBadges = await checkAndAwardBadges(user.uid);
+                    if (newBadges.length > 0) {
+                        newBadges.forEach(badge => {
+                            toast.success(`🎉 Nouveau badge débloqué: ${badge.icon} ${badge.name}`, {
+                                duration: 5000,
+                                style: {
+                                    background: 'linear-gradient(90deg, #ffd700 0%, #ffed4e 100%)',
+                                    color: '#1a1a1a',
+                                    fontWeight: 'bold',
+                                }
+                            });
+                        });
+                    }
+
                     toast.success(leveledUp ? (levelsGained > 1 ? `+${levelsGained} niveaux ! 🚀` : 'Niveau supérieur ! Bravo 🎉') : `+${xpToAdd} XP gagnés !`, {
-                      style: {
-                        background: leveledUp ? 'linear-gradient(90deg, #0fffc1 0%, #3b82f6 100%)' : '#10b981',
-                        color: '#1a1a1a',
-                        fontWeight: 'bold',
-                        fontSize: '1.1rem',
-                      },
-                      icon: leveledUp ? '🚀' : '⭐',
-                      duration: 4000
+                        style: {
+                            background: leveledUp ? 'linear-gradient(90deg, #0fffc1 0%, #3b82f6 100%)' : '#10b981',
+                            color: '#1a1a1a',
+                            fontWeight: 'bold',
+                            fontSize: '1.1rem',
+                        },
+                        icon: leveledUp ? '🚀' : '⭐',
+                        duration: 4000
                     });
                 } catch (err) {
                     console.error('Erreur Firestore lors du setDoc (completedLessons):', err);
@@ -276,15 +296,24 @@ export default function LessonDetailPage() {
     return (
         <div className={styles.lessonPage}>
             <Toaster position="top-center" />
+
+            {/* Panneau de notes */}
+            {params.id && typeof params.id === 'string' && (
+                <NotesPanel lessonId={params.id} lessonTitle={lesson?.title || 'Leçon'} />
+            )}
+
             <div className={styles.lessonHeader}>
                 <button className={styles.backButton} onClick={goBack}>
                     <ArrowLeft size={16} />
                     Retour aux leçons
                 </button>
                 <div className={styles.lessonInfo}>
-                    <div className={styles.categoryTag}>
-                        {getIconByName(lesson.iconName)}
-                        <span>{lesson.category}</span>
+                    <div className={styles.headerTop}>
+                        <div className={styles.categoryTag}>
+                            {getIconByName(lesson.iconName)}
+                            <span>{lesson.category}</span>
+                        </div>
+                        {lesson.id && <FavoriteButton lessonId={lesson.id} showLabel />}
                     </div>
                     <h1>{lesson.title}</h1>
                     <p className={styles.description}>{lesson.description}</p>
@@ -297,164 +326,175 @@ export default function LessonDetailPage() {
             </div>
 
             <div className={styles.lessonContent}>
-                <nav className={styles.sectionNav}>
-                    {content.sections.map((section, index) => (
-                        <button
-                            key={index}
-                            className={`${styles.sectionButton} ${activeSection === index ? styles.active : ''}`}
-                            onClick={() => handleSectionChange(index)}
-                        >
-                            {section.title}
-                        </button>
-                    ))}
-                    {content.questions.length > 0 && (
-                        <button
-                            className={`${styles.sectionButton} ${showQuiz ? styles.active : ''} ${styles.quizButton}`}
-                            onClick={handleQuizStart}
-                        >
-                            Quiz
-                        </button>
-                    )}
-                </nav>
+                {/* Barre de progression */}
+                {!showQuiz && content && (
+                    <div className={styles.progressBarWrapper}>
+                        <ProgressBar
+                            current={activeSection + 1}
+                            total={content.sections.length}
+                        />
+                    </div>
+                )}
 
-                {showQuiz ? (
-                    <div className={styles.quizContainer}>
-                        {!quizCompleted ? (
-                            <>
-                                <div className={styles.quizProgress}>
-                                    Question {currentQuestionIndex + 1} sur {content.questions.length}
-                                </div>
-                                <div className={styles.questionContainer}>
-                                    <h3 className={styles.questionText}>
-                                        {content.questions[currentQuestionIndex].text}
-                                    </h3>
-                                    <div className={styles.optionsContainer}>
-                                        {content.questions[currentQuestionIndex].options.map((option, index) => (
-                                            <button
-                                                key={index}
-                                                className={`${styles.optionButton} ${
-                                                    selectedAnswer === index
+                <div className={styles.contentGrid}>
+                    <nav className={styles.sectionNav}>
+                        {content.sections.map((section, index) => (
+                            <button
+                                key={index}
+                                className={`${styles.sectionButton} ${activeSection === index ? styles.active : ''}`}
+                                onClick={() => handleSectionChange(index)}
+                            >
+                                {section.title}
+                            </button>
+                        ))}
+                        {content.questions.length > 0 && (
+                            <button
+                                className={`${styles.sectionButton} ${showQuiz ? styles.active : ''} ${styles.quizButton}`}
+                                onClick={handleQuizStart}
+                            >
+                                Quiz
+                            </button>
+                        )}
+                    </nav>
+
+                    {showQuiz ? (
+                        <div className={styles.quizContainer}>
+                            {!quizCompleted ? (
+                                <>
+                                    <div className={styles.quizProgress}>
+                                        Question {currentQuestionIndex + 1} sur {content.questions.length}
+                                    </div>
+                                    <div className={styles.questionContainer}>
+                                        <h3 className={styles.questionText}>
+                                            {content.questions[currentQuestionIndex].text}
+                                        </h3>
+                                        <div className={styles.optionsContainer}>
+                                            {content.questions[currentQuestionIndex].options.map((option, index) => (
+                                                <button
+                                                    key={index}
+                                                    className={`${styles.optionButton} ${selectedAnswer === index
                                                         ? index === content.questions[currentQuestionIndex].correctAnswer
                                                             ? styles.correct
                                                             : styles.incorrect
                                                         : ''
-                                                }`}
-                                                onClick={() => handleAnswerSelect(index)}
-                                                disabled={showExplanation}
-                                            >
-                                                {option}
-                                                {showExplanation && selectedAnswer === index && (
-                                                    <span className={styles.answerIcon}>
-                                                        {index === content.questions[currentQuestionIndex].correctAnswer ? (
-                                                            <Check size={16} />
-                                                        ) : (
-                                                            <X size={16} />
-                                                        )}
-                                                    </span>
-                                                )}
-                                            </button>
-                                        ))}
-                                    </div>
-                                    {showExplanation && (
-                                        <div className={styles.explanationContainer}>
-                                            <p className={styles.explanation}>
-                                                {content.questions[currentQuestionIndex].explanation}
-                                            </p>
-                                            <button
-                                                className={styles.nextButton}
-                                                onClick={handleNextQuestion}
-                                            >
-                                                {currentQuestionIndex < (content.questions.length || 0) - 1
-                                                    ? "Question suivante"
-                                                    : "Terminer le quiz"}
-                                            </button>
+                                                        }`}
+                                                    onClick={() => handleAnswerSelect(index)}
+                                                    disabled={showExplanation}
+                                                >
+                                                    {option}
+                                                    {showExplanation && selectedAnswer === index && (
+                                                        <span className={styles.answerIcon}>
+                                                            {index === content.questions[currentQuestionIndex].correctAnswer ? (
+                                                                <Check size={16} />
+                                                            ) : (
+                                                                <X size={16} />
+                                                            )}
+                                                        </span>
+                                                    )}
+                                                </button>
+                                            ))}
                                         </div>
+                                        {showExplanation && (
+                                            <div className={styles.explanationContainer}>
+                                                <p className={styles.explanation}>
+                                                    {content.questions[currentQuestionIndex].explanation}
+                                                </p>
+                                                <button
+                                                    className={styles.nextButton}
+                                                    onClick={handleNextQuestion}
+                                                >
+                                                    {currentQuestionIndex < (content.questions.length || 0) - 1
+                                                        ? "Question suivante"
+                                                        : "Terminer le quiz"}
+                                                </button>
+                                            </div>
+                                        )}
+                                    </div>
+                                </>
+                            ) : (
+                                <div className={styles.quizResults}>
+                                    <h3 className={styles.quizTitle}>QUIZ TERMINÉ !</h3>
+                                    <p className={styles.score}>
+                                        Votre score : {quizScore} / {content.questions.length}
+                                    </p>
+                                    <p className={styles.percentage}>
+                                        {Math.round((quizScore / (content.questions.length || 1)) * 100)}%
+                                    </p>
+                                    {Math.round((quizScore / (content.questions.length || 1)) * 100) >= 50 ? (
+                                        <p className={styles.xpMessage}>Bravo ! Vous gagnez {lesson.xpReward} XP 🎉</p>
+                                    ) : (
+                                        <p className={styles.xpMessage}>Score insuffisant pour gagner de l'expérience.</p>
                                     )}
+                                    <div className={styles.buttonRow}>
+                                        <button
+                                            className={styles.retryButton}
+                                            onClick={handleQuizStart}
+                                        >
+                                            Recommencer le quiz
+                                        </button>
+                                        <button
+                                            className={styles.retryButton}
+                                            onClick={goBack}
+                                        >
+                                            Retour aux leçons
+                                        </button>
+                                        <button
+                                            className={styles.retryButton}
+                                            onClick={() => window.location.href = '/profile'}
+                                        >
+                                            Rafraîchir mon profil
+                                        </button>
+                                    </div>
                                 </div>
-                            </>
-                        ) : (
-                            <div className={styles.quizResults}>
-                                <h3 className={styles.quizTitle}>QUIZ TERMINÉ !</h3>
-                                <p className={styles.score}>
-                                    Votre score : {quizScore} / {content.questions.length}
-                                </p>
-                                <p className={styles.percentage}>
-                                    {Math.round((quizScore / (content.questions.length || 1)) * 100)}%
-                                </p>
-                                {Math.round((quizScore / (content.questions.length || 1)) * 100) >= 50 ? (
-                                    <p className={styles.xpMessage}>Bravo ! Vous gagnez {lesson.xpReward} XP 🎉</p>
-                                ) : (
-                                    <p className={styles.xpMessage}>Score insuffisant pour gagner de l'expérience.</p>
-                                )}
-                                <div className={styles.buttonRow}>
-                                    <button
-                                        className={styles.retryButton}
-                                        onClick={handleQuizStart}
-                                    >
-                                        Recommencer le quiz
-                                    </button>
-                                    <button
-                                        className={styles.backButton}
-                                        onClick={goBack}
-                                    >
-                                        Retour aux leçons
-                                    </button>
-                                    <button
-                                        className={styles.retryButton}
-                                        onClick={() => window.location.href = '/profile'}
-                                    >
-                                        Rafraîchir mon profil
-                                    </button>
-                                </div>
-                            </div>
-                        )}
-                    </div>
-                ) : (
-                    <div className={styles.sectionContent}>
-                        <h2 className={styles.sectionTitle}>
-                            {content.sections[activeSection].title}
-                        </h2>
-                        <div className={styles.markdownContainer}>
-                            <ReactMarkdown
-                                children={content.sections[activeSection].content}
-                                remarkPlugins={[remarkGfm, remarkMath]}
-                                rehypePlugins={[rehypeKatex]}
-                                components={{
-                                    code: ({ className, children }) => {
-                                        const match = /language-(\w+)/.exec(className || '');
-                                        return match ? (
-                                            <pre className={styles.codeBlock}>
+                            )}
+                        </div>
+                    ) : (
+                        <div className={styles.sectionContent}>
+                            <h2 className={styles.sectionTitle}>
+                                {content.sections[activeSection].title}
+                            </h2>
+                            <div className={styles.markdownContainer}>
+                                <ReactMarkdown
+                                    children={content.sections[activeSection].content}
+                                    remarkPlugins={[remarkGfm, remarkMath]}
+                                    rehypePlugins={[rehypeKatex]}
+                                    components={{
+                                        code: ({ className, children }) => {
+                                            const match = /language-(\w+)/.exec(className || '');
+                                            return match ? (
+                                                <pre className={styles.codeBlock}>
+                                                    <code className={className}>
+                                                        {String(children).replace(/\n$/, '')}
+                                                    </code>
+                                                </pre>
+                                            ) : (
                                                 <code className={className}>
-                                                    {String(children).replace(/\n$/, '')}
+                                                    {String(children)}
                                                 </code>
-                                            </pre>
-                                        ) : (
-                                            <code className={className}>
-                                                {String(children)}
-                                            </code>
-                                        );
-                                    }
-                                }}
-                            />
+                                            );
+                                        }
+                                    }}
+                                />
+                            </div>
+                            <div className={styles.navigationButtons}>
+                                <button
+                                    className={styles.navButton}
+                                    disabled={activeSection === 0}
+                                    onClick={() => handleSectionChange(activeSection - 1)}
+                                >
+                                    Section précédente
+                                </button>
+                                <button
+                                    className={styles.navButton}
+                                    disabled={activeSection === (content.sections.length || 0) - 1}
+                                    onClick={() => handleSectionChange(activeSection + 1)}
+                                >
+                                    Section suivante
+                                </button>
+                            </div>
                         </div>
-                        <div className={styles.navigationButtons}>
-                            <button
-                                className={styles.navButton}
-                                disabled={activeSection === 0}
-                                onClick={() => handleSectionChange(activeSection - 1)}
-                            >
-                                Section précédente
-                            </button>
-                            <button
-                                className={styles.navButton}
-                                disabled={activeSection === (content.sections.length || 0) - 1}
-                                onClick={() => handleSectionChange(activeSection + 1)}
-                            >
-                                Section suivante
-                            </button>
-                        </div>
-                    </div>
-                )}
+                    )}
+                </div>
             </div>
         </div>
     );

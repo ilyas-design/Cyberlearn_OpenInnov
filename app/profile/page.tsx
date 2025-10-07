@@ -7,6 +7,8 @@ import { doc, getDoc, setDoc } from "firebase/firestore";
 import styles from "./profile.module.css";
 import { User, BookOpen, Award, Settings, Clock, ArrowLeft } from "lucide-react";
 import { getAllLessons, Lesson } from "@/app/firebase/lessons";
+import BadgeDisplay from "@/app/components/BadgeDisplay/BadgeDisplay";
+import CertificateGenerator from "@/app/components/CertificateGenerator/CertificateGenerator";
 
 interface UserData {
     username?: string;
@@ -258,21 +260,47 @@ export default function ProfilePage() {
                     {activeTab === "achievements" && (
                         <div className={styles.tabContent}>
                             <h2 className={styles.sectionTitle}>Mes réalisations</h2>
+
+                            {/* Affichage des badges */}
+                            <BadgeDisplay showProgress={true} />
+
+                            <div className={styles.divider}></div>
+
+                            <h3 className={styles.subsectionTitle}>Leçons Complétées</h3>
                             <div className={styles.achievementsList}>
                                 {completedLessonsList.length === 0 ? (
                                     <div className={styles.emptyState}>
                                         <Award size={48} />
-                                        <p>Vous n'avez pas encore de réalisations</p>
+                                        <p>Vous n'avez pas encore complété de cours</p>
                                         <p className={styles.subText}>Complétez des cours pour gagner des badges</p>
                                     </div>
                                 ) : (
-                                    completedLessonsList.map((lesson) => (
-                                        <div key={lesson.id} className={styles.completedLessonCard}>
-                                            <div className={styles.medalBadge}>🏅</div>
-                                            <h3 className={styles.completedTitle}>{lesson.title}</h3>
-                                            <span className={styles.completedText}>Terminé !</span>
+                                    <>
+                                        <div className={styles.completedLessonsGrid}>
+                                            {completedLessonsList.map((lesson) => (
+                                                <div key={lesson.id} className={styles.completedLessonCard}>
+                                                    <div className={styles.medalBadge}>🏅</div>
+                                                    <h3 className={styles.completedTitle}>{lesson.title}</h3>
+                                                    <span className={styles.completedText}>Terminé !</span>
+                                                </div>
+                                            ))}
                                         </div>
-                                    ))
+
+                                        {/* Certificat si toutes les leçons sont complétées */}
+                                        {completedLessonsList.length >= 5 && (
+                                            <>
+                                                <div className={styles.divider}></div>
+                                                <h3 className={styles.subsectionTitle}>🎉 Félicitations !</h3>
+                                                <CertificateGenerator
+                                                    userName={userData?.username || user?.displayName || "Étudiant"}
+                                                    courseName="Formation CyberLearn"
+                                                    completionDate={new Date()}
+                                                    level={userData?.level ?? 1}
+                                                    totalLessons={completedLessonsList.length}
+                                                />
+                                            </>
+                                        )}
+                                    </>
                                 )}
                             </div>
                         </div>

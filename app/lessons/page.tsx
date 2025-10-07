@@ -9,6 +9,8 @@ import { getIconByName } from "../utils/iconMapping";
 import { useAuth } from '../context/AuthContext';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../firebase/config';
+import SearchBar from '../components/SearchBar/SearchBar';
+import FavoriteButton from '../components/FavoriteButton/FavoriteButton';
 
 export default function LessonsPage() {
     const [lessons, setLessons] = useState<Lesson[]>([]);
@@ -17,6 +19,7 @@ export default function LessonsPage() {
     const [error, setError] = useState<string | null>(null);
     const [activeCategory, setActiveCategory] = useState<string>("Tous");
     const [categories, setCategories] = useState<string[]>([]);
+    const [searchQuery, setSearchQuery] = useState<string>("");
     const { user } = useAuth();
     const [completedLessons, setCompletedLessons] = useState<string[]>([]);
 
@@ -76,17 +79,45 @@ export default function LessonsPage() {
         fetchLessons();
     }, []);
 
+    // Filtrer les leçons par catégorie et recherche
+    const filterLessons = () => {
+        if (!lessons || lessons.length === 0) return;
+
+        let filtered = lessons;
+
+        // Filtre par catégorie
+        if (activeCategory !== "Tous") {
+            filtered = filtered.filter(lesson => lesson.category === activeCategory);
+        }
+
+        // Filtre par recherche
+        if (searchQuery.trim() !== "") {
+            const query = searchQuery.toLowerCase();
+            filtered = filtered.filter(lesson =>
+                lesson.title.toLowerCase().includes(query) ||
+                lesson.description.toLowerCase().includes(query) ||
+                lesson.category.toLowerCase().includes(query) ||
+                (lesson.tags && lesson.tags.some(tag => tag.toLowerCase().includes(query)))
+            );
+        }
+
+        setFilteredLessons(filtered);
+    };
+
+    // Effet pour appliquer les filtres
+    useEffect(() => {
+        filterLessons();
+        // eslint-disable-next-line
+    }, [activeCategory, searchQuery, lessons]);
+
     // Filtrer les leçons par catégorie
     const filterByCategory = (category: string) => {
         setActiveCategory(category);
-        if (!lessons || lessons.length === 0) return;
+    };
 
-        if (category === "Tous") {
-            setFilteredLessons(lessons);
-        } else {
-            const filteredData = lessons.filter(lesson => lesson.category === category);
-            setFilteredLessons(filteredData);
-        }
+    // Gérer la recherche
+    const handleSearch = (query: string) => {
+        setSearchQuery(query);
     };
 
     // Recharger les leçons
@@ -121,6 +152,16 @@ export default function LessonsPage() {
                 <p className={styles.subtitle}>
                     Explorez notre catalogue de leçons pour développer vos compétences en cybersécurité et technologies connexes.
                 </p>
+
+                {/* Barre de recherche */}
+                {!loading && !error && (
+                    <div className={styles.searchContainer}>
+                        <SearchBar
+                            onSearch={handleSearch}
+                            placeholder="Rechercher une leçon, catégorie ou tag..."
+                        />
+                    </div>
+                )}
             </div>
 
             {!loading && !error && categories.length > 0 && (
@@ -170,17 +211,20 @@ export default function LessonsPage() {
                                         {lesson.iconName && getIconByName(lesson.iconName)}
                                         <span>{lesson.category}</span>
                                     </div>
-                                    {isCompleted && (
-                                        <div className={styles.completedBadge}>
-                                            <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="10" fill="#10b981"/><path d="M6 10.5L9 13.5L14 8.5" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
-                                            <span>Complétée</span>
-                                        </div>
-                                    )}
-                                    {lesson.locked && (
-                                        <div className={styles.lockedBadge}>
-                                            <Lock size={16} />
-                                        </div>
-                                    )}
+                                    <div className={styles.cardBadges}>
+                                        {isCompleted && (
+                                            <div className={styles.completedBadge}>
+                                                <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="10" fill="#10b981" /><path d="M6 10.5L9 13.5L14 8.5" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                                                <span>Complétée</span>
+                                            </div>
+                                        )}
+                                        {lesson.locked && (
+                                            <div className={styles.lockedBadge}>
+                                                <Lock size={16} />
+                                            </div>
+                                        )}
+                                        {!isLocked && <FavoriteButton lessonId={lesson.id} />}
+                                    </div>
                                 </div>
                                 <h3 className={styles.lessonTitle}>{lesson.title}</h3>
                                 <p className={styles.lessonDescription}>{lesson.description}</p>
