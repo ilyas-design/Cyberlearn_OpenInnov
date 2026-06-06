@@ -7,18 +7,15 @@ import styles from "./LessonPage.module.css";
 import { ArrowLeft, Check, X } from "lucide-react";
 import { doc, getDoc, updateDoc, setDoc } from 'firebase/firestore';
 import { db } from '@/app/firebase/config';
-import ReactMarkdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
-import remarkMath from 'remark-math';
-import rehypeKatex from 'rehype-katex';
-import 'katex/dist/katex.min.css';
 import { useAuth } from '../../context/AuthContext';
+import LessonContent from '@/app/components/LessonContent/LessonContent';
 import toast from 'react-hot-toast';
 import { Toaster } from 'react-hot-toast';
 import ProgressBar from '@/app/components/ProgressBar/ProgressBar';
 import FavoriteButton from '@/app/components/FavoriteButton/FavoriteButton';
 import { checkAndAwardBadges } from '@/app/firebase/badges';
 import NotesPanel from '@/app/components/NotesPanel/NotesPanel';
+import Page3DShell from '@/app/components/CyberBackground/Page3DShell';
 
 interface Section {
     title: string;
@@ -262,15 +259,18 @@ export default function LessonDetailPage() {
 
     if (loading) {
         return (
+            <Page3DShell variant="shield">
             <div className={styles.loading}>
                 <div className={styles.loadingSpinner}></div>
                 <p>Chargement de la leçon...</p>
             </div>
+            </Page3DShell>
         );
     }
 
     if (error) {
         return (
+            <Page3DShell variant="shield">
             <div className={styles.error}>
                 <p>{error}</p>
                 <button className={styles.backButton} onClick={goBack}>
@@ -278,11 +278,13 @@ export default function LessonDetailPage() {
                     Retour aux leçons
                 </button>
             </div>
+            </Page3DShell>
         );
     }
 
     if (!lesson || !content) {
         return (
+            <Page3DShell variant="shield">
             <div className={styles.error}>
                 <p>Contenu de la leçon non disponible</p>
                 <button className={styles.backButton} onClick={goBack}>
@@ -290,10 +292,12 @@ export default function LessonDetailPage() {
                     Retour aux leçons
                 </button>
             </div>
+            </Page3DShell>
         );
     }
 
     return (
+        <Page3DShell variant="shield">
         <div className={styles.lessonPage}>
             <Toaster position="top-center" />
 
@@ -453,29 +457,11 @@ export default function LessonDetailPage() {
                             <h2 className={styles.sectionTitle}>
                                 {content.sections[activeSection].title}
                             </h2>
-                            <div className={styles.markdownContainer}>
-                                <ReactMarkdown
-                                    children={content.sections[activeSection].content}
-                                    remarkPlugins={[remarkGfm, remarkMath]}
-                                    rehypePlugins={[rehypeKatex]}
-                                    components={{
-                                        code: ({ className, children }) => {
-                                            const match = /language-(\w+)/.exec(className || '');
-                                            return match ? (
-                                                <pre className={styles.codeBlock}>
-                                                    <code className={className}>
-                                                        {String(children).replace(/\n$/, '')}
-                                                    </code>
-                                                </pre>
-                                            ) : (
-                                                <code className={className}>
-                                                    {String(children)}
-                                                </code>
-                                            );
-                                        }
-                                    }}
-                                />
-                            </div>
+                            <LessonContent
+                                content={content.sections[activeSection].content}
+                                className={styles.markdownContainer}
+                                codeBlockClassName={styles.codeBlock}
+                            />
                             <div className={styles.navigationButtons}>
                                 <button
                                     className={styles.navButton}
@@ -497,5 +483,6 @@ export default function LessonDetailPage() {
                 </div>
             </div>
         </div>
+        </Page3DShell>
     );
 } 

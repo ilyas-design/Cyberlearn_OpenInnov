@@ -1,0 +1,40 @@
+.animateIn {
+    opacity: 0;
+    transition:
+        opacity var(--motion-duration) var(--motion-ease),
+        transform var(--motion-duration) var(--motion-ease);
+    will-change: opacity, transform;
+}
+
+.visible {
+    opacity: 1;
+    transform: none !important;
+}
+
+.fade-up {
+    transform: translateY(24px);
+}
+
+.fade-in {
+    transform: none;
+}
+
+.fade-left {
+    transform: translateX(-24px);
+}
+
+.fade-right {
+    transform: translateX(24px);
+}
+
+.scale {
+    transform: scale(0.96);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .animateIn {
+        opacity: 1;
+        transform: none !important;
+        transition: none;
+    }
+}

@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/app/context/AuthContext';
 import styles from './TwoFactorVerification.module.css';
+import Page3DShell from '@/app/components/CyberBackground/Page3DShell';
 
 export default function TwoFactorVerification() {
     const [code, setCode] = useState('');
@@ -41,6 +42,7 @@ export default function TwoFactorVerification() {
     };
 
     return (
+        <Page3DShell variant="shield" fullViewport>
         <div className={styles.container}>
             <div className={styles.content}>
                 <h1 className={styles.title}>Vérification en deux étapes</h1>
@@ -69,5 +71,6 @@ export default function TwoFactorVerification() {
                 </form>
             </div>
         </div>
+        </Page3DShell>
     );
 } 

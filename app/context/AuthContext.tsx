@@ -6,7 +6,7 @@ import { auth, db } from '../firebase/config';
 import { onAuthStateChanged } from 'firebase/auth';
 import { verifyTwoFactorCode } from '@/app/firebase/2fa';
 import { getDoc, doc } from 'firebase/firestore';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { initializeUserDocument } from '@/app/firebase/userProfile';
 
 interface AuthUser {
@@ -21,6 +21,7 @@ interface AuthUser {
 interface AuthContextType {
     user: AuthUser | null;
     loading: boolean;
+    emailVerified: boolean;
     twoFactorRequired: boolean;
     twoFactorVerified: boolean;
     verifyTwoFactor: (code: string) => Promise<boolean>;
@@ -29,6 +30,7 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType>({
     user: null,
     loading: true,
+    emailVerified: false,
     twoFactorRequired: false,
     twoFactorVerified: false,
     verifyTwoFactor: async () => false
@@ -37,10 +39,14 @@ const AuthContext = createContext<AuthContextType>({
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const [user, setUser] = useState<AuthUser | null>(null);
     const [loading, setLoading] = useState(true);
+    const [emailVerified, setEmailVerified] = useState(false);
     const [twoFactorRequired, setTwoFactorRequired] = useState(false);
     const [twoFactorVerified, setTwoFactorVerified] = useState(false);
     const [twoFactorChecked, setTwoFactorChecked] = useState(false);
     const router = useRouter();
+    const pathname = usePathname();
+
+    const emailVerificationExemptPaths = ['/auth/verify-email', '/login', '/reg'];
 
     const checkTwoFactor = async (user: User) => {
         try {
@@ -75,6 +81,22 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
             if (firebaseUser) {
+                const isEmailVerified = firebaseUser.emailVerified;
+                setEmailVerified(isEmailVerified);
+
+                setUser({
+                    uid: firebaseUser.uid,
+                    email: firebaseUser.email || '',
+                    displayName: firebaseUser.displayName,
+                    level: 1,
+                    completedLessons: [],
+                });
+
+                if (!isEmailVerified) {
+                    setLoading(false);
+                    return;
+                }
+
                 // 🔧 Initialiser le document utilisateur s'il n'existe pas
                 await initializeUserDocument(firebaseUser.uid, firebaseUser.email);
 
@@ -111,6 +133,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                 }
             } else {
                 setUser(null);
+                setEmailVerified(false);
                 setTwoFactorRequired(false);
                 setTwoFactorVerified(false);
                 setTwoFactorChecked(false);
@@ -122,9 +145,20 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         return () => unsubscribe();
     }, [router, twoFactorVerified, twoFactorChecked]);
 
+    useEffect(() => {
+        if (loading || emailVerified || !user) {
+            return;
+        }
+
+        if (!emailVerificationExemptPaths.includes(pathname)) {
+            router.push('/auth/verify-email');
+        }
+    }, [loading, emailVerified, user, pathname, router]);
+
     const value = {
         user,
         loading,
+        emailVerified,
         twoFactorRequired,
         twoFactorVerified,
         verifyTwoFactor

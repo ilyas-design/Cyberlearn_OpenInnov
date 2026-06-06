@@ -9,6 +9,7 @@ import { User, BookOpen, Award, Settings, Clock, ArrowLeft } from "lucide-react"
 import { getAllLessons, Lesson } from "@/app/firebase/lessons";
 import BadgeDisplay from "@/app/components/BadgeDisplay/BadgeDisplay";
 import CertificateGenerator from "@/app/components/CertificateGenerator/CertificateGenerator";
+import Page3DShell from "@/app/components/CyberBackground/Page3DShell";
 
 interface UserData {
     username?: string;
@@ -110,10 +111,12 @@ export default function ProfilePage() {
 
     if (loading) {
         return (
+            <Page3DShell variant="orbit">
             <div className={styles.loadingContainer}>
                 <div className={styles.loadingSpinner}></div>
                 <p>Chargement de votre profil...</p>
             </div>
+            </Page3DShell>
         );
     }
 
@@ -129,6 +132,7 @@ export default function ProfilePage() {
     const xpForLevel = (lvl: number) => 100 + (lvl - 1) * 20;
 
     return (
+        <Page3DShell variant="orbit">
         <div className={styles.profileContainer}>
             <div className={styles.profileHeader}>
                 <button className={styles.backButton} onClick={goBack}>
@@ -343,5 +347,6 @@ export default function ProfilePage() {
                 </div>
             </div>
         </div>
+        </Page3DShell>
     );
 } 

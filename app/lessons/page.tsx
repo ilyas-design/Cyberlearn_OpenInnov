@@ -11,6 +11,7 @@ import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../firebase/config';
 import SearchBar from '../components/SearchBar/SearchBar';
 import FavoriteButton from '../components/FavoriteButton/FavoriteButton';
+import Page3DShell from '@/app/components/CyberBackground/Page3DShell';
 
 export default function LessonsPage() {
     const [lessons, setLessons] = useState<Lesson[]>([]);
@@ -146,6 +147,7 @@ export default function LessonsPage() {
     };
 
     return (
+        <Page3DShell variant="network">
         <div className={styles.container}>
             <div className={styles.header}>
                 <h1 className={styles.title}>Nos Leçons</h1>
@@ -255,6 +257,7 @@ export default function LessonsPage() {
                 </div>
             )}
         </div>
+        </Page3DShell>
     );
 }
 

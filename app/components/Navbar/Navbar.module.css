@@ -3,20 +3,38 @@
     justify-content: space-between;
     align-items: center;
     padding: 1rem 5%;
-    background-color: rgba(3, 2, 25, 0.8);
-    backdrop-filter: blur(10px);
+    background-color: color-mix(in srgb, var(--bg-primary) 85%, transparent);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
     z-index: 9999;
-    transition: all 0.3s ease;
+    transition:
+        background-color var(--motion-duration-fast) ease,
+        box-shadow var(--motion-duration-fast) ease,
+        padding var(--motion-duration-fast) var(--motion-ease);
+    border-bottom: 1px solid transparent;
+    animation: navSlideDown var(--motion-duration) var(--motion-ease) backwards;
+}
+
+@keyframes navSlideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-100%);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .navbar.scrolled {
-    background-color: rgba(3, 2, 25, 0.95);
-    box-shadow: 0 4px 20px rgba(0, 36, 255, 0.2);
-    padding: 0.8rem 5%;
+    background-color: color-mix(in srgb, var(--bg-primary) 95%, transparent);
+    box-shadow: 0 4px 24px var(--shadow-color);
+    padding: 0.75rem 5%;
+    border-bottom-color: var(--border-color);
 }
 
 .logoContainer {
@@ -43,13 +61,13 @@
 }
 
 .link {
-    color: var(--couleur-cinquieme);
+    color: var(--text-primary);
     text-decoration: none;
     font-family: 'Abel', sans-serif;
     font-size: 1.1rem;
     position: relative;
     padding: 0.5rem 0;
-    transition: color 0.3s ease;
+    transition: color var(--motion-duration-fast) ease;
 }
 
 .link:hover {
@@ -119,20 +137,28 @@
 }
 
 .connexionButton {
-    background-color: var(--couleur-principale);
-    color: var(--couleur-cinquieme);
+    background-color: var(--primary-color);
+    color: var(--text-primary);
     border: none;
     padding: 0.8rem 1.5rem;
-    border-radius: 8px;
+    border-radius: 10px;
     font-family: 'Abel', sans-serif;
     font-size: 1rem;
     cursor: pointer;
-    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+    transition:
+        background-color var(--motion-duration-fast) ease,
+        color var(--motion-duration-fast) ease,
+        transform var(--motion-duration-fast) var(--motion-ease),
+        box-shadow var(--motion-duration-fast) ease;
 }
 
 .connexionButton:hover {
-    background-color: var(--couleur-secondaire);
-    color: var(--couleur-quaternaire);
+    background-color: var(--secondary-color);
+    color: var(--bg-primary);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(10, 255, 212, 0.25);
 }
 
 .authContainer {
@@ -167,10 +193,24 @@
     color: var(--couleur-secondaire);
 }
 
+.menuOverlay {
+    display: none;
+}
+
 /* Responsive Styles */
 @media (max-width: 768px) {
     .burgerMenu {
         display: block;
+    }
+
+    .menuOverlay {
+        display: block;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(4px);
+        z-index: 9998;
+        animation: fadeIn 0.25s ease forwards;
     }
 
     .navLinks {
@@ -180,19 +220,29 @@
         width: 80%;
         max-width: 400px;
         height: 100vh;
-        background-color: rgba(3, 2, 25, 0.98);
+        background-color: color-mix(in srgb, var(--bg-primary) 98%, transparent);
         flex-direction: column;
         align-items: center;
         justify-content: center;
         gap: 2rem;
         padding: 2rem;
-        transition: right 0.3s ease-in-out;
-        box-shadow: -5px 0 20px rgba(0, 36, 255, 0.2);
+        transition: right var(--motion-duration-fast) var(--motion-ease);
+        box-shadow: -8px 0 32px var(--shadow-color);
+        z-index: 9999;
     }
 
     .navLinks.open {
         right: 0;
     }
+
+    .navLinks.open .link {
+        animation: fadeInUp 0.4s var(--motion-ease) backwards;
+    }
+
+    .navLinks.open .link:nth-child(1) { animation-delay: 0.05s; }
+    .navLinks.open .link:nth-child(2) { animation-delay: 0.1s; }
+    .navLinks.open .link:nth-child(3) { animation-delay: 0.15s; }
+    .navLinks.open .link:nth-child(4) { animation-delay: 0.2s; }
 
     .link {
         font-size: 1.2rem;
@@ -225,21 +275,4 @@
         width: 100%;
         max-width: 200px;
     }
-}
-
-/* Animation pour le menu mobile */
-@keyframes slideIn {
-    from {
-        opacity: 0;
-        transform: translateX(100%);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateX(0);
-    }
-}
-
-.navLinks.open {
-    animation: slideIn 0.3s ease-out forwards;
 }

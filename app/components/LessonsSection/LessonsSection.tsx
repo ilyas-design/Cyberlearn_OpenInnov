@@ -1,8 +1,9 @@
 "use client";
 
-import { Code, Network, Users, BookOpen, Shield, Lock, ArrowRight } from 'lucide-react';
+import { Shield, Lock, Globe, AlertTriangle, Key, Terminal, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import styles from './LessonsSection.module.css';
+import AnimateIn from '@/app/components/AnimateIn/AnimateIn';
 import { JSX } from "react";
 
 interface Lesson {
@@ -16,53 +17,72 @@ interface Lesson {
 
 const lessons: Lesson[] = [
     {
-        id: 'securite-base',
-        title: 'Sécurité de Base',
-        description: 'Apprenez les fondamentaux de la cybersécurité',
-        icon: <Shield size={24} />,
-        color: '#0AFFD4',
-        content: 'securite-base'
-    },
-    {
-        id: 'protection-donnees',
-        title: 'Protection des Données',
-        description: 'Protégez vos données personnelles et professionnelles',
+        id: 'cyber-basics',
+        title: 'Fondamentaux Cybersécurité',
+        description: 'Triade CIA, menaces courantes et hygiène numérique',
         icon: <Lock size={24} />,
+        color: '#0AFFD4',
+        content: 'cyber-basics'
+    },
+    {
+        id: 'data-protection',
+        title: 'Protection des Données',
+        description: 'RGPD, chiffrement et stratégie de sauvegarde',
+        icon: <Shield size={24} />,
         color: '#0024FF',
-        content: 'protection-donnees'
+        content: 'data-protection'
     },
     {
-        id: 'apprentissage',
-        title: 'Apprentissage',
-        description: 'Découvrez les meilleures pratiques de sécurité',
-        icon: <BookOpen size={24} />,
+        id: 'web-security',
+        title: 'Sécurité Web',
+        description: 'OWASP, XSS, injection SQL et sessions sécurisées',
+        icon: <Globe size={24} />,
         color: '#FF6B6B',
-        content: 'apprentissage'
+        content: 'web-security'
     },
     {
-        id: 'communaute',
-        title: 'Communauté',
-        description: 'Rejoignez une communauté de passionnés',
-        icon: <Users size={24} />,
-        color: '#4CAF50',
-        content: 'communaute'
+        id: 'phishing-social',
+        title: 'Phishing',
+        description: 'Reconnaître et signaler les arnaques en ligne',
+        icon: <AlertTriangle size={24} />,
+        color: '#FFB347',
+        content: 'phishing-social'
+    },
+    {
+        id: 'password-auth',
+        title: 'Mots de passe & MFA',
+        description: 'Gestionnaires de mots de passe et authentification forte',
+        icon: <Key size={24} />,
+        color: '#9B59B6',
+        content: 'password-auth'
+    },
+    {
+        id: 'malware-basics',
+        title: 'Malware & Ransomware',
+        description: 'Types de malware et conduite à tenir en cas d\'infection',
+        icon: <Terminal size={24} />,
+        color: '#E74C3C',
+        content: 'malware-basics'
     }
 ];
 
 const LessonsSection = () => {
     return (
         <section id="section-title" className={styles.section}>
-            <div className={styles.sectionHeader}>
-                <h2 className={styles.sectionTitle}>
-                    Nos Leçons
-                </h2>
-                <p className={styles.sectionDescription}>
-                    Découvrez notre catalogue complet de leçons pour développer vos compétences en cybersécurité.
-                </p>
-            </div>
+            <AnimateIn animation="fade-up">
+                <div className={styles.sectionHeader}>
+                    <h2 className={styles.sectionTitle}>
+                        Nos Leçons
+                    </h2>
+                    <p className={styles.sectionDescription}>
+                        Découvrez notre catalogue complet de leçons pour développer vos compétences en cybersécurité.
+                    </p>
+                </div>
+            </AnimateIn>
             <div className={styles.cardContainer}>
                 {lessons.map((lesson, index) => (
-                    <div key={index} className={styles.card}>
+                    <AnimateIn key={lesson.id} animation="fade-up" delay={index * 80}>
+                    <div className={styles.card}>
                         <div className={styles.cardHeader}>
                             <div className={styles.etiquette} style={{ backgroundColor: `${lesson.color}20`, borderColor: lesson.color }}>
                                 {lesson.icon}
@@ -75,7 +95,7 @@ const LessonsSection = () => {
                         </p>
                         <div className={styles.cardFooter}>
                             <Link
-                                href={`/lessons`}
+                                href={`/lessons/${lesson.id}`}
                                 className={styles.cardLink}
                             >
                                 <span>Commencer</span>
@@ -83,6 +103,7 @@ const LessonsSection = () => {
                             </Link>
                         </div>
                     </div>
+                    </AnimateIn>
                 ))}
             </div>
         </section>

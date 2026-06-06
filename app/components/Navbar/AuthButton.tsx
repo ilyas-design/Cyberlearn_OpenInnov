@@ -38,10 +38,8 @@ const AuthButton = () => {
                     />
                 </div>
             ) : (
-                <Link href="/login">
-                    <button className={styles.connexionButton}>
-                        {t('navigation.login')}
-                    </button>
+                <Link href="/login" className={styles.connexionButton}>
+                    {t('navigation.login')}
                 </Link>
             )}
         </div>

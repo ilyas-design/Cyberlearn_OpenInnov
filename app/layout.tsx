@@ -32,8 +32,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="fr">
-      <body className={`${inter.className} ${abel.variable} ${bebasNeue.variable}`}>
+    <html lang="fr" suppressHydrationWarning>
+      <body className={`${inter.className} ${abel.variable} ${bebasNeue.variable}`} suppressHydrationWarning>
         <ThemeProvider>
           <AuthProvider>
             <LanguageProvider>

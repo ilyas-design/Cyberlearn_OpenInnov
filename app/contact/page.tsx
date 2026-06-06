@@ -3,6 +3,8 @@
 import React, { useState } from "react";
 import { Mail, Phone, MapPin, Send } from "lucide-react";
 import styles from "./contact.module.css";
+import AnimateIn from "@/app/components/AnimateIn/AnimateIn";
+import Page3DShell from "@/app/components/CyberBackground/Page3DShell";
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
@@ -42,15 +44,19 @@ export default function ContactPage() {
   };
 
   return (
+    <Page3DShell variant="grid">
     <div className={styles.container}>
-      <div className={styles.header}>
-        <h1 className={styles.title}>Contactez-nous</h1>
-        <p className={styles.subtitle}>
-          Vous avez des questions ou des suggestions ? N'hésitez pas à nous contacter.
-        </p>
-      </div>
+      <AnimateIn animation="fade-up">
+        <div className={styles.header}>
+          <h1 className={styles.title}>Contactez-nous</h1>
+          <p className={styles.subtitle}>
+            Vous avez des questions ou des suggestions ? N'hésitez pas à nous contacter.
+          </p>
+        </div>
+      </AnimateIn>
 
       <div className={styles.contactContent}>
+        <AnimateIn animation="fade-right" delay={100}>
         <div className={styles.contactInfo}>
           <h2 className={styles.infoTitle}>Informations de Contact</h2>
           
@@ -92,7 +98,9 @@ export default function ContactPage() {
             </div>
           </div>
         </div>
+        </AnimateIn>
 
+        <AnimateIn animation="fade-left" delay={200}>
         <div className={styles.contactForm}>
           <h2 className={styles.formTitle}>Envoyez-nous un message</h2>
           
@@ -185,7 +193,9 @@ export default function ContactPage() {
             </form>
           )}
         </div>
+        </AnimateIn>
       </div>
     </div>
+    </Page3DShell>
   );
 } 

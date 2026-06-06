@@ -63,14 +63,22 @@
   padding: 2rem;
   box-shadow: 0 4px 15px rgba(0, 36, 255, 0.3);
   text-align: center;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition:
+    transform var(--motion-duration-fast) var(--motion-ease),
+    box-shadow var(--motion-duration-fast) ease,
+    border-color var(--motion-duration-fast) ease;
   border: 1px solid var(--couleur-principale);
+  height: 100%;
 }
 
 .valueCard:hover {
-  transform: translateY(-5px);
+  transform: translateY(-8px);
   box-shadow: 0 10px 20px rgba(10, 255, 212, 0.2);
   border-color: var(--couleur-secondaire);
+}
+
+.valueCard:hover .valueIcon {
+  transform: scale(1.15) rotate(-5deg);
 }
 
 .valueIcon {
@@ -78,6 +86,7 @@
   margin-bottom: 1rem;
   width: 48px;
   height: 48px;
+  transition: transform var(--motion-duration-fast) var(--motion-ease-spring);
 }
 
 .valueTitle {
@@ -132,97 +141,6 @@
 
 }
 
-
-
-/* Section Équipe */
-.team {
-  margin-bottom: 2rem;
-}
-
-.teamGrid {
-  display: flex;
-  justify-content: center;
-  gap: 3rem;
-  flex-wrap: wrap;
-}
-
-.teamCard {
-  background-color: rgba(3, 2, 25, 0.7);
-  border-radius: 10px;
-  padding: 2rem;
-  box-shadow: 0 4px 15px rgba(0, 36, 255, 0.3);
-  text-align: center;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  border: 1px solid var(--couleur-principale);
-  width: 280px;
-}
-
-.teamCard:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 20px rgba(10, 255, 212, 0.2);
-  border-color: var(--couleur-secondaire);
-}
-
-.memberImageContainer {
-  margin-bottom: 1.5rem;
-}
-
-.memberImage {
-  width: 150px;
-  height: 150px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 3px solid var(--couleur-principale);
-  transition: border-color 0.3s ease, transform 0.3s ease;
-}
-
-.teamCard:hover .memberImage {
-  border-color: var(--couleur-secondaire);
-  transform: scale(1.05);
-}
-
-.memberImagePlaceholder {
-  width: 120px;
-  height: 120px;
-  background-color: var(--couleur-principale);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 0 auto;
-  font-size: 2.5rem;
-  color: var(--couleur-cinquieme);
-  font-weight: bold;
-  transition: background-color 0.3s ease;
-}
-
-.teamCard:hover .memberImagePlaceholder {
-  background-color: var(--couleur-secondaire);
-  color: var(--couleur-quaternaire);
-}
-
-.memberName {
-  font-size: 1.3rem;
-  margin-bottom: 0.5rem;
-  color: var(--couleur-cinquieme);
-  font-family: 'Bebas Neue', sans-serif;
-  letter-spacing: 0.5px;
-}
-
-.memberRole {
-  font-size: 0.9rem;
-  color: var(--couleur-secondaire);
-  margin-bottom: 1rem;
-  font-weight: 500;
-  font-family: 'Abel', sans-serif;
-}
-
-.memberBio {
-  color: var(--couleur-tertiaire);
-  font-size: 0.95rem;
-  line-height: 1.5;
-  font-family: 'Abel', sans-serif;
-}
 
 @media (max-width: 768px) {
   .storyContent {

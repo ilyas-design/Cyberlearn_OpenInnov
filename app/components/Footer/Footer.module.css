@@ -105,6 +105,8 @@
 .newsletterButton:hover {
     background-color: var(--couleur-secondaire);
     color: var(--couleur-quaternaire);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0, 36, 255, 0.25);
 }
 
 .copyrightBar {
@@ -122,15 +124,29 @@
     margin-top: 1rem;
 }
 
+.socialLinks a {
+    display: inline-flex;
+    padding: 0.5rem;
+    border-radius: 8px;
+    transition:
+        background-color var(--motion-duration-fast) ease,
+        transform var(--motion-duration-fast) var(--motion-ease-spring);
+}
+
+.socialLinks a:hover {
+    background: var(--hover-bg);
+    transform: translateY(-3px);
+}
+
 .socialIcon {
     width: 24px;
     height: 24px;
-    fill: var(--couleur-cinquieme);
-    transition: fill 0.3s ease;
+    fill: var(--text-primary);
+    transition: fill var(--motion-duration-fast) ease;
 }
 
-.socialIcon:hover {
-    fill: var(--couleur-secondaire);
+.socialLinks a:hover .socialIcon {
+    fill: var(--secondary-color);
 }
 
 @media (max-width: 768px) {

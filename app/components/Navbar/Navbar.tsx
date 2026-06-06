@@ -31,6 +31,14 @@ const Navbar = () => {
     };
 
     return (
+        <>
+        {isMenuOpen && (
+            <div
+                className={styles.menuOverlay}
+                onClick={toggleMenu}
+                aria-hidden="true"
+            />
+        )}
         <nav className={`${styles.navbar} ${scrolled ? styles.scrolled : ""}`}>
             {/* Logo */}
             <div className={styles.logoContainer}>
@@ -87,6 +95,7 @@ const Navbar = () => {
                 </div>
             </div>
         </nav>
+        </>
     );
 };
 

@@ -14,28 +14,34 @@ body[data-notes-open="true"] .chatbotContainer {
 }
 
 .chatButton {
-    width: 50px;
-    height: 50px;
-    border-radius: 12px;
-    background: var(--couleur-quaternaire);
-    color: var(--couleur-secondaire);
-    border: 1px solid var(--couleur-principale);
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+    background: var(--bg-secondary);
+    color: var(--secondary-color);
+    border: 1px solid var(--primary-color);
     cursor: pointer;
-    box-shadow: 0 4px 15px rgba(0, 36, 255, 0.3);
-    transition: all 0.3s ease;
+    box-shadow: 0 4px 16px var(--shadow-color);
+    transition:
+        transform var(--motion-duration-fast) var(--motion-ease),
+        background-color var(--motion-duration-fast) ease,
+        color var(--motion-duration-fast) ease,
+        border-color var(--motion-duration-fast) ease,
+        box-shadow var(--motion-duration-fast) ease;
     font-size: 20px;
     display: flex;
     align-items: center;
     justify-content: center;
     font-family: var(--font-bebas-neue);
+    animation: fadeIn 0.6s var(--motion-ease) 1s backwards;
 }
 
 .chatButton:hover {
-    transform: translateY(-3px);
-    background: var(--couleur-principale);
-    color: var(--couleur-cinquieme);
-    border-color: var(--couleur-secondaire);
-    box-shadow: 0 6px 20px rgba(10, 255, 212, 0.3);
+    transform: translateY(-4px) scale(1.05);
+    background: var(--primary-color);
+    color: var(--text-primary);
+    border-color: var(--secondary-color);
+    box-shadow: 0 8px 28px rgba(10, 255, 212, 0.3);
 }
 
 .chatWindow {
@@ -44,14 +50,28 @@ body[data-notes-open="true"] .chatbotContainer {
     right: 20px;
     width: 320px;
     height: 550px;
-    background: rgba(3, 2, 25, 0.7);
-    border-radius: 12px;
-    border: 1px solid var(--couleur-principale);
-    box-shadow: 0 8px 24px rgba(0, 36, 255, 0.3);
+    background: color-mix(in srgb, var(--card-bg) 95%, transparent);
+    border-radius: 14px;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 12px 40px var(--shadow-color);
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    backdrop-filter: blur(10px);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    transform-origin: bottom right;
+    animation: chatOpen 0.35s var(--motion-ease) forwards;
+}
+
+@keyframes chatOpen {
+    from {
+        opacity: 0;
+        transform: scale(0.9) translateY(12px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
 }
 
 .chatHeader {
@@ -130,6 +150,7 @@ body[data-notes-open="true"] .chatbotContainer {
     margin: 4px 0;
     font-family: var(--font-abel);
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    animation: fadeInUp 0.3s var(--motion-ease) forwards;
 }
 
 .userMessage {

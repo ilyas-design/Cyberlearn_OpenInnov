@@ -1,3 +1,15 @@
+@keyframes authFadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(28px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 .authContainer {
     min-height: 100vh;
     display: flex;
@@ -7,14 +19,16 @@
 }
 
 .glassEffect {
-    background: rgba(10, 255, 212, 0.05);
-    backdrop-filter: blur(10px);
-    border-radius: 15px;
+    background: color-mix(in srgb, var(--card-bg) 90%, transparent);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-radius: 16px;
     padding: 2.5rem;
     width: 100%;
     max-width: 450px;
-    border: 1px solid var(--couleur-secondaire);
-    box-shadow: 0 0 20px rgba(10, 255, 212, 0.1);
+    border: 1px solid var(--border-color);
+    box-shadow: 0 8px 32px var(--shadow-color);
+    animation: authFadeInUp var(--motion-duration) var(--motion-ease) forwards;
 }
 
 .title {
@@ -45,38 +59,85 @@
 }
 
 .inputGroup input {
-    padding: 0.8rem;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid var(--couleur-secondaire);
-    border-radius: 5px;
-    color: white;
+    padding: 0.85rem 1rem;
+    background: var(--hover-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    color: var(--text-primary);
     font-size: 1rem;
-    transition: all 0.3s ease;
+    transition:
+        border-color var(--motion-duration-fast) ease,
+        box-shadow var(--motion-duration-fast) ease,
+        background-color var(--motion-duration-fast) ease;
 }
 
 .inputGroup input:focus {
     outline: none;
-    border-color: var(--couleur-principale);
-    box-shadow: 0 0 10px rgba(0, 36, 255, 0.3);
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary-color) 25%, transparent);
+    background: var(--bg-secondary);
+}
+
+.inputGroup input::placeholder {
+    color: var(--text-muted);
+}
+
+.passwordWrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.passwordWrapper input {
+    width: 100%;
+    padding-right: 2.75rem;
+}
+
+.passwordToggle {
+    position: absolute;
+    right: 0.75rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    padding: 0.25rem;
+    transition: color var(--motion-duration-fast) ease;
+}
+
+.passwordToggle:hover {
+    color: var(--couleur-secondaire);
 }
 
 .authButton {
-    background: var(--couleur-principale);
-    color: white;
+    background: var(--primary-color);
+    color: var(--text-primary);
     padding: 1rem;
     border: none;
-    border-radius: 5px;
+    border-radius: 10px;
     font-family: 'Abel', sans-serif;
     font-size: 1.1rem;
     cursor: pointer;
-    transition: all 0.3s ease;
     text-transform: uppercase;
     letter-spacing: 1px;
+    transition:
+        background-color var(--motion-duration-fast) ease,
+        color var(--motion-duration-fast) ease,
+        transform var(--motion-duration-fast) var(--motion-ease),
+        box-shadow var(--motion-duration-fast) ease;
 }
 
-.authButton:hover {
-    background: var(--couleur-secondaire);
-    color: var(--couleur-quaternaire);
+.authButton:hover:not(:disabled) {
+    background: var(--secondary-color);
+    color: var(--bg-primary);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(10, 255, 212, 0.25);
+}
+
+.authButton:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
 }
 
 .switchAuth {

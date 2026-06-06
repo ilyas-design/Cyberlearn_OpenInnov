@@ -3,6 +3,7 @@
 import React from "react";
 import Image from "next/image";
 import styles from "./partners.module.css";
+import Page3DShell from "@/app/components/CyberBackground/Page3DShell";
 
 // Interfaces
 interface Partner {
@@ -25,49 +26,49 @@ const topBrands: Brand[] = [
   {
     id: 1,
     name: "Microsoft",
-    logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/Microsoft_logo.svg/512px-Microsoft_logo.svg.png",
+    logo: "/Images/partners/brands/microsoft.svg",
     website: "https://microsoft.com",
   },
   {
     id: 2,
     name: "Google",
-    logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Google_2015_logo.svg/512px-Google_2015_logo.svg.png",
+    logo: "/Images/partners/brands/google.svg",
     website: "https://google.com",
   },
   {
     id: 3,
     name: "Amazon",
-    logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Amazon_logo.svg/512px-Amazon_logo.svg.png",
+    logo: "/Images/partners/brands/amazon.svg",
     website: "https://amazon.com",
   },
   {
     id: 4,
     name: "Cisco",
-    logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/08/Cisco_logo_blue_2016.svg/512px-Cisco_logo_blue_2016.svg.png",
+    logo: "/Images/partners/brands/cisco.svg",
     website: "https://cisco.com",
   },
   {
     id: 5,
     name: "IBM",
-    logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/51/IBM_logo.svg/512px-IBM_logo.svg.png",
+    logo: "/Images/partners/brands/ibm.svg",
     website: "https://ibm.com",
   },
   {
     id: 6,
     name: "Oracle",
-    logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Oracle_logo.svg/512px-Oracle_logo.svg.png",
+    logo: "/Images/partners/brands/oracle.svg",
     website: "https://oracle.com",
   },
   {
     id: 7,
     name: "Intel",
-    logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7d/Intel_logo_%282006-2020%29.svg/512px-Intel_logo_%282006-2020%29.svg.png",
+    logo: "/Images/partners/brands/intel.svg",
     website: "https://intel.com",
   },
   {
     id: 8,
     name: "Nvidia",
-    logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/21/Nvidia_logo.svg/512px-Nvidia_logo.svg.png",
+    logo: "/Images/partners/brands/nvidia.svg",
     website: "https://nvidia.com",
   },
 ];
@@ -78,28 +79,28 @@ const partners: Partner[] = [
     id: 1,
     name: "CyberSec Institute",
     description: "Institut leader dans la formation en cybersécurité, offrant des certifications reconnues mondialement.",
-    logo: "https://img.freepik.com/premium-vector/cyber-security-logo-design-template_316488-452.jpg",
+    logo: "/Images/partners/educational/cybersec-institute.svg",
     website: "https://example.com/cybersec",
   },
   {
     id: 2,
     name: "TechGuard Solutions",
     description: "Entreprise spécialisée dans les solutions de sécurité informatique pour les organisations.",
-    logo: "https://img.freepik.com/premium-vector/shield-logo-design-security-logo-template_316488-1444.jpg",
+    logo: "/Images/partners/educational/techguard-solutions.svg",
     website: "https://example.com/techguard",
   },
   {
     id: 3,
     name: "DataShield Academy",
     description: "Académie proposant des formations avancées en protection des données et conformité RGPD.",
-    logo: "https://img.freepik.com/premium-vector/data-security-logo-design-template_316488-967.jpg",
+    logo: "/Images/partners/educational/datashield-academy.svg",
     website: "https://example.com/datashield",
   },
   {
     id: 4,
     name: "NetSafe Foundation",
     description: "Organisation à but non lucratif dédiée à la sensibilisation à la sécurité en ligne.",
-    logo: "https://img.freepik.com/premium-vector/network-security-logo-design-template_316488-455.jpg",
+    logo: "/Images/partners/educational/netsafe-foundation.svg",
     website: "https://example.com/netsafe",
   },
 ];
@@ -109,6 +110,7 @@ export default function PartnersPage() {
   const duplicatedBrands = [...topBrands, ...topBrands];
 
   return (
+    <Page3DShell variant="orbit">
     <div className={styles.container}>
       {/* Section Hero */}
       <section className={styles.heroSection}>
@@ -200,5 +202,6 @@ export default function PartnersPage() {
         </div>
       </section>
     </div>
+    </Page3DShell>
   );
 } 

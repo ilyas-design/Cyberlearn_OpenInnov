@@ -7,6 +7,13 @@
     --couleur-tertiaire: #CECECE;
     --couleur-quaternaire: #030219;
     --couleur-cinquieme: #FFFFFF;
+
+    /* Motion tokens */
+    --motion-ease: cubic-bezier(0.22, 1, 0.36, 1);
+    --motion-ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+    --motion-duration: 0.55s;
+    --motion-duration-fast: 0.25s;
+    --motion-duration-slow: 0.8s;
 }
 
 /* Variables de thème - Mode Sombre (par défaut) */
@@ -57,6 +64,24 @@
     box-sizing: border-box;
 }
 
+html {
+    scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
 body {
     font-family: "Inter", sans-serif;
     background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
@@ -86,4 +111,61 @@ main {
     100% {
         background-position: 0% 0%;
     }
+}
+
+/* Shared entrance animations */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(28px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(4px); }
+}
+
+@keyframes shimmer {
+    0% { background-position: -200% center; }
+    100% { background-position: 200% center; }
+}
+
+/* Interactive polish */
+button,
+a,
+input,
+select,
+textarea {
+    transition:
+        color var(--motion-duration-fast) var(--motion-ease),
+        background-color var(--motion-duration-fast) var(--motion-ease),
+        border-color var(--motion-duration-fast) var(--motion-ease),
+        box-shadow var(--motion-duration-fast) var(--motion-ease),
+        transform var(--motion-duration-fast) var(--motion-ease),
+        opacity var(--motion-duration-fast) var(--motion-ease);
+}
+
+button:active:not(:disabled),
+a:active {
+    transform: scale(0.97);
+}
+
+:focus-visible {
+    outline: 2px solid var(--secondary-color, var(--couleur-secondaire));
+    outline-offset: 3px;
 }

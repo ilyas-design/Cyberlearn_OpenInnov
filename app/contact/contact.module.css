@@ -53,12 +53,27 @@
   display: flex;
   align-items: flex-start;
   margin-bottom: 1.5rem;
+  padding: 0.75rem;
+  border-radius: 8px;
+  transition:
+    transform var(--motion-duration-fast) var(--motion-ease),
+    background-color var(--motion-duration-fast) ease;
+}
+
+.infoItem:hover {
+  transform: translateX(6px);
+  background-color: rgba(10, 255, 212, 0.06);
 }
 
 .infoIcon {
   color: var(--couleur-secondaire);
   margin-right: 1rem;
   min-width: 24px;
+  transition: transform var(--motion-duration-fast) var(--motion-ease-spring);
+}
+
+.infoItem:hover .infoIcon {
+  transform: scale(1.1);
 }
 
 .infoLabel {

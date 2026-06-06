@@ -8,6 +8,7 @@ import TwitterIcon from '../../../public/Images/x.svg';
 import LinkedinIcon from '../../../public/Images/linkedin.svg';
 import InstagramIcon from '../../../public/Images/instagram.svg';
 import { useLanguage } from '@/app/context/LanguageContext';
+import AnimateIn from '@/app/components/AnimateIn/AnimateIn';
 
 const Footer = () => {
     const { t } = useLanguage();
@@ -15,7 +16,7 @@ const Footer = () => {
     return (
         <footer className={styles.footer}>
             <div className={styles.footerContent}>
-                {/* Section Logo et Description */}
+                <AnimateIn animation="fade-up" delay={0}>
                 <div className={styles.footerSection}>
                     <Image
                         src={logo}
@@ -30,8 +31,9 @@ const Footer = () => {
                         {t('footer.description')}
                     </p>
                 </div>
+                </AnimateIn>
 
-                {/* Section Liens Utiles */}
+                <AnimateIn animation="fade-up" delay={80}>
                 <div className={styles.footerSection}>
                     <h4 className={styles.sectionTitle}>{t('footer.services')}</h4>
                     <ul className={styles.linkList}>
@@ -41,8 +43,9 @@ const Footer = () => {
                         <li><Link href="/contact" className={styles.footerLink}>{t('footer.support')}</Link></li>
                     </ul>
                 </div>
+                </AnimateIn>
 
-                {/* Section Contact */}
+                <AnimateIn animation="fade-up" delay={160}>
                 <div className={styles.footerSection}>
                     <h4 className={styles.sectionTitle}>{t('footer.contactTitle')}</h4>
                     <ul className={styles.contactList}>
@@ -51,8 +54,9 @@ const Footer = () => {
                         <li>Paris, France</li>
                     </ul>
                 </div>
+                </AnimateIn>
 
-                {/* Newsletter */}
+                <AnimateIn animation="fade-up" delay={240}>
                 <div className={styles.footerSection}>
                     <h4 className={styles.sectionTitle}>{t('footer.newsletter')}</h4>
                     <form className={styles.newsletterForm}>
@@ -66,9 +70,10 @@ const Footer = () => {
                         </button>
                     </form>
                 </div>
+                </AnimateIn>
             </div>
 
-            {/* Barre de Copyright */}
+            <AnimateIn animation="fade-in" delay={320}>
             <div className={styles.copyrightBar}>
                 <p>{t('footer.copyright')}</p>
                 <div className={styles.socialLinks}>
@@ -103,6 +108,7 @@ const Footer = () => {
                     </Link>
                 </div>
             </div>
+            </AnimateIn>
         </footer>
     );
 };

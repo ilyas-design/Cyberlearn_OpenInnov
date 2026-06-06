@@ -2,23 +2,31 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import styles from './Auth.module.css';
 import { useCreateUserWithEmailAndPassword } from "react-firebase-hooks/auth";
-import { sendEmailVerification } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
 import { db } from "@/app/firebase/config"
 import { auth } from "@/app/firebase/config";
+import { sendVerificationEmail } from '@/app/firebase/emailVerification';
+import { Eye, EyeOff } from 'lucide-react';
+import Page3DShell from '@/app/components/CyberBackground/Page3DShell';
 
 export default function Register() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
     const [username, setUsername] = useState('');
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
+    const router = useRouter();
 
     const [createUserWithEmailAndPassword] = useCreateUserWithEmailAndPassword(auth);
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        setError('');
+        setSuccess('');
+
         if (passwordStrength() < 3) {
             setError('Password is too weak');
             return;
@@ -29,17 +37,19 @@ export default function Register() {
             if (userCredential) {
                 const user = auth.currentUser;
                 if (user) {
-                    await sendEmailVerification(user);
+                    await sendVerificationEmail(user);
                     await setDoc(doc(db, "users", user.uid), {
                         username: username,
                         email: email,
                         authID: user.uid
                     });
                     setSuccess('Registration successful! Check your email for verification.');
+                    router.push('/auth/verify-email');
                 }
             }
-        } catch (err: any) {
-            setError(err.message);
+        } catch (err: unknown) {
+            const message = err instanceof Error ? err.message : 'Unable to create account.';
+            setError(message);
         }
     };
 
@@ -53,6 +63,7 @@ export default function Register() {
     };
 
     return (
+        <Page3DShell variant="shield" fullViewport>
         <div className={styles.authContainer}>
             <div className={styles.glassEffect}>
                 <h2 className={styles.title}>Create CyberLearn Account</h2>
@@ -84,13 +95,23 @@ export default function Register() {
 
                     <div className={styles.inputGroup}>
                         <label htmlFor="password">password</label>
-                        <input
-                            type="password"
-                            id="password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            required
-                        />
+                        <div className={styles.passwordWrapper}>
+                            <input
+                                type={showPassword ? 'text' : 'password'}
+                                id="password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                required
+                            />
+                            <button
+                                type="button"
+                                className={styles.passwordToggle}
+                                onClick={() => setShowPassword((prev) => !prev)}
+                                aria-label={showPassword ? 'Hide password' : 'Show password'}
+                            >
+                                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                            </button>
+                        </div>
                         <div className={styles.passwordStrength}>
                             {Array(4).fill(null).map((_, i) => (
                                 <div
@@ -111,5 +132,6 @@ export default function Register() {
                 </p>
             </div>
         </div>
+        </Page3DShell>
     );
 }

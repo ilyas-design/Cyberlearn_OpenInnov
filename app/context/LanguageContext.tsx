@@ -1,7 +1,8 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { usePathname, useRouter } from 'next/navigation';
+import frTranslations from '../locales/fr.json';
+import enTranslations from '../locales/en.json';
 
 // Define the types for our language context
 type Locale = 'en' | 'fr';
@@ -25,33 +26,14 @@ const LanguageContext = createContext<LanguageContextType>({
 // Custom hook to use the language context
 export const useLanguage = () => useContext(LanguageContext);
 
+const translationsByLocale: Record<Locale, Translations> = {
+  fr: frTranslations,
+  en: enTranslations,
+};
+
 export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const router = useRouter();
-  const pathname = usePathname();
-  
-  // Default to French or get from localStorage if available
   const [locale, setLocaleState] = useState<Locale>('fr');
-  const [translations, setTranslations] = useState<Translations>({});
-  const [isLoading, setIsLoading] = useState(true);
-
-  // Load translations for the current locale
-  useEffect(() => {
-    const loadTranslations = async () => {
-      setIsLoading(true);
-      try {
-        // Dynamic import of the translations
-        const translationModule = await import(`../locales/${locale}.json`);
-        setTranslations(translationModule.default);
-      } catch (error) {
-        console.error('Failed to load translations:', error);
-        // Fallback to empty translations object
-        setTranslations({});
-      }
-      setIsLoading(false);
-    };
-
-    loadTranslations();
-  }, [locale]);
+  const translations = translationsByLocale[locale];
 
   // Load the locale from localStorage on client side
   useEffect(() => {
@@ -73,8 +55,6 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
 
   // Translation function
   const t = (key: string): string => {
-    if (isLoading) return '';
-    
     // Split the key path (e.g., 'hero.title')
     const keys = key.split('.');
     

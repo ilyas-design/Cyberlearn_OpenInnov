@@ -1,22 +1,297 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# CyberLearn
 
-## Getting Started
+CyberLearn is a cybersecurity learning platform built with **Next.js** and **Firebase**. Students can browse lessons, track progress, save notes, earn badges, and manage their profile. Administrators can manage users, lessons, and platform settings through a dedicated admin panel.
 
-get the .env file from discord 
+## Features
 
-First, install dependencies:
+- **Authentication** — Email/password sign-up and sign-in with **email verification** (Firebase Auth)
+- **Lessons** — Structured cybersecurity courses with rich markdown content
+- **User profiles** — Progress tracking, favorites, badges, and personal notes
+- **Two-factor authentication (2FA)** — Optional TOTP-based security
+- **Admin dashboard** — User management, lesson management, and settings (`/admin`)
+- **Internationalization** — French and English UI strings
+
+## Tech Stack
+
+| Layer | Technology |
+|-------|------------|
+| Framework | [Next.js 15](https://nextjs.org) (App Router) |
+| Language | TypeScript |
+| Backend / Database | [Firebase](https://firebase.google.com) (Auth + Firestore) |
+| Styling | CSS Modules |
+| UI | React 19, Lucide icons |
+
+## Prerequisites
+
+Before you begin, make sure you have:
+
+- **Node.js 18+** and **npm**
+- A **Google account** with access to the [Firebase Console](https://console.firebase.google.com)
+- **Git** (to clone the repository)
+
+## Quick Start
 
 ```bash
+# 1. Clone the repository
+git clone <repository-url>
+cd cyberlearn-project-1
+
+# 2. Install dependencies
 npm install
-# or
-npm i 
-```
 
-Then, run the development server:
+# 3. Configure environment variables (see below)
+cp .env.example .env   # or create .env manually
 
-```bash
+# 4. Set up Firebase and seed the database (see Firebase Setup)
+
+# 5. Start the development server
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
+---
+
+## Firebase Setup
+
+CyberLearn uses **Firestore** (not Firebase Data Connect / SQL). Follow these steps to connect a new Firebase project.
+
+### 1. Create a Firebase project
+
+1. Go to the [Firebase Console](https://console.firebase.google.com) and create a project (or select an existing one).
+2. Register a **Web app** (`</>` icon) under **Project settings → Your apps**.
+3. Copy the `firebaseConfig` values — you will need them for `.env`.
+
+### 2. Enable Firestore
+
+1. In the sidebar, open **Firestore Database** (use the search bar if you do not see it).
+2. Click **Create database**.
+3. Choose a location (e.g. `eur3` for Europe).
+4. Select **production mode**, then confirm.
+
+### 3. Enable Authentication
+
+1. Open [Authentication](https://console.firebase.google.com) for your project (search “Authentication” in the sidebar).
+2. Click **Get started**.
+3. Under **Sign-in method**, enable **Email/Password**.
+
+Email verification is handled by the app automatically on registration. Optionally customize the verification email under **Authentication → Templates → Email address verification**.
+
+Make sure your domains are listed under **Authentication → Settings → Authorized domains** (include `localhost` for local development and your production domain when deployed).
+
+### 4. Deploy Firestore security rules
+
+This project includes security rules in `firestore.rules`. Deploy them to your Firebase project:
+
+```bash
+npm run firebase:login    # opens browser for Google sign-in (first time only)
+npm run deploy:rules
+```
+
+The project ID is configured in `.firebaserc`. Update it if you use a different Firebase project:
+
+```json
+{
+  "projects": {
+    "default": "your-project-id"
+  }
+}
+```
+
+### 5. Seed lesson data
+
+Lessons are stored in Firestore collections `lessons` and `lessonContents`. Populate them with the seed script.
+
+**Recommended — Service account (Admin SDK):**
+
+1. Firebase Console → **Project settings → Service accounts**
+2. Click **Generate new private key** and download the JSON file
+3. Save it as `serviceAccountKey.json` in the project root (this file is gitignored)
+4. Add to `.env`:
+
+```env
+FIREBASE_SERVICE_ACCOUNT_PATH=./serviceAccountKey.json
+```
+
+5. Run the seed:
+
+```bash
+npm run seed:lessons
+```
+
+You should see `Mode : Firebase Admin SDK` and success messages for each lesson.
+
+**Alternative — Admin user credentials:**
+
+If you already have a user with `isAdmin: true` in Firestore, you can seed with:
+
+```env
+SEED_ADMIN_EMAIL=admin@example.com
+SEED_ADMIN_PASSWORD=your-password
+```
+
+---
+
+## Environment Variables
+
+Create a `.env` file in the project root. **Never commit this file** — it is listed in `.gitignore`.
+
+### Required (application)
+
+```env
+NEXT_PUBLIC_FIREBASE_API_KEY=your_api_key
+NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=your-project.firebaseapp.com
+NEXT_PUBLIC_FIREBASE_PROJECT_ID=your-project-id
+NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=your-project.firebasestorage.app
+NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
+NEXT_PUBLIC_FIREBASE_APP_ID=your_app_id
+```
+
+> Use the format `KEY=value` (no colons, no quotes around values).
+
+Find these values in **Firebase Console → Project settings → Your apps → SDK setup and configuration**.
+
+### Required for seeding (one of the following)
+
+```env
+# Option A — service account JSON file (recommended)
+FIREBASE_SERVICE_ACCOUNT_PATH=./serviceAccountKey.json
+
+# Option B — inline credentials
+FIREBASE_CLIENT_EMAIL=firebase-adminsdk-xxxxx@your-project.iam.gserviceaccount.com
+FIREBASE_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----\n"
+
+# Option C — existing admin account
+SEED_ADMIN_EMAIL=admin@example.com
+SEED_ADMIN_PASSWORD=your-password
+```
+
+---
+
+## Granting Admin Access
+
+After registering on the site:
+
+1. Open **Firestore** in the Firebase Console.
+2. Go to the `users` collection and open your user document (UID matches Firebase Auth).
+3. Add or set the field **`isAdmin`** to `true` (boolean).
+
+You can then access the admin panel at [http://localhost:3000/admin](http://localhost:3000/admin).
+
+---
+
+## Email Verification Flow
+
+When a user registers:
+
+1. Firebase Auth creates the account.
+2. The app sends a **verification email** via `sendEmailVerification`.
+3. The user is redirected to `/auth/verify-email`.
+4. Until the email is verified, protected routes redirect back to that page.
+5. After clicking the link in the email, the user clicks **“I verified my email”** to refresh their session.
+
+Relevant files:
+
+| File | Role |
+|------|------|
+| `app/components/Auth/Register.tsx` | Sends verification email on sign-up |
+| `app/components/Auth/SignIn.tsx` | Redirects unverified users to `/auth/verify-email` |
+| `app/auth/verify-email/page.tsx` | Verification pending screen |
+| `app/firebase/emailVerification.ts` | Send and refresh helpers |
+| `app/context/AuthContext.tsx` | Blocks unverified users from the app |
+
+If emails are not received, check spam, Firebase **Authentication → Templates**, and that the sender domain is configured for your project.
+
+---
+
+## Available Scripts
+
+| Command | Description |
+|---------|-------------|
+| `npm run dev` | Start the development server |
+| `npm run build` | Create a production build |
+| `npm run start` | Run the production server |
+| `npm run lint` | Run ESLint |
+| `npm run seed:lessons` | Upload lessons and content to Firestore |
+| `npm run firebase:login` | Authenticate with Firebase CLI |
+| `npm run deploy:rules` | Deploy `firestore.rules` to Firebase |
+
+---
+
+## Project Structure
+
+```
+cyberlearn-project-1/
+├── app/
+│   ├── admin/           # Admin dashboard pages
+│   ├── components/      # React components
+│   ├── firebase/        # Firebase config and Firestore helpers
+│   ├── lessons/         # Lesson listing and detail pages
+│   ├── locales/         # i18n translation files (en, fr)
+│   └── ...
+├── scripts/
+│   └── seedLessons.js   # Database seed script
+├── firestore.rules      # Firestore security rules
+├── firebase.json        # Firebase CLI configuration
+└── .firebaserc          # Firebase project alias
+```
+
+---
+
+## Firestore Collections
+
+| Collection | Description |
+|------------|-------------|
+| `users` | User profiles, progress, notes, badges, admin flag |
+| `lessons` | Lesson metadata (title, order, category, etc.) |
+| `lessonContents` | Lesson body content (markdown) |
+| `settings` | Platform settings (admin only) |
+| `adminLogs` | Admin action logs |
+
+---
+
+## Troubleshooting
+
+### `firebase: command not found`
+
+Use the npm scripts instead of a global install:
+
+```bash
+npm run firebase:login
+npm run deploy:rules
+```
+
+### `PERMISSION_DENIED` when running `seed:lessons`
+
+Firestore rules only allow admins to write lessons. Use the **service account** method (Admin SDK) or sign in with an account that has `isAdmin: true`.
+
+### Lessons do not appear on the homepage
+
+1. Confirm `npm run seed:lessons` completed without errors.
+2. Check Firestore for the `lessons` collection in the Firebase Console.
+3. Restart the dev server after changing `.env`.
+
+### Authentication errors
+
+- Verify **Email/Password** is enabled in Firebase Authentication.
+- Confirm `.env` values match your Firebase Web app config.
+- Restart `npm run dev` after editing `.env`.
+
+### Firebase Console in the wrong language
+
+Add `?hl=en` to the console URL, or change your preferred language at [myaccount.google.com/language](https://myaccount.google.com/language).
+
+---
+
+## Security Notes
+
+- **Never commit** `.env`, `serviceAccountKey.json`, or any `*-firebase-adminsdk-*.json` file.
+- Rotate your service account key if it is ever exposed.
+- Review `firestore.rules` before deploying to production.
+- For deployed sites, add your domain under **Authentication → Settings → Authorized domains**.
+
+---
+
+## License
+
+Private project — all rights reserved unless otherwise specified by the repository owner.

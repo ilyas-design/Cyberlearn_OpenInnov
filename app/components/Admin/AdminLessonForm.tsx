@@ -15,11 +15,7 @@ import { db } from "../../firebase/config";
 import { Lesson, LessonContent, Question } from "../../firebase/lessons";
 import { X, Plus, Save, ArrowLeft, Lock, Unlock, Edit } from "lucide-react";
 import styles from "./AdminComponents.module.css";
-import ReactMarkdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
-import remarkMath from 'remark-math';
-import rehypeKatex from 'rehype-katex';
-import 'katex/dist/katex.min.css';
+import LessonContent from '@/app/components/LessonContent/LessonContent';
 import { toast } from 'react-hot-toast';
 import { v4 as uuidv4 } from 'uuid'; // Ajout de l'import pour uuidv4
 
@@ -873,12 +869,9 @@ const AdminLessonForm: React.FC<AdminLessonFormProps> = ({
                   <div className={styles.previewPane}>
                     <label>Aperçu</label>
                     <div className={styles.markdownPreview}>
-                      <ReactMarkdown
-                        remarkPlugins={[remarkGfm, remarkMath]}
-                        rehypePlugins={[rehypeKatex]}
-                      >
-                        {contentData.sections[activeSection].content}
-                      </ReactMarkdown>
+                      <LessonContent
+                        content={contentData.sections[activeSection].content}
+                      />
                     </div>
                   </div>
                 </div>
