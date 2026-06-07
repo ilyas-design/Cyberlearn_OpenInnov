@@ -15,7 +15,7 @@ import { db } from "../../firebase/config";
 import { Lesson, LessonContent, Question } from "../../firebase/lessons";
 import { X, Plus, Save, ArrowLeft, Lock, Unlock, Edit } from "lucide-react";
 import styles from "./AdminComponents.module.css";
-import LessonContent from '@/app/components/LessonContent/LessonContent';
+import LessonContentPreview from '@/app/components/LessonContent/LessonContent';
 import { toast } from 'react-hot-toast';
 import { v4 as uuidv4 } from 'uuid'; // Ajout de l'import pour uuidv4
 
@@ -869,7 +869,7 @@ const AdminLessonForm: React.FC<AdminLessonFormProps> = ({
                   <div className={styles.previewPane}>
                     <label>Aperçu</label>
                     <div className={styles.markdownPreview}>
-                      <LessonContent
+                      <LessonContentPreview
                         content={contentData.sections[activeSection].content}
                       />
                     </div>

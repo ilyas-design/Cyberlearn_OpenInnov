@@ -12,10 +12,77 @@ service cloud.firestore {
         && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true;
     }
 
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    // Empêche l'auto-attribution du rôle admin
+    function preservesAdminFlag() {
+      return request.resource.data.get('isAdmin', false)
+        == resource.data.get('isAdmin', false);
+    }
+
+    // authID ne doit pas être réassigné à un autre compte
+    function preservesAuthId() {
+      return request.resource.data.get('authID', request.auth.uid)
+        == resource.data.get('authID', request.auth.uid);
+    }
+
+    function completedLessonsOnlyGrow() {
+      return !request.resource.data.diff(resource.data).affectedKeys().hasAny(['completedLessons'])
+        || request.resource.data.completedLessons.hasAll(resource.data.get('completedLessons', []));
+    }
+
+    function startedLessonsOnlyGrow() {
+      return !request.resource.data.diff(resource.data).affectedKeys().hasAny(['startedLessons'])
+        || request.resource.data.startedLessons.hasAll(resource.data.get('startedLessons', []));
+    }
+
+    function badgesOnlyGrow() {
+      return !request.resource.data.diff(resource.data).affectedKeys().hasAny(['badges'])
+        || request.resource.data.badges.hasAll(resource.data.get('badges', []));
+    }
+
+    // Limite les sauts de niveau et l'inflation d'XP
+    function validExpLevel() {
+      let oldLevel = resource.data.get('level', 1);
+      let newLevel = request.resource.data.get('level', 1);
+      let oldExp = resource.data.get('exp', 0);
+      let newExp = request.resource.data.get('exp', 0);
+
+      return newLevel >= oldLevel
+        && newLevel <= oldLevel + 3
+        && newExp >= 0
+        && newExp <= 10000
+        && (newLevel > oldLevel || newExp >= oldExp);
+    }
+
+    function validOwnerUpdate() {
+      return preservesAdminFlag()
+        && preservesAuthId()
+        && completedLessonsOnlyGrow()
+        && startedLessonsOnlyGrow()
+        && badgesOnlyGrow()
+        && validExpLevel();
+    }
+
+    function validUserCreate(userId) {
+      return request.resource.data.get('isAdmin', false) == false
+        && !('twoFactorSecret' in request.resource.data)
+        && request.resource.data.get('authID', userId) == userId
+        && request.resource.data.get('level', 1) >= 1
+        && request.resource.data.get('exp', 0) >= 0;
+    }
+
     match /users/{userId} {
-      allow read: if isSignedIn() && (request.auth.uid == userId || isAdmin());
-      allow create: if isSignedIn() && request.auth.uid == userId;
-      allow update, delete: if isSignedIn() && (request.auth.uid == userId || isAdmin());
+      allow read: if isOwner(userId) || isAdmin();
+
+      allow create: if isOwner(userId) && validUserCreate(userId);
+
+      allow update: if isAdmin()
+        || (isOwner(userId) && validOwnerUpdate());
+
+      allow delete: if isAdmin();
     }
 
     match /lessons/{lessonId} {
@@ -34,7 +101,13 @@ service cloud.firestore {
     }
 
     match /adminLogs/{logId} {
-      allow read, write: if isAdmin();
+      allow read: if isAdmin();
+      allow create: if isAdmin()
+        && request.resource.data.type in ['info', 'success', 'warning', 'error']
+        && request.resource.data.message is string
+        && request.resource.data.message.size() > 0
+        && request.resource.data.message.size() <= 2000;
+      allow update, delete: if isAdmin();
     }
   }
 }

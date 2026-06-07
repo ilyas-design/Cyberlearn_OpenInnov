@@ -289,6 +289,43 @@ Add `?hl=en` to the console URL, or change your preferred language at [myaccount
 - Rotate your service account key if it is ever exposed.
 - Review `firestore.rules` before deploying to production.
 - For deployed sites, add your domain under **Authentication → Settings → Authorized domains**.
+- HTTP security headers are set in `next.config.ts` (no extra service required).
+
+---
+
+## Staying at $0 (Student / Free Tier)
+
+This project is designed to run **without paid services**. You only need:
+
+| Service | Free option | Used by CyberLearn |
+|---------|-------------|-------------------|
+| Firebase | **Spark plan** (default) | Auth + Firestore rules |
+| Hosting | **Vercel Hobby** or local `npm run dev` | Next.js app |
+| Database | Firestore free quota | Lessons, users, progress |
+
+### What this project uses (all free on Spark)
+
+- **Firebase Authentication** (email/password)
+- **Cloud Firestore** (reads/writes within daily free limits)
+- **Firestore security rules** (`npm run deploy:rules` only — no Cloud Functions, no Storage)
+
+### What to avoid (can trigger billing)
+
+1. **Do not upgrade to the Blaze plan** unless you explicitly need paid features.
+2. **Do not enable** Cloud Functions, Cloud Storage uploads, or Firebase Extensions that require Blaze.
+3. **Do not add** OpenAI, Hugging Face, or other paid API keys — the app does not use them.
+4. **Do not run** `firebase deploy` without `--only firestore:rules` if you later add Hosting/Functions to `firebase.json`.
+5. **Service account key** — only for local `npm run seed:lessons`; never expose it publicly (abuse can inflate Firestore usage).
+
+### Recommended safeguards (free, 2 minutes)
+
+1. [Firebase Console](https://console.firebase.google.com) → **Usage and billing** → confirm plan is **Spark**.
+2. Google Cloud Console → **Billing** → **Budgets & alerts** → create a **$0 or $1 budget** with email alerts.
+3. Monitor **Firestore** usage under Firebase → **Firestore** → **Usage** during demos or class presentations.
+
+### Typical student usage
+
+For a class project (tens of users, seeded lessons, local dev + occasional demo deploy), you should remain **well within** Spark limits (e.g. 50K Firestore reads / day). The hardened `firestore.rules` also reduce abuse (fake admin, XP inflation, spam logs).
 
 ---
 
