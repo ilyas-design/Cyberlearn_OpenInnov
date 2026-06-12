@@ -256,6 +256,162 @@ const lessons = [
         order: 14,
         levelRequired: 5,
         xpReward: 100
+    },
+    {
+        id: "cloud-security",
+        category: "Cybersécurité",
+        title: "Sécurité Cloud",
+        description: "Modèle de responsabilité partagée, IAM, chiffrement et bonnes pratiques AWS/Azure/GCP.",
+        iconName: "Server",
+        locked: true,
+        tags: ["Cybersécurité", "Cloud", "IAM"],
+        order: 15,
+        levelRequired: 3,
+        xpReward: 75
+    },
+    {
+        id: "mobile-security",
+        category: "Cybersécurité",
+        title: "Sécurité Mobile",
+        description: "Protégez smartphones et tablettes : MDM, applications, réseaux Wi-Fi et données sensibles.",
+        iconName: "Shield",
+        locked: true,
+        tags: ["Cybersécurité", "Mobile", "BYOD"],
+        order: 16,
+        levelRequired: 2,
+        xpReward: 65
+    },
+    {
+        id: "email-security",
+        category: "Cybersécurité",
+        title: "Sécurité des E-mails",
+        description: "SPF, DKIM, DMARC, filtrage anti-spam et bonnes pratiques de messagerie professionnelle.",
+        iconName: "Globe",
+        locked: true,
+        tags: ["Cybersécurité", "E-mail", "Anti-spam"],
+        order: 17,
+        levelRequired: 2,
+        xpReward: 60
+    },
+    {
+        id: "osint-basics",
+        category: "Cybersécurité",
+        title: "OSINT et Veille",
+        description: "Collecte d'informations publiques, veille sur les menaces et empreinte numérique.",
+        iconName: "Network",
+        locked: true,
+        tags: ["Cybersécurité", "OSINT", "Veille"],
+        order: 18,
+        levelRequired: 3,
+        xpReward: 70
+    },
+    {
+        id: "secure-dev",
+        category: "Cybersécurité",
+        title: "Développement Sécurisé",
+        description: "DevSecOps, revue de code, SAST/DAST et intégration de la sécurité dans le cycle de vie logiciel.",
+        iconName: "Code",
+        locked: true,
+        tags: ["Cybersécurité", "DevSecOps", "SAST"],
+        order: 19,
+        levelRequired: 4,
+        xpReward: 80
+    },
+    {
+        id: "zero-trust",
+        category: "Cybersécurité",
+        title: "Architecture Zero Trust",
+        description: "Ne jamais faire confiance, toujours vérifier : identité, micro-segmentation et accès conditionnel.",
+        iconName: "Lock",
+        locked: true,
+        tags: ["Cybersécurité", "Zero Trust", "IAM"],
+        order: 20,
+        levelRequired: 5,
+        xpReward: 95
+    },
+    {
+        id: "iot-security",
+        category: "Cybersécurité",
+        title: "Sécurité IoT",
+        description: "Objets connectés, firmware, réseaux domestiques et risques des appareils intelligents.",
+        iconName: "Cpu",
+        locked: true,
+        tags: ["Cybersécurité", "IoT", "Domotique"],
+        order: 21,
+        levelRequired: 3,
+        xpReward: 70
+    },
+    {
+        id: "ransomware-defense",
+        category: "Cybersécurité",
+        title: "Défense contre les Ransomwares",
+        description: "Comprendre les attaques par rançongiciel, les vecteurs d'infection et les stratégies de protection.",
+        iconName: "AlertTriangle",
+        locked: true,
+        tags: ["Cybersécurité", "Ransomware", "Incident"],
+        order: 22,
+        levelRequired: 3,
+        xpReward: 75
+    },
+    {
+        id: "soc-fundamentals",
+        category: "Cybersécurité",
+        title: "Fondamentaux du SOC",
+        description: "Centre des opérations de sécurité, détection, corrélation d'événements et réponse aux alertes.",
+        iconName: "Shield",
+        locked: true,
+        tags: ["Cybersécurité", "SOC", "SIEM"],
+        order: 23,
+        levelRequired: 4,
+        xpReward: 85
+    },
+    {
+        id: "gdpr-compliance",
+        category: "Conformité",
+        title: "RGPD et Protection des Données",
+        description: "Principes du RGPD, droits des personnes, obligations des organisations et sanctions.",
+        iconName: "Database",
+        locked: false,
+        tags: ["Conformité", "RGPD", "Vie privée"],
+        order: 24,
+        levelRequired: 2,
+        xpReward: 60
+    },
+    {
+        id: "firewall-basics",
+        category: "Réseaux",
+        title: "Pare-feu et Filtrage Réseau",
+        description: "Règles de pare-feu, NAT, zones de sécurité et bonnes pratiques de segmentation.",
+        iconName: "Server",
+        locked: false,
+        tags: ["Réseaux", "Pare-feu", "Segmentation"],
+        order: 25,
+        levelRequired: 2,
+        xpReward: 55
+    },
+    {
+        id: "backup-recovery",
+        category: "Cybersécurité",
+        title: "Sauvegarde et Reprise d'Activité",
+        description: "Stratégies 3-2-1, plans de continuité, tests de restauration et résilience opérationnelle.",
+        iconName: "Globe",
+        locked: false,
+        tags: ["Cybersécurité", "Backup", "BCP"],
+        order: 26,
+        levelRequired: 2,
+        xpReward: 55
+    },
+    {
+        id: "social-engineering",
+        category: "Cybersécurité",
+        title: "Ingénierie Sociale Avancée",
+        description: "Pretexting, baiting, tailgating et techniques de manipulation psychologique en cybersécurité.",
+        iconName: "Users",
+        locked: true,
+        tags: ["Cybersécurité", "Social Engineering", "Humain"],
+        order: 27,
+        levelRequired: 3,
+        xpReward: 70
     }
 ];
 
@@ -1080,6 +1236,927 @@ Sans **autorisation écrite** explicite (périmètre, dates, techniques autoris�
                 options: ["Boîte blanche", "Boîte noire", "Boîte grise", "Audit de code seul"],
                 correctAnswer: 1,
                 explanation: "En boîte noire, l'auditeur simule un attaquant externe sans documentation interne."
+            }
+        ]
+    },
+    "social-impact": {
+        sections: [
+            {
+                title: "Le numérique et la société",
+                content: sanitizeHtmlContent(`
+# Impact Social du Numérique
+
+La technologie transforme le travail, l'éducation, la démocratie et les relations sociales. Comprendre ces impacts aide à mieux appréhender les enjeux de cybersécurité et d'éthique numérique.
+
+## Transformations majeures
+
+- **Travail** : télétravail, automatisation, nouvelles compétences requises
+- **Éducation** : e-learning, fracture numérique, accès inégal à la formation
+- **Démocratie** : réseaux sociaux, désinformation, protection de la vie privée
+- **Économie** : plateformes numériques, économie des données
+
+## Fracture numérique
+
+Tous les citoyens n'ont pas le même accès aux outils, à la formation ou à une connexion fiable. La cybersécurité doit rester accessible et inclusive.
+`)
+            },
+            {
+                title: "Enjeux éthiques",
+                content: sanitizeHtmlContent(`
+## Éthique et responsabilité
+
+- **Vie privée** : collecte massive de données, surveillance, consentement éclairé
+- **Intelligence artificielle** : biais algorithmiques, transparence, responsabilité
+- **Environnement** : consommation énergétique des data centers et du numérique
+- **Droits humains** : liberté d'expression vs modération, protection des mineurs
+
+## Rôle du citoyen numérique
+
+Chacun peut agir : vérifier les sources, respecter la vie privée d'autrui, signaler les contenus illicites et adopter une hygiène numérique responsable.
+`)
+            }
+        ],
+        questions: [
+            {
+                id: "q1",
+                text: "Qu'est-ce que la fracture numérique ?",
+                options: [
+                    "Une faille de sécurité dans un réseau",
+                    "Les inégalités d'accès aux technologies et compétences numériques",
+                    "Un type de malware",
+                    "Un protocole de chiffrement"
+                ],
+                correctAnswer: 1,
+                explanation: "La fracture numérique désigne les disparités d'accès aux outils, à Internet et aux compétences numériques entre populations."
+            },
+            {
+                id: "q2",
+                text: "Quel enjeu éthique est directement lié aux biais dans les algorithmes d'IA ?",
+                options: [
+                    "La consommation énergétique des serveurs",
+                    "L'équité et la non-discrimination dans les décisions automatisées",
+                    "Le chiffrement TLS",
+                    "La segmentation réseau"
+                ],
+                correctAnswer: 1,
+                explanation: "Les biais algorithmiques peuvent conduire à des décisions injustes ou discriminatoires, un enjeu éthique central de l'IA."
+            }
+        ]
+    },
+    "digital-lib": {
+        sections: [
+            {
+                title: "Ressources d'apprentissage",
+                content: sanitizeHtmlContent(`
+# Bibliothèque Numérique
+
+Une bibliothèque numérique regroupe des ressources pédagogiques accessibles en ligne : cours, tutoriels, documentation et exercices pratiques.
+
+## Types de ressources
+
+- **Cours structurés** : parcours progressifs avec quiz et certifications
+- **Documentation technique** : guides, RFC, documentation officielle
+- **Tutoriels vidéo** : démonstrations pas à pas
+- **Labs pratiques** : environnements sandbox pour s'entraîner en sécurité
+
+## Critères de qualité
+
+Privilégiez les sources fiables : sites officiels, organismes reconnus (ANSSI, OWASP, NIST) et contenus régulièrement mis à jour.
+`)
+            },
+            {
+                title: "Organiser son apprentissage",
+                content: sanitizeHtmlContent(`
+## Méthode efficace
+
+1. **Définir un objectif** : certification, compétence métier, sensibilisation
+2. **Planifier** : sessions régulières, notes, révisions
+3. **Pratiquer** : labs, CTF, projets personnels
+4. **Échanger** : forums, communautés, mentors
+
+## Outils utiles
+
+- Prise de notes (Obsidian, Notion)
+- Signets et favoris dans CyberLearn
+- Calendrier de révision espacée
+- Suivi de progression (XP, badges, certificats)
+`)
+            }
+        ],
+        questions: [
+            {
+                id: "q1",
+                text: "Quelle source est généralement la plus fiable pour la cybersécurité ?",
+                options: [
+                    "Un forum anonyme sans modération",
+                    "L'ANSSI ou l'OWASP",
+                    "Un e-mail non sollicité",
+                    "Une publicité pop-up"
+                ],
+                correctAnswer: 1,
+                explanation: "Les organismes reconnus comme l'ANSSI (France) ou l'OWASP publient des guides et bonnes pratiques vérifiés."
+            },
+            {
+                id: "q2",
+                text: "Pourquoi la pratique (labs, CTF) complète-t-elle la lecture de documentation ?",
+                options: [
+                    "Elle remplace totalement la théorie",
+                    "Elle permet d'appliquer et ancrer les concepts en situation réelle",
+                    "Elle évite d'avoir à lire",
+                    "Elle n'a aucun intérêt pédagogique"
+                ],
+                correctAnswer: 1,
+                explanation: "La mise en pratique renforce la compréhension et développe des réflexes utiles en situation professionnelle."
+            }
+        ]
+    },
+    "cloud-security": {
+        sections: [
+            {
+                title: "Modèle de responsabilité partagée",
+                content: sanitizeHtmlContent(`
+# Sécurité Cloud
+
+Le cloud offre flexibilité et scalabilité, mais la sécurité reste **partagée** entre le fournisseur et le client.
+
+## Responsabilités du fournisseur
+
+- Sécurité physique des data centers
+- Hyperviseur et infrastructure réseau sous-jacente
+- Services managés (selon l'offre)
+
+## Responsabilités du client
+
+- Configuration IAM et droits d'accès
+- Chiffrement des données sensibles
+- Sécurisation des applications déployées
+- Sauvegardes et conformité métier
+
+> Erreur fréquente : laisser un bucket S3 ouvert au public par mauvaise configuration.
+`)
+            },
+            {
+                title: "IAM et bonnes pratiques",
+                content: sanitizeHtmlContent(`
+## Identity and Access Management (IAM)
+
+- Principe du **moindre privilège** pour chaque rôle et utilisateur
+- **MFA** obligatoire pour les comptes administrateurs
+- Rotation des clés API et secrets (jamais en clair dans le code)
+- Audit des permissions avec des outils de **CSPM** (Cloud Security Posture Management)
+
+## Chiffrement
+
+- Chiffrement au repos (KMS, clés gérées par le client)
+- Chiffrement en transit (TLS 1.2+)
+- Journalisation centralisée (CloudTrail, Azure Monitor, Cloud Logging)
+`)
+            }
+        ],
+        questions: [
+            {
+                id: "q1",
+                text: "Dans le modèle de responsabilité partagée, qui configure les droits d'accès aux ressources cloud ?",
+                options: ["Uniquement le fournisseur cloud", "Le client", "Personne, c'est automatique", "Les régulateurs"],
+                correctAnswer: 1,
+                explanation: "Le client est responsable de la configuration IAM, des politiques d'accès et de la sécurité de ses déploiements."
+            },
+            {
+                id: "q2",
+                text: "Quel risque est typique d'un bucket de stockage mal configuré ?",
+                options: [
+                    "Augmentation automatique des performances",
+                    "Exposition publique de données sensibles",
+                    "Chiffrement involontaire par le fournisseur",
+                    "Suppression des logs d'audit"
+                ],
+                correctAnswer: 1,
+                explanation: "Une mauvaise ACL ou politique de bucket peut rendre des fichiers accessibles publiquement sur Internet."
+            }
+        ]
+    },
+    "mobile-security": {
+        sections: [
+            {
+                title: "Menaces sur mobile",
+                content: sanitizeHtmlContent(`
+# Sécurité Mobile
+
+Smartphones et tablettes stockent e-mails, authentifiants et données professionnelles. Ils sont des cibles privilégiées.
+
+## Menaces courantes
+
+- Applications malveillantes ou permissions excessives
+- Réseaux Wi-Fi publics non sécurisés
+- Vol ou perte de l'appareil
+- **Jailbreak / root** qui affaiblit les protections OS
+- **Smishing** (phishing par SMS)
+
+## BYOD vs entreprise
+
+Le **BYOD** (Bring Your Own Device) mélange vie personnelle et professionnelle : des politiques claires (MDM, conteneurisation) sont essentielles.
+`)
+            },
+            {
+                title: "Protection et MDM",
+                content: sanitizeHtmlContent(`
+## Mesures de protection
+
+- Verrouillage par code/biométrie + chiffrement du stockage
+- Mises à jour OS et applications
+- Installation d'apps uniquement depuis stores officiels
+- **MDM** (Mobile Device Management) : effacement à distance, politique de mot de passe
+
+## Bonnes pratiques utilisateur
+
+- Désactiver le Bluetooth/Wi-Fi inutilisés en public
+- Ne pas stocker de mots de passe en clair dans des notes
+- Signaler immédiatement la perte d'un appareil professionnel
+`)
+            }
+        ],
+        questions: [
+            {
+                id: "q1",
+                text: "Qu'est-ce que le MDM permet à une entreprise ?",
+                options: [
+                    "Pirater les téléphones personnels librement",
+                    "Gérer à distance la sécurité des appareils (politiques, effacement)",
+                    "Remplacer le pare-feu réseau",
+                    "Chiffrer Internet globalement"
+                ],
+                correctAnswer: 1,
+                explanation: "Le MDM permet d'appliquer des politiques de sécurité et d'agir à distance (verrouillage, effacement) sur les appareils gérés."
+            },
+            {
+                id: "q2",
+                text: "Pourquoi le jailbreak/root d'un smartphone est-il risqué en entreprise ?",
+                options: [
+                    "Il améliore toujours la sécurité",
+                    "Il contourne les protections du système et facilite l'installation de malware",
+                    "Il active automatiquement le MFA",
+                    "Il chiffre toutes les communications"
+                ],
+                correctAnswer: 1,
+                explanation: "Root/jailbreak affaiblit le sandboxing et les contrôles de sécurité natifs du système d'exploitation mobile."
+            }
+        ]
+    },
+    "email-security": {
+        sections: [
+            {
+                title: "Authentification des e-mails",
+                content: sanitizeHtmlContent(`
+# Sécurité des E-mails
+
+La messagerie reste le vecteur n°1 des attaques (phishing, malware, fraude).
+
+## Protocoles anti-usurpation
+
+- **SPF** : liste les serveurs autorisés à envoyer pour un domaine
+- **DKIM** : signature cryptographique des messages
+- **DMARC** : politique de traitement si SPF/DKIM échouent (none, quarantine, reject)
+
+Sans ces enregistrements DNS, un attaquant peut usurper facilement votre domaine (@votre-entreprise.com).
+`)
+            },
+            {
+                title: "Filtrage et bonnes pratiques",
+                content: sanitizeHtmlContent(`
+## Côté organisation
+
+- Passerelle e-mail avec anti-spam et anti-phishing
+- Formation des utilisateurs au signalement
+- Désactivation des macros Office par défaut
+- Chiffrement S/MIME ou PGP pour données sensibles (si pertinent)
+
+## Côté utilisateur
+
+- Vérifier l'expéditeur réel (en-têtes, domaine)
+- Ne pas cliquer sur les liens urgents sans vérification
+- Utiliser le bouton « Signaler le phishing »
+`)
+            }
+        ],
+        questions: [
+            {
+                id: "q1",
+                text: "Quel protocole indique aux serveurs récepteurs quoi faire si SPF et DKIM échouent ?",
+                options: ["HTTPS", "DMARC", "FTP", "SNMP"],
+                correctAnswer: 1,
+                explanation: "DMARC définit la politique (rejeter, mettre en quarantaine, etc.) lorsque l'authentification du message échoue."
+            },
+            {
+                id: "q2",
+                text: "À quoi sert SPF ?",
+                options: [
+                    "Chiffrer le contenu des e-mails",
+                    "Autoriser explicitement quels serveurs peuvent envoyer pour un domaine",
+                    "Scanner les pièces jointes sur le poste client",
+                    "Remplacer les mots de passe"
+                ],
+                correctAnswer: 1,
+                explanation: "SPF (Sender Policy Framework) publie en DNS la liste des serveurs de messagerie autorisés pour un domaine."
+            }
+        ]
+    },
+    "osint-basics": {
+        sections: [
+            {
+                title: "Qu'est-ce que l'OSINT ?",
+                content: sanitizeHtmlContent(`
+# OSINT et Veille
+
+**OSINT** (Open Source Intelligence) : collecte et analyse d'informations **publiquement disponibles** à des fins de renseignement, veille ou investigation légitime.
+
+## Sources courantes
+
+- Sites web, réseaux sociaux, registres publics
+- Bases de fuites (Have I Been Pwned) pour vérifier des comptes
+- Certificats TLS (Certificate Transparency)
+- Métadonnées de fichiers et images (EXIF)
+
+## Cadre légal et éthique
+
+L'OSINT ne justifie pas l'accès non autorisé à des systèmes. Respectez la vie privée, le RGPD et le périmètre autorisé de votre mission.
+`)
+            },
+            {
+                title: "Veille sur les menaces",
+                content: sanitizeHtmlContent(`
+## Threat Intelligence
+
+- Flux **CVE** et bulletins éditeurs (Microsoft Patch Tuesday, etc.)
+- Alertes CERT/ANSSI
+- Feeds IoC (indicateurs de compromission : hashes, domaines malveillants)
+
+## Empreinte numérique
+
+Auditez ce qu'un attaquant pourrait trouver sur votre organisation : noms d'employés, technologies exposées (Shodan), sous-domaines oubliés.
+
+Réduisez la surface d'attaque : supprimer comptes inutilisés, limiter les infos sensibles en public.
+`)
+            }
+        ],
+        questions: [
+            {
+                id: "q1",
+                text: "L'OSINT utilise principalement des informations :",
+                options: [
+                    "Obtenues par piratage de bases de données",
+                    "Publiquement accessibles et légales à consulter",
+                    "Volées sur le dark web uniquement",
+                    "Classifiées secret défense"
+                ],
+                correctAnswer: 1,
+                explanation: "L'OSINT repose sur des sources ouvertes et légales : web, registres publics, publications officielles, etc."
+            },
+            {
+                id: "q2",
+                text: "Qu'est-ce qu'un IoC (Indicator of Compromise) ?",
+                options: [
+                    "Un type de pare-feu",
+                    "Un signe technique qu'un système a pu être compromis (hash, IP, domaine…)",
+                    "Un certificat TLS",
+                    "Un algorithme de chiffrement"
+                ],
+                correctAnswer: 1,
+                explanation: "Un IoC est un artefact observable (adresse IP, hash de fichier, URL) associé à une activité malveillante connue."
+            }
+        ]
+    },
+    "secure-dev": {
+        sections: [
+            {
+                title: "DevSecOps",
+                content: sanitizeHtmlContent(`
+# Développement Sécurisé
+
+Intégrer la sécurité **tôt** dans le cycle de vie logiciel réduit les coûts et les vulnérabilités en production.
+
+## DevSecOps
+
+- **Shift left** : tests de sécurité dès le développement
+- Pipeline CI/CD avec contrôles automatisés
+- Revue de code incluant les aspects sécurité
+- Gestion des dépendances (SCA) pour détecter librairies vulnérables
+
+## OWASP SAMM / BSIMM
+
+Des modèles de maturité aident à structurer la progression sécurité d'une équipe de développement.
+`)
+            },
+            {
+                title: "SAST, DAST et bonnes pratiques",
+                content: sanitizeHtmlContent(`
+## Outils
+
+- **SAST** : analyse statique du code source (SonarQube, Semgrep)
+- **DAST** : tests dynamiques sur application running (OWASP ZAP, Burp)
+- **SCA** : analyse des composants tiers (Dependabot, Snyk)
+
+## Règles développeur
+
+- Valider toutes les entrées, encoder les sorties
+- Secrets dans variables d'environnement / vault
+- Journaliser sans exposer de données sensibles
+- Tests unitaires incluant cas limites et injections
+`)
+            }
+        ],
+        questions: [
+            {
+                id: "q1",
+                text: "Que signifie « shift left » en DevSecOps ?",
+                options: [
+                    "Déplacer les serveurs vers la gauche du data center",
+                    "Intégrer la sécurité plus tôt dans le cycle de développement",
+                    "Utiliser uniquement des claviers AZERTY",
+                    "Reporter les tests à la mise en production"
+                ],
+                correctAnswer: 1,
+                explanation: "Shift left signifie traiter la sécurité en amont (conception, dev) plutôt qu'en fin de cycle ou après incident."
+            },
+            {
+                id: "q2",
+                text: "Quelle différence entre SAST et DAST ?",
+                options: [
+                    "SAST analyse le code source ; DAST teste l'application en exécution",
+                    "SAST remplace les pare-feu ; DAST remplace les antivirus",
+                    "Il n'y a aucune différence",
+                    "DAST ne s'applique qu'au mobile"
+                ],
+                correctAnswer: 0,
+                explanation: "SAST (Static) inspecte le code sans l'exécuter ; DAST (Dynamic) envoie des requêtes à une application running pour trouver des failles."
+            }
+        ]
+    },
+    "zero-trust": {
+        sections: [
+            {
+                title: "Principes du Zero Trust",
+                content: sanitizeHtmlContent(`
+# Architecture Zero Trust
+
+Le modèle **Zero Trust** part du principe : **jamais faire confiance, toujours vérifier**, même à l'intérieur du réseau.
+
+## Principes clés (NIST SP 800-207)
+
+1. Toutes les sources de données et services sont des ressources
+2. La communication se fait **toujours** de façon sécurisée
+3. L'accès est accordé **par session**, avec le moindre privilège
+4. Les politiques s'appliquent dynamiquement (identité, appareil, contexte)
+5. Surveillance et mesure continue de l'intégrité
+
+Fini le modèle « château fort » : le périmètre réseau n'est plus la frontière de confiance.
+`)
+            },
+            {
+                title: "Mise en œuvre",
+                content: sanitizeHtmlContent(`
+## Composants
+
+- **Identité forte** : IAM, MFA, SSO
+- **Micro-segmentation** : accès granulaire service par service
+- **Accès conditionnel** : posture de l'appareil, géolocalisation, risque
+- **ZTNA** (Zero Trust Network Access) : remplace le VPN classique pour l'accès applicatif
+
+## Migration progressive
+
+Commencer par les actifs critiques, inventorier les identités, centraliser les logs, puis étendre la vérification continue à l'ensemble du parc.
+`)
+            }
+        ],
+        questions: [
+            {
+                id: "q1",
+                text: "Quelle affirmation résume le mieux le Zero Trust ?",
+                options: [
+                    "Tout utilisateur interne est automatiquement de confiance",
+                    "Chaque accès doit être authentifié, autorisé et vérifié en continu",
+                    "Il suffit d'un pare-feu périmétrique performant",
+                    "Seuls les administrateurs ont besoin de MFA"
+                ],
+                correctAnswer: 1,
+                explanation: "Zero Trust exige une vérification explicite à chaque accès, sans confiance implicite basée sur la localisation réseau."
+            },
+            {
+                id: "q2",
+                text: "Qu'est-ce que la micro-segmentation ?",
+                options: [
+                    "Diviser le code en microservices uniquement",
+                    "Isoler finement les flux réseau pour limiter le mouvement latéral",
+                    "Réduire la taille des e-mails",
+                    "Utiliser des microprocesseurs plus petits"
+                ],
+                correctAnswer: 1,
+                explanation: "La micro-segmentation restreint les communications entre zones/workloads pour qu'une compromission ne se propage pas facilement."
+            }
+        ]
+    },
+    "iot-security": {
+        sections: [
+            {
+                title: "Risques IoT",
+                content: sanitizeHtmlContent(`
+# Sécurité IoT
+
+Caméras IP, assistants vocaux, capteurs industriels : les objets connectés multiplient la surface d'attaque.
+
+## Vulnérabilités fréquentes
+
+- Mots de passe par défaut non changés
+- Firmware jamais mis à jour
+- Communications non chiffrées
+- Services exposés sur Internet (botnets **Mirai**)
+- Données collectées sans consentement clair
+
+## Contextes
+
+- **Domotique** : maison connectée
+- **Industrie** : IIoT, SCADA
+- **Santé** : dispositifs médicaux connectés
+`)
+            },
+            {
+                title: "Sécuriser son écosystème IoT",
+                content: sanitizeHtmlContent(`
+## Bonnes pratiques
+
+1. Changer les identifiants par défaut à la première installation
+2. Segmenter le réseau (VLAN invité / IoT isolé)
+3. Désactiver UPnP et ports inutiles sur la box
+4. Acheter des marques avec mises à jour long terme
+5. Surveiller le trafic anormal (caméra qui envoie des Go vers l'étranger)
+
+## Côté entreprise
+
+Inventaire des assets IoT, politique d'achat sécurisée, supervision centralisée et plan de réponse si un capteur est compromis.
+`)
+            }
+        ],
+        questions: [
+            {
+                id: "q1",
+                text: "Pourquoi le botnet Mirai est-il célèbre dans l'histoire de l'IoT ?",
+                options: [
+                    "Il chiffrait les disques durs",
+                    "Il compromettait des appareils IoT faiblement sécurisés pour des attaques DDoS massives",
+                    "Il était un antivirus open source",
+                    "Il protégeait les routeurs domestiques"
+                ],
+                correctAnswer: 1,
+                explanation: "Mirai infectait des caméras et routeurs IoT avec mots de passe par défaut pour constituer un botnet DDoS."
+            },
+            {
+                id: "q2",
+                text: "Quelle mesure réduit le plus le risque IoT sur un réseau domestique ?",
+                options: [
+                    "Laisser tous les appareils sur le même réseau sans mot de passe Wi-Fi",
+                    "Isoler les objets connectés sur un réseau/VLAN séparé",
+                    "Désactiver toutes les mises à jour",
+                    "Publier le mot de passe Wi-Fi sur les réseaux sociaux"
+                ],
+                correctAnswer: 1,
+                explanation: "Segmenter les appareils IoT limite l'impact d'une compromission sur le reste du réseau (PC, NAS, etc.)."
+            }
+        ]
+    },
+    "ransomware-defense": {
+        sections: [
+            {
+                title: "Qu'est-ce qu'un ransomware ?",
+                content: sanitizeHtmlContent(`
+<p>Un <strong>ransomware</strong> (rançongiciel) chiffre les fichiers d'une victime et exige une rançon pour les déchiffrer.</p>
+
+<h3>Vecteurs courants</h3>
+<ul>
+    <li>Pièces jointes malveillantes dans des e-mails de phishing</li>
+    <li>Exploitation de services exposés (RDP, VPN non patchés)</li>
+    <li>Chaînes d'approvisionnement compromises</li>
+</ul>
+
+<p>Les groupes modernes pratiquent aussi la <strong>double extorsion</strong> : vol de données + menace de publication.</p>
+`)
+            },
+            {
+                title: "Prévention et réponse",
+                content: sanitizeHtmlContent(`
+<h3>Mesures préventives</h3>
+<ul>
+    <li>Sauvegardes hors ligne testées régulièrement (règle 3-2-1)</li>
+    <li>MFA sur tous les accès distants</li>
+    <li>Segmentation réseau et principe du moindre privilège</li>
+    <li>Formation des utilisateurs au phishing</li>
+</ul>
+
+<h3>En cas d'incident</h3>
+<ol>
+    <li>Isoler les systèmes infectés du réseau</li>
+    <li>Ne pas payer la rançon sans évaluation juridique</li>
+    <li>Activer le plan de réponse aux incidents</li>
+    <li>Notifier les autorités compétentes (ANSSI, CNIL selon le cas)</li>
+</ol>
+`)
+            }
+        ],
+        questions: [
+            {
+                id: "q1",
+                text: "Qu'est-ce que la double extorsion dans un ransomware ?",
+                options: [
+                    "Payer deux fois la même rançon",
+                    "Chiffrer les données ET menacer de les publier si la rançon n'est pas payée",
+                    "Attaquer deux entreprises en même temps",
+                    "Utiliser deux algorithmes de chiffrement"
+                ],
+                correctAnswer: 1,
+                explanation: "La double extorsion combine le chiffrement des données avec la menace de fuite publique pour augmenter la pression sur la victime."
+            },
+            {
+                id: "q2",
+                text: "Quelle mesure est la plus efficace pour récupérer après une attaque ransomware ?",
+                options: [
+                    "Payer immédiatement la rançon",
+                    "Désactiver tous les pare-feu",
+                    "Des sauvegardes hors ligne régulièrement testées",
+                    "Partager les mots de passe sur un wiki interne"
+                ],
+                correctAnswer: 2,
+                explanation: "Des sauvegardes isolées et testées permettent de restaurer les systèmes sans payer la rançon."
+            }
+        ]
+    },
+    "soc-fundamentals": {
+        sections: [
+            {
+                title: "Rôle du SOC",
+                content: sanitizeHtmlContent(`
+<p>Un <strong>Security Operations Center (SOC)</strong> surveille en continu l'infrastructure, détecte les menaces et coordonne la réponse.</p>
+
+<h3>Fonctions clés</h3>
+<ul>
+    <li>Collecte et corrélation des logs (SIEM)</li>
+    <li>Triage et investigation des alertes</li>
+    <li>Threat hunting proactif</li>
+    <li>Coordination avec l'équipe IR (Incident Response)</li>
+</ul>
+`)
+            },
+            {
+                title: "Outils et processus",
+                content: sanitizeHtmlContent(`
+<h3>Stack typique</h3>
+<ul>
+    <li><strong>SIEM</strong> : Splunk, Elastic, Sentinel</li>
+    <li><strong>EDR/XDR</strong> : détection sur les endpoints</li>
+    <li><strong>SOAR</strong> : automatisation des playbooks</li>
+    <li><strong>Threat Intelligence</strong> : IOC, TTP MITRE ATT&CK</li>
+</ul>
+
+<p>Les analystes SOC travaillent en shifts 24/7 avec des runbooks pour classer les alertes (vrai positif, faux positif, escalade).</p>
+`)
+            }
+        ],
+        questions: [
+            {
+                id: "q1",
+                text: "Quel outil centralise et corrèle les événements de sécurité dans un SOC ?",
+                options: ["CRM", "SIEM", "ERP", "CMS"],
+                correctAnswer: 1,
+                explanation: "Le SIEM (Security Information and Event Management) agrège les logs et génère des alertes corrélées."
+            },
+            {
+                id: "q2",
+                text: "Quel est l'objectif principal du threat hunting ?",
+                options: [
+                    "Attendre passivement les alertes automatiques",
+                    "Rechercher proactivement des menaces non détectées",
+                    "Supprimer tous les logs anciens",
+                    "Désactiver l'antivirus"
+                ],
+                correctAnswer: 1,
+                explanation: "Le threat hunting consiste à chercher activement des indicateurs de compromission que les outils automatiques n'ont pas détectés."
+            }
+        ]
+    },
+    "gdpr-compliance": {
+        sections: [
+            {
+                title: "Principes du RGPD",
+                content: sanitizeHtmlContent(`
+<p>Le <strong>Règlement Général sur la Protection des Données (RGPD)</strong> encadre le traitement des données personnelles dans l'UE.</p>
+
+<h3>Principes fondamentaux</h3>
+<ul>
+    <li>Licéité, loyauté et transparence</li>
+    <li>Limitation des finalités et minimisation des données</li>
+    <li>Exactitude et limitation de la conservation</li>
+    <li>Intégrité, confidentialité et responsabilité (accountability)</li>
+</ul>
+`)
+            },
+            {
+                title: "Droits et obligations",
+                content: sanitizeHtmlContent(`
+<h3>Droits des personnes</h3>
+<ul>
+    <li>Accès, rectification, effacement (« droit à l'oubli »)</li>
+    <li>Portabilité et opposition au traitement</li>
+</ul>
+
+<h3>Obligations des organisations</h3>
+<ul>
+    <li>Désigner un DPO si nécessaire</li>
+    <li>Tenir un registre des traitements</li>
+    <li>Notifier les violations sous 72h à la CNIL</li>
+    <li>Analyse d'impact (DPIA) pour les traitements à risque</li>
+</ul>
+`)
+            }
+        ],
+        questions: [
+            {
+                id: "q1",
+                text: "Dans quel délai une violation de données doit-elle être notifiée à la CNIL ?",
+                options: ["24 heures", "72 heures", "7 jours", "30 jours"],
+                correctAnswer: 1,
+                explanation: "Le RGPD impose une notification à l'autorité de contrôle dans les 72 heures après avoir pris connaissance de la violation."
+            },
+            {
+                id: "q2",
+                text: "Quel principe RGPD impose de ne collecter que les données strictement nécessaires ?",
+                options: ["Portabilité", "Minimisation des données", "Transparence", "Accountability"],
+                correctAnswer: 1,
+                explanation: "Le principe de minimisation exige de limiter la collecte aux données adéquates, pertinentes et limitées au nécessaire."
+            }
+        ]
+    },
+    "firewall-basics": {
+        sections: [
+            {
+                title: "Types de pare-feu",
+                content: sanitizeHtmlContent(`
+<p>Un <strong>pare-feu</strong> filtre le trafic réseau selon des règles définies.</p>
+
+<h3>Catégories</h3>
+<ul>
+    <li><strong>Pare-feu stateful</strong> : suit les sessions (TCP/UDP)</li>
+    <li><strong>NGFW</strong> : inspection applicative (L7), IPS intégré</li>
+    <li><strong>Pare-feu hôte</strong> : sur chaque machine (Windows Firewall, iptables)</li>
+</ul>
+`)
+            },
+            {
+                title: "Bonnes pratiques",
+                content: sanitizeHtmlContent(`
+<h3>Règles essentielles</h3>
+<ul>
+    <li>Politique <strong>deny by default</strong> : tout bloquer sauf le nécessaire</li>
+    <li>Segmenter en zones (DMZ, interne, invité)</li>
+    <li>Journaliser et revoir les règles régulièrement</li>
+    <li>Limiter l'exposition des services admin (SSH, RDP)</li>
+</ul>
+`)
+            }
+        ],
+        questions: [
+            {
+                id: "q1",
+                text: "Quelle politique de pare-feu est recommandée par défaut ?",
+                options: [
+                    "Autoriser tout le trafic entrant",
+                    "Refuser tout sauf les flux explicitement autorisés",
+                    "Désactiver le pare-feu en production",
+                    "Ouvrir le port 22 à Internet"
+                ],
+                correctAnswer: 1,
+                explanation: "La politique « deny by default » minimise la surface d'attaque en n'autorisant que le trafic nécessaire."
+            },
+            {
+                id: "q2",
+                text: "Qu'est-ce qu'un NGFW par rapport à un pare-feu classique ?",
+                options: [
+                    "Un pare-feu sans règles",
+                    "Un pare-feu de nouvelle génération avec inspection applicative (couche 7)",
+                    "Un antivirus uniquement",
+                    "Un routeur Wi-Fi domestique"
+                ],
+                correctAnswer: 1,
+                explanation: "Les NGFW analysent le trafic au niveau applicatif et intègrent souvent IPS, filtrage URL et détection d'applications."
+            }
+        ]
+    },
+    "backup-recovery": {
+        sections: [
+            {
+                title: "Règle 3-2-1",
+                content: sanitizeHtmlContent(`
+<p>La <strong>règle 3-2-1</strong> est la base d'une stratégie de sauvegarde solide :</p>
+<ul>
+    <li><strong>3</strong> copies de vos données</li>
+    <li><strong>2</strong> types de supports différents</li>
+    <li><strong>1</strong> copie hors site ou hors ligne (air-gapped)</li>
+</ul>
+
+<p>Cette approche protège contre la perte matérielle, les erreurs humaines et les ransomwares.</p>
+`)
+            },
+            {
+                title: "PCA et PRA",
+                content: sanitizeHtmlContent(`
+<h3>Plan de Continuité d'Activité (PCA)</h3>
+<p>Maintenir les fonctions critiques pendant une crise majeure.</p>
+
+<h3>Plan de Reprise d'Activité (PRA)</h3>
+<p>Restaurer les systèmes IT après un sinistre avec des objectifs RTO (délai) et RPO (perte de données acceptée).</p>
+
+<p><strong>Tester régulièrement</strong> les restaurations — une sauvegarde non testée n'est pas une sauvegarde fiable.</p>
+`)
+            }
+        ],
+        questions: [
+            {
+                id: "q1",
+                text: "Que signifie le « 1 » dans la règle de sauvegarde 3-2-1 ?",
+                options: [
+                    "Une seule copie suffit",
+                    "Une copie hors site ou hors ligne",
+                    "Un seul administrateur",
+                    "Une sauvegarde par jour"
+                ],
+                correctAnswer: 1,
+                explanation: "Le « 1 » impose une copie isolée (hors site ou déconnectée) pour survivre à un sinistre local ou un ransomware."
+            },
+            {
+                id: "q2",
+                text: "Que mesure le RPO (Recovery Point Objective) ?",
+                options: [
+                    "Le temps pour redémarrer un serveur",
+                    "La quantité maximale de données perdues acceptable",
+                    "Le nombre d'administrateurs requis",
+                    "Le coût d'un pare-feu"
+                ],
+                correctAnswer: 1,
+                explanation: "Le RPO définit la fenêtre de données que l'organisation accepte de perdre en cas d'incident."
+            }
+        ]
+    },
+    "social-engineering": {
+        sections: [
+            {
+                title: "Techniques d'ingénierie sociale",
+                content: sanitizeHtmlContent(`
+<p>L'<strong>ingénierie sociale</strong> exploite la confiance et les biais humains plutôt que des failles techniques.</p>
+
+<h3>Techniques avancées</h3>
+<ul>
+    <li><strong>Pretexting</strong> : inventer un scénario crédible (faux support IT)</li>
+    <li><strong>Baiting</strong> : laisser une clé USB infectée dans un parking</li>
+    <li><strong>Tailgating</strong> : suivre un employé autorisé dans une zone sécurisée</li>
+    <li><strong>Vishing</strong> : phishing par téléphone</li>
+</ul>
+`)
+            },
+            {
+                title: "Défense organisationnelle",
+                content: sanitizeHtmlContent(`
+<h3>Contre-mesures</h3>
+<ul>
+    <li>Procédures de vérification d'identité (codes, callbacks)</li>
+    <li>Formation continue et simulations de phishing</li>
+    <li>Culture du signalement sans blâme</li>
+    <li>Contrôles physiques (badges, sas de sécurité)</li>
+</ul>
+
+<p>Le facteur humain reste la cible privilégiée : la technologie seule ne suffit pas.</p>
+`)
+            }
+        ],
+        questions: [
+            {
+                id: "q1",
+                text: "Qu'est-ce que le tailgating en sécurité physique ?",
+                options: [
+                    "Envoyer un e-mail de phishing",
+                    "Suivre une personne autorisée pour entrer dans une zone restreinte",
+                    "Chiffrer des fichiers",
+                    "Scanner un réseau Wi-Fi"
+                ],
+                correctAnswer: 1,
+                explanation: "Le tailgating consiste à profiter de l'ouverture d'une porte par un employé autorisé pour accéder à une zone protégée."
+            },
+            {
+                id: "q2",
+                text: "Quelle contre-mesure réduit le risque de vishing ?",
+                options: [
+                    "Révéler son mot de passe au téléphone",
+                    "Raccrocher et rappeler via le numéro officiel de l'organisation",
+                    "Cliquer sur tous les liens reçus par SMS",
+                    "Désactiver la MFA"
+                ],
+                correctAnswer: 1,
+                explanation: "Rappeler via un canal vérifié permet de confirmer l'identité de l'appelant sans se fier à un numéro affiché."
             }
         ]
     }

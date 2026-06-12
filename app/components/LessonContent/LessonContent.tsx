@@ -4,13 +4,29 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
+import DOMPurify from "isomorphic-dompurify";
 import "katex/dist/katex.min.css";
 
 const HTML_TAG_PATTERN =
     /<\s*\/?\s*(p|h[1-6]|ul|ol|li|div|span|pre|code|strong|em|br|table|blockquote|a)\b/i;
 
+const SANITIZE_OPTIONS = {
+    ALLOWED_TAGS: [
+        "p", "h1", "h2", "h3", "h4", "h5", "h6",
+        "ul", "ol", "li", "div", "span", "pre", "code",
+        "strong", "em", "br", "table", "thead", "tbody", "tr", "th", "td",
+        "blockquote", "a",
+    ],
+    ALLOWED_ATTR: ["href", "title", "class", "target", "rel"],
+    ALLOW_DATA_ATTR: false,
+};
+
 function isHtmlContent(content: string): boolean {
     return HTML_TAG_PATTERN.test(content.trim());
+}
+
+function sanitizeHtml(content: string): string {
+    return DOMPurify.sanitize(content, SANITIZE_OPTIONS);
 }
 
 interface LessonContentProps {
@@ -28,7 +44,7 @@ export default function LessonContent({
         return (
             <div
                 className={className}
-                dangerouslySetInnerHTML={{ __html: content }}
+                dangerouslySetInnerHTML={{ __html: sanitizeHtml(content) }}
             />
         );
     }
@@ -53,6 +69,15 @@ export default function LessonContent({
                             </code>
                         );
                     },
+                    a: ({ href, children }) => (
+                        <a
+                            href={href}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            {children}
+                        </a>
+                    ),
                 }}
             >
                 {content}

@@ -15,7 +15,8 @@
     "profile": "Profile",
     "settings": "Settings",
     "logout": "Logout",
-    "admin": "Admin"
+    "admin": "Admin",
+    "teacher": "Teacher Portal"
   },
   "hero": {
     "tagline1": "CyberLearn: Your essential guide to mastering cybersecurity.",
@@ -49,7 +50,13 @@
     "noAccount": "Don't have an account?",
     "hasAccount": "Already have an account?",
     "createAccount": "Create one",
-    "loginInstead": "Login instead"
+    "loginInstead": "Login instead",
+    "accountType": "Account type",
+    "student": "Student",
+    "teacher": "Teacher",
+    "teacherAccessCode": "Teacher access code",
+    "teacherAccessCodeHint": "Enter the code provided by your institution",
+    "teacherAccessCodeRequired": "A teacher access code is required"
   },
   "profile": {
     "title": "Your Profile",
@@ -69,6 +76,17 @@
     "subject": "Subject",
     "message": "Message",
     "send": "Send Message"
+  },
+  "chatbot": {
+    "title": "SUPPORT",
+    "greeting": "Hello! How can I help you today?",
+    "placeholder": "Ask your question...",
+    "send": "Send",
+    "open": "Open support",
+    "close": "Close support",
+    "suggestions": "Frequently asked",
+    "thinking": "Thinking...",
+    "error": "Something went wrong. Please try again or contact us via the Contact page."
   },
   "footer": {
     "copyright": " 2025 CyberLearn. All rights reserved.",

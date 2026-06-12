@@ -17,13 +17,25 @@ import { X, Plus, Save, ArrowLeft, Lock, Unlock, Edit } from "lucide-react";
 import styles from "./AdminComponents.module.css";
 import LessonContentPreview from '@/app/components/LessonContent/LessonContent';
 import { toast } from 'react-hot-toast';
-import { v4 as uuidv4 } from 'uuid'; // Ajout de l'import pour uuidv4
+import { v4 as uuidv4 } from 'uuid';
+import {
+  submitPendingLesson,
+  updatePendingLesson,
+  PendingLesson,
+} from "@/app/firebase/pendingLessons";
 
 interface AdminLessonFormProps {
   lesson: Lesson | null;
   onSave: (lesson: Lesson) => void;
   onCancel: () => void;
   categories: string[];
+  submitMode?: "direct" | "pending";
+  pendingLesson?: PendingLesson | null;
+  teacherInfo?: {
+    uid: string;
+    email: string;
+    username: string;
+  };
 }
 
 const defaultContent: LessonContent = {
@@ -69,7 +81,10 @@ const AdminLessonForm: React.FC<AdminLessonFormProps> = ({
   lesson,
   onSave,
   onCancel,
-  categories: initialCategories
+  categories: initialCategories,
+  submitMode = "direct",
+  pendingLesson = null,
+  teacherInfo,
 }) => {
   const [formData, setFormData] = useState<Partial<Lesson>>({
     id: "",
@@ -114,7 +129,22 @@ const AdminLessonForm: React.FC<AdminLessonFormProps> = ({
   // Initialiser le formulaire avec les données de la leçon si en mode édition
   useEffect(() => {
     isMounted.current = true;
-    if (lesson) {
+    if (pendingLesson) {
+      setFormData({
+        id: pendingLesson.lessonId,
+        title: pendingLesson.title,
+        description: pendingLesson.description,
+        category: pendingLesson.category,
+        iconName: pendingLesson.iconName,
+        locked: pendingLesson.locked,
+        tags: [...pendingLesson.tags],
+        order: pendingLesson.order,
+        levelRequired: pendingLesson.levelRequired,
+        xpReward: pendingLesson.xpReward,
+      });
+      setContentData(pendingLesson.content);
+      setLoading(false);
+    } else if (lesson) {
       loadLesson();
     } else {
       setLoading(false);
@@ -122,7 +152,7 @@ const AdminLessonForm: React.FC<AdminLessonFormProps> = ({
     return () => {
       isMounted.current = false;
     };
-  }, [lesson]);
+  }, [lesson, pendingLesson]);
 
   const loadLesson = async () => {
     try {
@@ -379,28 +409,48 @@ const AdminLessonForm: React.FC<AdminLessonFormProps> = ({
         xpReward: Number(formData.xpReward) || 0
       };
 
-      const lessonRef = doc(db, "lessons", lessonData.id);
-      const contentRef = doc(db, "lessonContents", lessonData.id);
+      if (submitMode === "pending") {
+        if (!teacherInfo) {
+          setError("Teacher information is missing.");
+          setLoading(false);
+          return;
+        }
 
-      // Sauvegarder la leçon et son contenu
-      await setDoc(lessonRef, {
-        title: lessonData.title,
-        description: lessonData.description,
-        category: lessonData.category,
-        iconName: lessonData.iconName,
-        locked: lessonData.locked,
-        tags: lessonData.tags,
-        order: lessonData.order,
-        levelRequired: lessonData.levelRequired,
-        xpReward: lessonData.xpReward
-      });
+        if (pendingLesson) {
+          await updatePendingLesson(pendingLesson.id, lessonData, contentData);
+          toast.success("Lesson submission updated — awaiting admin approval.");
+        } else {
+          await submitPendingLesson({
+            lesson: lessonData,
+            content: contentData,
+            submittedBy: teacherInfo.uid,
+            submittedByEmail: teacherInfo.email,
+            submittedByUsername: teacherInfo.username,
+          });
+          toast.success("Lesson submitted — it will be published after admin approval.");
+        }
+      } else {
+        const lessonRef = doc(db, "lessons", lessonData.id);
+        const contentRef = doc(db, "lessonContents", lessonData.id);
 
-      await setDoc(contentRef, {
-        sections: contentData.sections,
-        questions: contentData.questions
-      });
+        await setDoc(lessonRef, {
+          title: lessonData.title,
+          description: lessonData.description,
+          category: lessonData.category,
+          iconName: lessonData.iconName,
+          locked: lessonData.locked,
+          tags: lessonData.tags,
+          order: lessonData.order,
+          levelRequired: lessonData.levelRequired,
+          xpReward: lessonData.xpReward
+        });
 
-      // Notifier le parent
+        await setDoc(contentRef, {
+          sections: contentData.sections,
+          questions: contentData.questions
+        });
+      }
+
       onSave(lessonData);
 
       setLoading(false);
@@ -419,12 +469,16 @@ const AdminLessonForm: React.FC<AdminLessonFormProps> = ({
     }
     try {
       setLoading(true);
-      const contentRef = doc(db, "lessonContents", formData.id);
-      await setDoc(contentRef, {
-        sections: contentData.sections,
-        questions: contentData.questions
-      }, { merge: true });
-      toast.success("Quiz sauvegardé avec succès !");
+      if (submitMode === "pending") {
+        toast.success("Quiz enregistré localement — soumettez la leçon pour approbation.");
+      } else {
+        const contentRef = doc(db, "lessonContents", formData.id);
+        await setDoc(contentRef, {
+          sections: contentData.sections,
+          questions: contentData.questions
+        }, { merge: true });
+        toast.success("Quiz sauvegardé avec succès !");
+      }
     } catch (err) {
       console.error("Erreur lors de la sauvegarde du quiz :", err);
       toast.error("Erreur lors de la sauvegarde du quiz.");
@@ -441,7 +495,13 @@ const AdminLessonForm: React.FC<AdminLessonFormProps> = ({
     <div className={styles.adminLessonForm}>
       <div className={styles.formHeader}>
         <h2 className={styles.formTitle}>
-          {lesson ? "Modifier la leçon" : "Ajouter une nouvelle leçon"}
+          {submitMode === "pending"
+            ? pendingLesson
+              ? "Modifier la soumission"
+              : "Soumettre une nouvelle leçon"
+            : lesson
+              ? "Modifier la leçon"
+              : "Ajouter une nouvelle leçon"}
         </h2>
         <button
           className={styles.cancelButton}
@@ -669,7 +729,13 @@ const AdminLessonForm: React.FC<AdminLessonFormProps> = ({
               disabled={loading}
             >
               <Save size={18} />
-              <span>{loading ? "Sauvegarde en cours..." : "Sauvegarder"}</span>
+              <span>
+                {loading
+                  ? "Sauvegarde en cours..."
+                  : submitMode === "pending"
+                    ? "Soumettre pour approbation"
+                    : "Sauvegarder"}
+              </span>
             </button>
           </div>
         </form>
@@ -896,7 +962,13 @@ const AdminLessonForm: React.FC<AdminLessonFormProps> = ({
               disabled={loading}
             >
               <Save size={18} />
-              <span>{loading ? "Sauvegarde en cours..." : "Sauvegarder"}</span>
+              <span>
+                {loading
+                  ? "Sauvegarde en cours..."
+                  : submitMode === "pending"
+                    ? "Soumettre pour approbation"
+                    : "Sauvegarder"}
+              </span>
             </button>
           </div>
         </div>

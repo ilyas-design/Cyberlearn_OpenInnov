@@ -1,0 +1,41 @@
+services:
+  model:
+    image: vllm/vllm-openai:latest
+    container_name: vllm_container
+    profiles: [local_model]
+    ports:
+      - "8000:8000"
+    environment:
+      - MODEL_NAME=${MODEL_NAME:-HuggingFaceTB/SmolLM2-135M-Instruct}
+    command: [
+      "--model", "${MODEL_NAME}",
+      "--gpu-memory-utilization", "0.75",
+      "--max-model-len", "4096"
+    ]
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/v1/models"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    restart: always
+
+  api:
+    build: .
+    container_name: api_container
+    environment:
+      - MODEL_NAME=${MODEL_NAME:-HuggingFaceTB/SmolLM2-135M-Instruct}
+      - MODEL_URL=${MODEL_URL:-http://model:8000/v1}
+      - API_KEY=${API_KEY:-dummy_api_key_for_testing_purposes}
+    ports:
+      - "8080:8080"
+    depends_on:
+      model:
+        condition: service_healthy
+    restart: always

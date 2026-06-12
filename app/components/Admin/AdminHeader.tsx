@@ -4,7 +4,7 @@ import React from "react";
 import { useRouter } from "next/navigation";
 import { signOut } from "firebase/auth";
 import { auth } from "../../firebase/config";
-import { BookOpen, Users, Settings, LogOut, AlertTriangle, BarChart } from "lucide-react";
+import { BookOpen, Users, LogOut, AlertTriangle, BarChart, ClipboardCheck } from "lucide-react";
 import styles from "./AdminComponents.module.css";
 
 interface AdminHeaderProps {
@@ -35,6 +35,14 @@ const AdminHeader: React.FC<AdminHeaderProps> = ({ activeTab, setActiveTab }) =>
         >
           <BookOpen size={18} />
           <span>Leçons</span>
+        </button>
+
+        <button
+          className={`${styles.tabButton} ${activeTab === "pending" ? styles.active : ""}`}
+          onClick={() => setActiveTab("pending")}
+        >
+          <ClipboardCheck size={18} />
+          <span>Approbations</span>
         </button>
 
         <button

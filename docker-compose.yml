@@ -1,0 +1,71 @@
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_FIREBASE_API_KEY: ${NEXT_PUBLIC_FIREBASE_API_KEY}
+        NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN: ${NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN}
+        NEXT_PUBLIC_FIREBASE_PROJECT_ID: ${NEXT_PUBLIC_FIREBASE_PROJECT_ID}
+        NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET: ${NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET}
+        NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID: ${NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID}
+        NEXT_PUBLIC_FIREBASE_APP_ID: ${NEXT_PUBLIC_FIREBASE_APP_ID}
+    container_name: cyberlearn_web
+    ports:
+      - "${WEB_PORT:-3000}:3000"
+    environment:
+      CHATBOT_API_URL: http://chatbot-api:8080
+      CHATBOT_INTERNAL_API_KEY: ${CHATBOT_INTERNAL_API_KEY}
+      FIREBASE_SERVICE_ACCOUNT_PATH: /app/serviceAccountKey.json
+    volumes:
+      - ${FIREBASE_SERVICE_ACCOUNT_PATH:-./serviceAccountKey.json}:/app/serviceAccountKey.json:ro
+    depends_on:
+      chatbot-api:
+        condition: service_started
+    restart: unless-stopped
+
+  chatbot-api:
+    build: ./chabot_api
+    container_name: cyberlearn_chatbot_api
+    ports:
+      - "${CHATBOT_PORT:-8080}:8080"
+    environment:
+      MODEL_NAME: ${MODEL_NAME:-HuggingFaceTB/SmolLM2-135M-Instruct}
+      MODEL_URL: ${MODEL_URL:-http://model:8000/v1}
+      API_KEY: ${API_KEY:-}
+      CHATBOT_INTERNAL_API_KEY: ${CHATBOT_INTERNAL_API_KEY}
+    depends_on:
+      model:
+        condition: service_healthy
+        required: false
+    restart: unless-stopped
+
+  model:
+    image: vllm/vllm-openai:latest
+    container_name: cyberlearn_vllm
+    profiles: [local_model]
+    ports:
+      - "${MODEL_PORT:-8000}:8000"
+    environment:
+      MODEL_NAME: ${MODEL_NAME:-HuggingFaceTB/SmolLM2-135M-Instruct}
+    command:
+      - "--model"
+      - "${MODEL_NAME:-HuggingFaceTB/SmolLM2-135M-Instruct}"
+      - "--gpu-memory-utilization"
+      - "0.75"
+      - "--max-model-len"
+      - "4096"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/v1/models"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 120s
+    restart: unless-stopped

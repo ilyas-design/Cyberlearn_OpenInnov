@@ -7,7 +7,7 @@ import { Shield, Check, X, RefreshCw } from 'lucide-react';
 import QRCode from 'qrcode';
 import { authenticator } from 'otplib';
 import styles from './TwoFactorSetup.module.css';
-import { saveTwoFactorSecret } from '@/app/firebase/2fa';
+import { enableTwoFactor } from '@/app/firebase/2fa';
 
 export default function TwoFactorSetup() {
     const { user } = useAuth();
@@ -72,8 +72,12 @@ export default function TwoFactorSetup() {
             });
 
             if (isValid && user) {
-                // Sauvegarder la clé secrète dans la base de données
-                await saveTwoFactorSecret(user.uid, secret);
+                const enabled = await enableTwoFactor(secret, verificationCode);
+                if (!enabled) {
+                    setError('Impossible d\'activer l\'authentification à deux facteurs');
+                    setLoading(false);
+                    return;
+                }
                 setSuccess('Authentification à deux facteurs activée avec succès');
                 setTimeout(() => {
                     router.push('/settings');

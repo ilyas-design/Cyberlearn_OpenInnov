@@ -29,26 +29,64 @@ Before you begin, make sure you have:
 - A **Google account** with access to the [Firebase Console](https://console.firebase.google.com)
 - **Git** (to clone the repository)
 
-## Quick Start
+## Quick Start (Docker)
+
+The entire stack runs with one command:
 
 ```bash
 # 1. Clone the repository
 git clone <repository-url>
 cd cyberlearn-project-1
 
-# 2. Install dependencies
+# 2. Configure environment variables
+cp .env.example .env   # fill in Firebase credentials
+
+# 3. Set up Firebase and seed the database (see Firebase Setup)
+
+# 4. Start everything
+./run.sh
+```
+
+| Service | URL |
+|---------|-----|
+| CyberLearn app | http://localhost:3000 |
+| Chatbot API | http://localhost:8080 |
+
+```bash
+./run.sh logs      # follow logs
+./run.sh down      # stop stack
+./run.sh restart   # rebuild and restart
+```
+
+Requires **Docker Desktop** (or Docker Engine + Compose).
+
+### Optional: local AI model (GPU)
+
+Add `COMPOSE_PROFILES=local_model` to `.env` to start the vLLM container (NVIDIA GPU required). Without it, the chatbot falls back to predefined FAQ answers.
+
+---
+
+## Quick Start (local dev)
+
+```bash
 npm install
-
-# 3. Configure environment variables (see below)
-cp .env.example .env   # or create .env manually
-
-# 4. Set up Firebase and seed the database (see Firebase Setup)
-
-# 5. Start the development server
+cp .env.example .env
 npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+For the chatbot API in local dev, run `./run.sh up` (Docker) or start `chabot_api/` manually. Set `CHATBOT_API_URL=http://localhost:8080` in `.env`.
+
+---
+
+## Chatbot API
+
+The support chatbot is powered by [chabot_api](https://github.com/Yatarox/chabot_api), included in `chabot_api/`. It proxies requests to an OpenAI-compatible LLM (local vLLM or external service).
+
+The Next.js app calls `/api/chat`, which forwards messages to the chatbot API with CyberLearn context. If the API is unavailable, the chatbot falls back to predefined answers.
+
+Point `MODEL_URL` in `.env` to any OpenAI-compatible endpoint for AI responses without a local GPU.
 
 ---
 

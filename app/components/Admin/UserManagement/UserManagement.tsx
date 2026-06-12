@@ -12,6 +12,7 @@ interface UserData {
     email: string;
     username: string;
     isAdmin?: boolean;
+    isTeacher?: boolean;
     level?: number;
     completedLessons?: string[];
 }
@@ -42,6 +43,7 @@ const UserManagement = () => {
                 ...doc.data(),
                 authID: doc.id,
                 isAdmin: doc.data().isAdmin || false,
+                isTeacher: doc.data().isTeacher || false,
                 level: doc.data().level ?? 1,
                 completedLessons: doc.data().completedLessons || []
             })) as UserData[];
@@ -220,8 +222,8 @@ const UserManagement = () => {
                                 <td className={styles.authId}>{user.authID}</td>
                                 <td>
                                     <div className={styles.roleContainer}>
-                                        <span className={`${styles.roleBadge} ${user.isAdmin ? styles.adminRole : styles.userRole}`}>
-                                            {user.isAdmin ? "Admin" : "Utilisateur"}
+                                        <span className={`${styles.roleBadge} ${user.isAdmin ? styles.adminRole : user.isTeacher ? styles.userRole : styles.userRole}`}>
+                                            {user.isAdmin ? "Admin" : user.isTeacher ? "Professeur" : "Utilisateur"}
                                         </span>
                                         <button
                                             onClick={() => handleToggleAdminRole(user.authID, user.isAdmin || false)}

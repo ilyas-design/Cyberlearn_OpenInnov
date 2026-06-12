@@ -46,3 +46,10 @@ serviceAccountKey.json
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Cursor IDE (rules, local config)
+.cursor/
+
+# Graphify knowledge graph output
+graphify-out/
+**/graphify-out/

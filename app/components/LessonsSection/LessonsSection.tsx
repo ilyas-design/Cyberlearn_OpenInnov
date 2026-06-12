@@ -1,6 +1,6 @@
 "use client";
 
-import { Shield, Lock, Globe, AlertTriangle, Key, Terminal, ArrowRight } from 'lucide-react';
+import { Shield, Lock, Globe, AlertTriangle, Key, Terminal, ArrowRight, Server, Network, Code, Cpu } from 'lucide-react';
 import Link from 'next/link';
 import styles from './LessonsSection.module.css';
 import AnimateIn from '@/app/components/AnimateIn/AnimateIn';
@@ -63,6 +63,38 @@ const lessons: Lesson[] = [
         icon: <Terminal size={24} />,
         color: '#E74C3C',
         content: 'malware-basics'
+    },
+    {
+        id: 'network-security',
+        title: 'Sécurité Réseau',
+        description: 'Pare-feu, segmentation, VPN et détection d\'intrusion',
+        icon: <Server size={24} />,
+        color: '#1ABC9C',
+        content: 'network-security'
+    },
+    {
+        id: 'cloud-security',
+        title: 'Sécurité Cloud',
+        description: 'IAM, responsabilité partagée et bonnes pratiques cloud',
+        icon: <Network size={24} />,
+        color: '#3498DB',
+        content: 'cloud-security'
+    },
+    {
+        id: 'secure-dev',
+        title: 'Développement Sécurisé',
+        description: 'DevSecOps, SAST/DAST et sécurité dans le cycle de dev',
+        icon: <Code size={24} />,
+        color: '#2ECC71',
+        content: 'secure-dev'
+    },
+    {
+        id: 'zero-trust',
+        title: 'Architecture Zero Trust',
+        description: 'Ne jamais faire confiance, toujours vérifier',
+        icon: <Cpu size={24} />,
+        color: '#E67E22',
+        content: 'zero-trust'
     }
 ];
 
@@ -106,6 +138,14 @@ const LessonsSection = () => {
                     </AnimateIn>
                 ))}
             </div>
+            <AnimateIn animation="fade-up" delay={lessons.length * 80}>
+                <div className={styles.viewAllContainer}>
+                    <Link href="/lessons" className={styles.viewAllLink}>
+                        <span>Voir toutes les leçons</span>
+                        <ArrowRight size={18} />
+                    </Link>
+                </div>
+            </AnimateIn>
         </section>
     );
 };

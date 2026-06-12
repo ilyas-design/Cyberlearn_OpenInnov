@@ -15,7 +15,8 @@
     "profile": "Profil",
     "settings": "Paramètres",
     "logout": "Déconnexion",
-    "admin": "Administration"
+    "admin": "Administration",
+    "teacher": "Espace Professeur"
   },
   "hero": {
     "tagline1": "CyberLearn : Votre guide essentiel pour maîtriser la cybersécurité.",
@@ -49,7 +50,13 @@
     "noAccount": "Vous n'avez pas de compte ?",
     "hasAccount": "Vous avez déjà un compte ?",
     "createAccount": "Créer un compte",
-    "loginInstead": "Se connecter"
+    "loginInstead": "Se connecter",
+    "accountType": "Type de compte",
+    "student": "Étudiant",
+    "teacher": "Professeur",
+    "teacherAccessCode": "Code d'accès professeur",
+    "teacherAccessCodeHint": "Entrez le code fourni par votre établissement",
+    "teacherAccessCodeRequired": "Le code d'accès professeur est requis"
   },
   "profile": {
     "title": "Votre Profil",
@@ -69,6 +76,17 @@
     "subject": "Sujet",
     "message": "Message",
     "send": "Envoyer le Message"
+  },
+  "chatbot": {
+    "title": "SUPPORT",
+    "greeting": "Bonjour ! Comment puis-je vous aider aujourd'hui ?",
+    "placeholder": "Posez votre question...",
+    "send": "Envoyer",
+    "open": "Ouvrir le support",
+    "close": "Fermer le support",
+    "suggestions": "Questions fréquentes",
+    "thinking": "Réflexion en cours...",
+    "error": "Une erreur est survenue. Réessayez ou contactez-nous via la page Contact."
   },
   "footer": {
     "copyright": " 2025 CyberLearn. Tous droits réservés.",

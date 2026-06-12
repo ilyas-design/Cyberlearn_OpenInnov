@@ -1,45 +1,44 @@
-import { db } from './config';
-import { doc, updateDoc, getDoc } from 'firebase/firestore';
+import { auth } from "./config";
 
-export const saveTwoFactorSecret = async (userId: string, secret: string) => {
-    try {
-        const userRef = doc(db, 'users', userId);
-        await updateDoc(userRef, {
-            twoFactorSecret: secret,
-            twoFactorEnabled: true
-        });
-        return true;
-    } catch (error) {
-        console.error('Erreur lors de la sauvegarde de la clé secrète:', error);
-        throw error;
-    }
+async function getAuthHeaders(): Promise<HeadersInit> {
+  const currentUser = auth.currentUser;
+  if (!currentUser) {
+    throw new Error("User not authenticated");
+  }
+
+  const idToken = await currentUser.getIdToken();
+  return {
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${idToken}`,
+  };
+}
+
+export const enableTwoFactor = async (secret: string, code: string): Promise<boolean> => {
+  const response = await fetch("/api/auth/setup-2fa", {
+    method: "POST",
+    headers: await getAuthHeaders(),
+    body: JSON.stringify({ secret, code }),
+  });
+
+  if (!response.ok) {
+    return false;
+  }
+
+  const data = await response.json();
+  return data.success === true;
 };
 
-export const verifyTwoFactorCode = async (userId: string, code: string) => {
-    try {
-        const userRef = doc(db, 'users', userId);
-        const userDoc = await getDoc(userRef);
-        
-        if (!userDoc.exists()) {
-            throw new Error('Utilisateur non trouvé');
-        }
+export const verifyTwoFactorCode = async (_userId: string, code: string): Promise<boolean> => {
+  const response = await fetch("/api/auth/verify-2fa", {
+    method: "POST",
+    headers: await getAuthHeaders(),
+    body: JSON.stringify({ code }),
+  });
 
-        const userData = userDoc.data();
-        const secret = userData.twoFactorSecret;
+  if (!response.ok) {
+    return false;
+  }
 
-        if (!secret) {
-            throw new Error('2FA non configurée');
-        }
-
-        const { authenticator } = require('otplib');
-        const isValid = authenticator.verify({
-            token: code,
-            secret: secret
-        });
-
-        return isValid;
-    } catch (error) {
-        console.error('Erreur lors de la vérification du code:', error);
-        throw error;
-    }
-}; 
+  const data = await response.json();
+  return data.valid === true;
+};

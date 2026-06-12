@@ -12,6 +12,12 @@ service cloud.firestore {
         && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true;
     }
 
+    function isTeacher() {
+      return isSignedIn()
+        && exists(/databases/$(database)/documents/users/$(request.auth.uid))
+        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isTeacher == true;
+    }
+
     function isOwner(userId) {
       return isSignedIn() && request.auth.uid == userId;
     }
@@ -20,6 +26,12 @@ service cloud.firestore {
     function preservesAdminFlag() {
       return request.resource.data.get('isAdmin', false)
         == resource.data.get('isAdmin', false);
+    }
+
+    // Empêche l'auto-attribution du rôle professeur
+    function preservesTeacherFlag() {
+      return request.resource.data.get('isTeacher', false)
+        == resource.data.get('isTeacher', false);
     }
 
     // authID ne doit pas être réassigné à un autre compte
@@ -57,9 +69,17 @@ service cloud.firestore {
         && (newLevel > oldLevel || newExp >= oldExp);
     }
 
+    function preservesTwoFactorState() {
+      return request.resource.data.get('twoFactorEnabled', resource.data.get('twoFactorEnabled', false))
+          == resource.data.get('twoFactorEnabled', false)
+        && !('twoFactorSecret' in request.resource.data);
+    }
+
     function validOwnerUpdate() {
       return preservesAdminFlag()
+        && preservesTeacherFlag()
         && preservesAuthId()
+        && preservesTwoFactorState()
         && completedLessonsOnlyGrow()
         && startedLessonsOnlyGrow()
         && badgesOnlyGrow()
@@ -68,6 +88,7 @@ service cloud.firestore {
 
     function validUserCreate(userId) {
       return request.resource.data.get('isAdmin', false) == false
+        && request.resource.data.get('isTeacher', false) == false
         && !('twoFactorSecret' in request.resource.data)
         && request.resource.data.get('authID', userId) == userId
         && request.resource.data.get('level', 1) >= 1
@@ -95,6 +116,30 @@ service cloud.firestore {
       allow write: if isAdmin();
     }
 
+    match /pendingLessons/{pendingId} {
+      allow read: if isAdmin()
+        || (isTeacher() && resource.data.submittedBy == request.auth.uid);
+
+      allow create: if isTeacher()
+        && request.resource.data.submittedBy == request.auth.uid
+        && request.resource.data.status == 'pending'
+        && request.resource.data.title is string
+        && request.resource.data.title.size() > 0
+        && request.resource.data.title.size() <= 200;
+
+      allow update: if isAdmin()
+        || (isTeacher()
+          && resource.data.submittedBy == request.auth.uid
+          && resource.data.status == 'pending'
+          && request.resource.data.status == 'pending'
+          && request.resource.data.submittedBy == request.auth.uid);
+
+      allow delete: if isAdmin()
+        || (isTeacher()
+          && resource.data.submittedBy == request.auth.uid
+          && resource.data.status == 'pending');
+    }
+
     match /settings/{settingId} {
       allow read: if isSignedIn();
       allow write: if isAdmin();
@@ -108,6 +153,11 @@ service cloud.firestore {
         && request.resource.data.message.size() > 0
         && request.resource.data.message.size() <= 2000;
       allow update, delete: if isAdmin();
+    }
+
+    // TOTP secrets — server-only via Firebase Admin SDK
+    match /userSecrets/{userId} {
+      allow read, write: if false;
     }
   }
 }

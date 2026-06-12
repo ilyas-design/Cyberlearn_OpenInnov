@@ -15,7 +15,8 @@ interface AuthUser {
     displayName: string | null;
     level: number;
     completedLessons?: string[];
-    // ... autres champs si besoin
+    isTeacher?: boolean;
+    isAdmin?: boolean;
 }
 
 interface AuthContextType {
@@ -104,17 +105,23 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                 const userDoc = await getDoc(doc(db, 'users', firebaseUser.uid));
                 let level = 1;
                 let completedLessons: string[] = [];
+                let isTeacher = false;
+                let isAdmin = false;
                 if (userDoc.exists()) {
                     const userData = userDoc.data();
                     level = userData.level ?? 1;
                     completedLessons = Array.isArray(userData.completedLessons) ? userData.completedLessons : [];
+                    isTeacher = userData.isTeacher === true;
+                    isAdmin = userData.isAdmin === true;
                 }
                 setUser({
                     uid: firebaseUser.uid,
                     email: firebaseUser.email || '',
                     displayName: firebaseUser.displayName,
                     level,
-                    completedLessons
+                    completedLessons,
+                    isTeacher,
+                    isAdmin,
                 });
                 // Ne vérifier la 2FA que si l'utilisateur vient de se connecter et pas déjà vérifié dans la session
                 const alreadyChecked = sessionStorage.getItem('2fa-checked') === 'true';

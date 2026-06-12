@@ -6,6 +6,7 @@ import { auth, db } from "../firebase/config";
 import { onAuthStateChanged } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 import AdminLessonsList from "../components/Admin/AdminLessonsList";
+import AdminPendingLessons from "../components/Admin/AdminPendingLessons";
 import AdminHeader from "../components/Admin/AdminHeader";
 import UserManagement from "../components/Admin/UserManagement/UserManagement";
 import styles from "./admin.module.css";
@@ -80,6 +81,9 @@ export default function AdminPage() {
       <div className={styles.adminContent}>
         {activeTab === "lessons" && (
           <AdminLessonsList />
+        )}
+        {activeTab === "pending" && (
+          <AdminPendingLessons />
         )}
         {activeTab === "users" && (
           <UserManagement />

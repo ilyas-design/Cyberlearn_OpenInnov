@@ -7,7 +7,7 @@ import { auth, db } from "@/app/firebase/config";
 import { doc, getDoc } from "firebase/firestore";
 import { useRouter } from "next/navigation";
 import styles from "./ProfileDropdown.module.css";
-import { User, Settings, LogOut, ChevronRight, Shield, Bell } from "lucide-react";
+import { User, LogOut, ChevronRight, Shield, Bell, GraduationCap } from "lucide-react";
 import { useLanguage } from "@/app/context/LanguageContext";
 
 interface ProfileDropdownProps {
@@ -20,6 +20,7 @@ const ProfileDropdown = ({ isVisible, onClose }: ProfileDropdownProps) => {
     const [username, setUsername] = useState<string | null>(null);
     const [email, setEmail] = useState<string | null>(null);
     const [level, setLevel] = useState<number>(1);
+    const [isTeacher, setIsTeacher] = useState(false);
     const { t } = useLanguage();
 
     useEffect(() => {
@@ -36,6 +37,7 @@ const ProfileDropdown = ({ isVisible, onClose }: ProfileDropdownProps) => {
                         const userData = userDoc.data();
                         setUsername(userData.username || currentUser.displayName || t('profile.defaultUsername'));
                         setLevel(userData.level ?? 1);
+                        setIsTeacher(userData.isTeacher === true);
                     } else {
                         setUsername(currentUser.displayName || t('profile.defaultUsername'));
                         setLevel(1);
@@ -92,6 +94,13 @@ const ProfileDropdown = ({ isVisible, onClose }: ProfileDropdownProps) => {
                         <ChevronRight className={styles.itemArrow} size={16} />
                     </Link>
 
+                    {isTeacher && (
+                        <Link href="/teacher" className={styles.dropdownItem} onClick={onClose}>
+                            <GraduationCap className={styles.itemIcon} size={18} />
+                            <span>{t('navigation.teacher')}</span>
+                            <ChevronRight className={styles.itemArrow} size={16} />
+                        </Link>
+                    )}
 
                     <div className={styles.separator}></div>
 
